@@ -1,0 +1,81 @@
+using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
+using System.Linq;
+using System.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.FindSymbols;
+
+namespace Analysis
+{
+    static public class SemanticTreeBuilder
+    {
+        public static Tree BuildDependenciesFromReferences(Tree tree)
+        {
+            tree.Childs = tree.Childs.Select(x => BuildDependenciesFromReferences(x, tree)).ToList();
+            return tree;
+        }
+
+        public static Node BuildDependenciesFromReferences(Node node,Tree root)
+        {
+            node.Childs = node.Childs.Select(x => BuildDependenciesFromReferences(x, root)).ToList();
+            foreach (var reference in node.References)
+            {
+                var usedAt = reference.Locations.Where(x => !x.IsImplicit);
+                var usedBy = usedAt.FindReferencingSymbolsAsync(default(CancellationToken)).Result;
+
+                foreach (var nodeUsingThisNode in usedBy.Select(root.FindNodeWithSymbol))
+                {
+                    nodeUsingThisNode.Dependencies.Add(node);
+                }
+            }
+            return node;
+        }
+
+        public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassInfo> classes)
+        {
+            var groupedByLevel = classes.ToLookup(x => GetNameSpaceDepth(x.NameSpace), info => info);
+            var topLevel = new List<Node>();
+            var previousLevel = topLevel;
+            foreach (var classesInLevel in groupedByLevel.OrderBy(x => x.Key))
+            {
+                var currentLevel = new List<Node>();
+                foreach (var @class in classesInLevel)
+                {
+                    var nspace = currentLevel.Find(x => x.Name == @class.NameSpace.Name);
+                    if (nspace == null)
+                    {
+                        nspace = new Node(@class.NameSpace);
+                        currentLevel.Add(nspace);
+                        var containedNamespace = @class.NameSpace.ContainingNamespace;
+                        if (containedNamespace != null)
+                        {
+                            var linkedNameSpace = previousLevel.Find(x => Equals(x.Symbol, containedNamespace));
+                            if (linkedNameSpace == null)
+                            {
+                                linkedNameSpace = new Node(containedNamespace);
+                                previousLevel.Add(linkedNameSpace);
+                            }
+                            linkedNameSpace.Childs.Add(nspace);
+                        }
+                        else
+                        {
+                            topLevel.Add(nspace);
+                        }
+                    }
+                    nspace.Childs.Add(new Node(@class.Symbol) {References = @class.References});
+                }
+                previousLevel = currentLevel;
+            }
+            return topLevel;
+        }
+
+        public static int GetNameSpaceDepth(INamespaceSymbol namespaceSymbol)
+        {
+            if (namespaceSymbol.IsGlobalNamespace)
+                return 0;
+            if (namespaceSymbol.ContainingNamespace != null)
+                return 1 + GetNameSpaceDepth(namespaceSymbol.ContainingNamespace);
+            return namespaceSymbol.Name.Count(x=> x == '.');
+        }
+    }
+}
