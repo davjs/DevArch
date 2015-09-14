@@ -23,8 +23,8 @@
     <ProjectGuid>{DE7D01D7-D3B5-468B-BA3D-BB63EDC2368D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Diagonal2</RootNamespace>
-    <AssemblyName>Diagonal2</AssemblyName>
+    <RootNamespace>Package</RootNamespace>
+    <AssemblyName>Package</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -51,7 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Arch.cs" />
+    <Compile Include="ArchitechtureToolWindow.cs" />
     <Compile Include="ArchCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VSPackage.cs" />

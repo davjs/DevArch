@@ -4,25 +4,34 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
+using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 using Analysis;
 using EnvDTE;
-using static System.Globalization.CultureInfo;
-using static System.String;
 
-namespace Diagonal2
+namespace Presentation
 {
     /// <summary>
     /// Interaction logic for ArchControl.
     /// </summary>
     public partial class ArchControl : UserControl
     {
+        private readonly DTE _enviroment;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ArchControl"/> class.
         /// </summary>
+        /// <param name="enviroment"></param>
+        public ArchControl(DTE enviroment)
+        {
+            _enviroment = enviroment;
+            InitializeComponent();
+        }
+
         public ArchControl()
         {
             InitializeComponent();
@@ -33,14 +42,13 @@ namespace Diagonal2
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event args.</param>
-        [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
         private void GenerateDiagram(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(Format(CurrentUICulture, $"Invoked '{this}'"),"Arch");
-
-            var dte2 = GetDte();
-            var model = Analyser.AnalyseEnviroment(dte2);
+            GenerateDiagram(_enviroment);
+        }
+        public void GenerateDiagram(DTE enviroment)
+        {
+            var model = Analyser.AnalyseEnviroment(enviroment);
             RenderModel(model);
         }
 
@@ -52,10 +60,5 @@ namespace Diagonal2
             }
         }
 
-        private static DTE GetDte()
-        {
-            return (DTE)Marshal.
-                GetActiveObject("VisualStudio.DTE.14.0");
-        }
     }
 }

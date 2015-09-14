@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Windows;
+using System.Runtime.InteropServices;
 using Analysis;
+using EnvDTE;
+using Window = System.Windows.Window;
 
 namespace Standalone
 {
@@ -13,15 +15,22 @@ namespace Standalone
         {
             InitializeComponent();
             var tree = new NodeViewModel("");
-            var DAL = new NodeViewModel(Name = "Data Access");
-            var LOGIC = new NodeViewModel(Name = "Logic");
-            var PRES = new NodeViewModel(Name = "Presentation");
+            var DAL = new NodeViewModel("Data Access");
+            var LOGIC = new NodeViewModel("Logic") { Dependencies = new List<INodeViewModel> { DAL } }; ;
+            var PRES = new NodeViewModel("Presentation") {Dependencies = new List<INodeViewModel> {LOGIC} };
             var childs = new List<NodeViewModel>
             {
                 DAL,LOGIC,PRES
             };
             tree.Childs = childs;
-            ArchControl.RenderModel(tree);
+            ArchControl.GenerateDiagram(GetDte());
+        }
+
+
+        private static DTE GetDte()
+        {
+            return (DTE)Marshal.
+                GetActiveObject("VisualStudio.DTE.14.0");
         }
     }
 }

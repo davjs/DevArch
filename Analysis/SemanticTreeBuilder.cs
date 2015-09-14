@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -11,13 +10,13 @@ namespace Analysis
     {
         public static Tree BuildDependenciesFromReferences(Tree tree)
         {
-            tree.Childs = tree.Childs.Select(x => BuildDependenciesFromReferences(x, tree)).ToList();
+            tree.UpdateChildren(tree.Childs.Select(x => BuildDependenciesFromReferences(x, tree)).ToList());
             return tree;
         }
 
         public static Node BuildDependenciesFromReferences(Node node,Tree root)
         {
-            node.Childs = node.Childs.Select(x => BuildDependenciesFromReferences(x, root)).ToList();
+            node.UpdateChildren(node.Childs.Select(x => BuildDependenciesFromReferences(x, root)).ToList());
             foreach (var reference in node.References)
             {
                 var usedAt = reference.Locations.Where(x => !x.IsImplicit);
@@ -55,14 +54,14 @@ namespace Analysis
                                 linkedNameSpace = new Node(containedNamespace);
                                 previousLevel.Add(linkedNameSpace);
                             }
-                            linkedNameSpace.Childs.Add(nspace);
+                            linkedNameSpace.AddChild(nspace);
                         }
                         else
                         {
                             topLevel.Add(nspace);
                         }
                     }
-                    nspace.Childs.Add(new Node(@class.Symbol) {References = @class.References});
+                    nspace.AddChild(new Node(@class.Symbol) {References = @class.References});
                 }
                 previousLevel = currentLevel;
             }

@@ -1,11 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Analysis;
-using System;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -87,22 +84,41 @@ namespace Analysis.Tests
                 fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace GUI {class GuiFacade {}}}"));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace GUI {namespace Buttons {class Button {}}}}"));
                 var tree = Analyser.AnalyzeSolution(fakeWorkspace.CurrentSolution);
-                Assert.IsTrue(tree.Childs.Any(x => x.Name == "GuiFacade"));
-                Assert.IsTrue(tree.Childs.Any(x => x.Name == "Button"));
+                Assert.IsNotNull(tree.Childs.WithName("GuiFacade"));
+                Assert.IsNotNull(tree.Childs.WithName("Button"));
             }
         }
 
         [TestMethod]
-        public void MoveDependenciesUpTest()
+        public void DependenciesAreConvertedToSiblingsIfAvailible()
         {
             var root = new Node("R");
-            var child = new Node("C");
-            var dependency = new Node("D");
-            root.Childs.Add(child);
-            child.Dependencies.Add(dependency);
-            var newRoot = Analyser.MoveDependenciesUp(root);
-            Assert.IsTrue(newRoot.InDirectDependencies.Any(x => x.Name == "D"));
+            var a = new Node("A");
+            var b = new Node("B");
+            var childOfB = new Node("C");
+            root.AddChild(a);
+            root.AddChild(b);
+            b.AddChild(childOfB);
+            a.Dependencies.Add(childOfB);
+            var newRoot = Analyser.FindSiblingDependencies(root);
+            var newA = newRoot.Childs.WithName("A");
+            Assert.IsNotNull(newA.SiblingDependencies.WithName("B"));
         }
 
+        [TestMethod]
+        public void SiblingsAreOrderedByDependency()
+        {
+            var root = new Tree();
+            var a = new Node("A");
+            var b = new Node("B");
+            root.AddChild(a);
+            root.AddChild(b);
+            Assert.IsTrue(root.Childs.SequenceEqual(new List<Node> { a, b }));
+            Assert.IsFalse(root.Childs.SequenceEqual(new List<Node> { b, a }));
+            a.SiblingDependencies.Add(b);
+            root.UpdateChildren(Analyser.OrderChildsBySiblingsDependencies(root.Childs));
+            Assert.IsTrue(root.Childs.SequenceEqual(new List<Node> { b, a }));
+            Assert.IsFalse(root.Childs.SequenceEqual(new List<Node> { a, b }));
+        }
     }
 }

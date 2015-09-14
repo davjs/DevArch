@@ -4,11 +4,13 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 
-namespace Diagonal2
+namespace Package
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -32,8 +34,8 @@ namespace Diagonal2
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(Arch))]
-    public sealed class VSPackage : Package
+    [ProvideToolWindow(typeof(ArchitechtureToolWindow))]
+    public sealed class VSPackage : Microsoft.VisualStudio.Shell.Package
     {
         /// <summary>
         /// VSPackage GUID string.
@@ -50,6 +52,8 @@ namespace Diagonal2
         {
             base.Initialize();
             ArchCommand.Initialize(this);
+            var Enviro = (DTE)GetService(typeof(DTE));
+            ArchitechtureToolWindow.Enviro = Enviro;
         }
 
         #endregion

@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
 using EnvDTE;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.MSBuild;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Analysis
 {
-    public class Analyser
+    public static class Analyser
     {
         public static Tree AnalyseEnviroment(DTE dte2)
         {
@@ -28,8 +22,32 @@ namespace Analysis
             var tree = BuildTreeFromSolution(solution);
             tree = SemanticTreeBuilder.BuildDependenciesFromReferences(tree);
             tree = RemoveSinglePaths(tree);
-            tree.Childs = tree.Childs.Select(MoveDependenciesUp).ToList();
+            tree.UpdateChildren(tree.Childs.Select(FindSiblingDependencies).ToList());
+            tree.UpdateChildren(OrderChildsBySiblingsDependencies(tree.Childs).ToList());
             return tree;
+        }
+
+        public static IEnumerable<Node> OrderChildsBySiblingsDependencies(IReadOnlyList<Node> childs)
+        {
+            foreach (var child in childs)
+            {
+                child.UpdateChildren(OrderChildsBySiblingsDependencies(child.Childs));
+            }
+
+            if (!childs.SiblingDependencies().Any()) return childs;
+            var nodesWithoutDependency = childs.Where(c => !c.SiblingDependencies.Any()).ToList();
+            if (nodesWithoutDependency.Count == 0)
+                throw new LayerViolationException();
+            //TODO: THROW ERROR WHEN MORE THAN ONE??
+            var startingNode = nodesWithoutDependency.First();
+            var newChildOrder = new List<Node>();
+            var previousNode = startingNode;
+            for (var node = startingNode; node != null; node = childs.FirstOrDefault(x => x.SiblingDependencies.Contains(previousNode)))
+            {
+                newChildOrder.Add(node);
+                previousNode = node;
+            }
+            return newChildOrder;
         }
 
         public static Tree BuildTreeFromSolution(Solution solution)
@@ -44,63 +62,49 @@ namespace Analysis
                 var documents = project.Documents.ToList();
                 if (documents.Any())
                 {
-                    var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result).ToList();
-                    var analysis =
-                        semanticModels.SelectMany(model => GetClassesInModel(model, solution)).ToList();
-                    var classes = analysis;
+                    var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result);
+                    var classes = SemanticModelWalker.GetClassesInModels(semanticModels, solution);
                     if (!classes.Any())
                         throw new Exception("No classes found");
                     var classnodes = SemanticTreeBuilder.BuildTreeFromClasses(classes);
-                    projectNode.Childs.AddRange(classnodes);
+                    projectNode.AddChilds(classnodes);
                 }
                 projectTrees.Add(projectNode);
             }
-            tree.Childs.AddRange(projectTrees);
+            tree.AddChilds(projectTrees);
             return tree;
         }
 
-        public static Node MoveDependenciesUp(Node node)
+        public static Node FindSiblingDependencies(Node node)
         {
-            var childs = node.Childs.Select(MoveDependenciesUp);
-            node.InDirectDependencies = node.Dependencies.Concat(childs.SelectMany(c => c.InDirectDependencies.Concat(c.Dependencies))).ToList();
+            node.UpdateChildren(node.Childs.Select(FindSiblingDependencies).ToList());
+            if (node.Parent == null) return node;
+            foreach (
+                var sibling in
+                    node.Dependencies.Concat(node.Childs.Dependencies())
+                        .Select(dependency => AncestorIsSibling(node.Parent, dependency))
+                        .Where(sibling => sibling != null && sibling != node))
+            {
+                node.SiblingDependencies.Add(sibling);
+            }
+
             return node;
+        }
+
+        private static Node AncestorIsSibling(Tree parent, Node dependency)
+        {
+            for (var p = dependency; p != null; p = p.Parent as Node)
+            {
+                if (p.Parent as Node == parent)
+                    return p;
+            }
+            return null;
         }
 
         private static Tree RemoveSinglePaths(Tree tree)
         {
-            tree.Childs = tree.Childs.Select(RemoveSinglePaths).Cast<Node>().ToList();
+            tree.UpdateChildren(tree.Childs.Select(RemoveSinglePaths).Cast<Node>().ToList());
             return tree.Childs.Count == 1 ? tree.Childs.First() : tree;
-        }
-
-        /*public class NameSpace
-        {
-            public string Name;
-            public IEnumerable<string> Parents;
-        }
-
-        public static NameSpace SplitNameSpaceName(string name)
-        {
-            if (!name.Contains(".")) return new NameSpace {Name = name, Parents = new List<string>()};
-            var names = name.Split('.');
-            var parents = names.Take(names.Count() - 1);
-            return new NameSpace { Name = names.First(), Parents = parents };
-        }*/
-
-        private static IEnumerable<ClassInfo> GetClassesInModel(SemanticModel model, Solution solution)
-        {
-            var syntaxRoot = model.SyntaxTree.GetRootAsync().Result;
-            var classes = syntaxRoot.DescendantNodes().OfType<ClassDeclarationSyntax>();
-            var classAnalysis = classes.Select(c => AnalyseClass(model, c, solution)).ToList();
-            return classAnalysis;
-        }
-
-        private static ClassInfo AnalyseClass(SemanticModel model, ClassDeclarationSyntax c, Solution solution)
-        {
-            //var typeInfo = model.GetTypeInfo(c).Type;
-            var declaredSymbol = model.GetDeclaredSymbol(c);
-            var references = SymbolFinder.FindReferencesAsync(declaredSymbol,solution ).Result;
-            var namespaceSymbol = declaredSymbol.ContainingNamespace;
-            return new ClassInfo { NameSpace = namespaceSymbol,References = references,Symbol = declaredSymbol };
         }
 
         private static string GetSolutionName(_DTE dte2)
@@ -119,5 +123,9 @@ namespace Analysis
             }
             return name;
         }
+    }
+
+    internal class LayerViolationException : Exception
+    {
     }
 }

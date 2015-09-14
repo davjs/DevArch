@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -8,18 +7,53 @@ namespace Analysis
 {
     public class Tree : ITreeViewModel
     {
-        public List<Node> Childs { get; set; } = new List<Node>();
-        IEnumerable<INodeViewModel> ITreeViewModel.Childs => Childs;
+        private List<Node> ChildsList { get; set; } = new List<Node>();
+        public IReadOnlyList<Node> Childs => ChildsList;
+        IEnumerable<INodeViewModel> ITreeViewModel.Childs => ChildsList;
         public override string ToString()
         {
-            return string.Join(",", Childs);
+            return string.Join(",", ChildsList);
+        }
+
+        public void AddChild(Node childNode)
+        {
+            childNode.Parent = this;
+            ChildsList.Add(childNode);
+        }
+        
+        public void AddChilds(IEnumerable<Node> nodes)
+        {
+            foreach (var node in nodes)
+                AddChild(node);
+        }
+
+        public void UpdateChildren(IEnumerable<Node> children)
+        {
+            ChildsList = children.ToList();
         }
 
         public Node FindNodeWithSymbol(ISymbol symbol)
         {
-            return Childs.Select(x => x.FindNodeWithSymbol(symbol)).FirstOrDefault(x => x != null);
+            return ChildsList.Select(x => x.FindNodeWithSymbol(symbol)).FirstOrDefault(x => x != null);
         }
 
+    }
+
+    public static class NodeExtensions
+    {
+        public static Node WithName(this IEnumerable<Node> nodeList,string name)
+        {
+            return nodeList.FirstOrDefault(x => x.Name == name);
+        }
+
+        public static IEnumerable<Node> Dependencies(this IEnumerable<Node> nodeList)
+        {
+            return nodeList.SelectMany(x => x.Dependencies);
+        }
+        public static IEnumerable<Node> SiblingDependencies(this IEnumerable<Node> nodeList)
+        {
+            return nodeList.SelectMany(x => x.SiblingDependencies);
+        }
     }
 
     public interface ITreeViewModel
@@ -50,10 +84,12 @@ namespace Analysis
         IEnumerable<INodeViewModel> ITreeViewModel.Childs => Childs;
         IEnumerable<INodeViewModel> INodeViewModel.Dependencies => Childs;
 
-        public ISymbol Symbol;
+
+        public readonly ISymbol Symbol;
         public IEnumerable<ReferencedSymbol> References = new List<ReferencedSymbol>();
-        public List<Node> Dependencies = new List<Node>();
-        public List<Node> InDirectDependencies = new List<Node>();
+        public readonly List<Node> Dependencies = new List<Node>();
+        public readonly List<Node> SiblingDependencies = new List<Node>();
+        public Tree Parent;
         public override string ToString()
         {
             return Childs.Any() ? $"({Name} = {base.ToString()})" : Name;
@@ -71,7 +107,7 @@ namespace Analysis
         {
             Name = name;
         }
-        public string Name { get; set; }
+        public string Name { get;}
         public IEnumerable<INodeViewModel> Childs { get; set; }
         public IEnumerable<INodeViewModel> Dependencies { get; set; }
     }

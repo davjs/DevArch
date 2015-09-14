@@ -1,13 +1,16 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="Arch.cs" company="Company">
+// <copyright file="ArchitechtureToolWindow.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Composition;
 using System.Runtime.InteropServices;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 
-namespace Diagonal2
+namespace Package
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -21,19 +24,21 @@ namespace Diagonal2
     /// </para>
     /// </remarks>
     [Guid("0f613c0d-a0cf-4e28-a5b2-f7ed3a35ea78")]
-    public class Arch : ToolWindowPane
+    public class ArchitechtureToolWindow : ToolWindowPane
     {
+
+        public static DTE Enviro;
         /// <summary>
-        /// Initializes a new instance of the <see cref="Arch"/> class.
+        /// Initializes a new instance of the <see cref="ArchitechtureToolWindow"/> class.
         /// </summary>
-        public Arch() : base(null)
+        public ArchitechtureToolWindow() : base(null)
         {
-            Caption = "Arch";
+            Caption = "ArchitechtureToolWindow";
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            Content = new ArchControl();
+            Content = new Presentation.ArchControl(Enviro);
         }
     }
 }

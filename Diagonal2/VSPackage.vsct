@@ -42,11 +42,11 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidVSPackageCmdSet" id="cmdidArchCommand" priority="0x0100" type="Button">
+      <Button guid="guidVSPackageCmdSet" id="cmdidArchitechtureToolWindowCommand" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
         <Icon guid="guidImages2" id="bmpPic1" />
         <Strings>
-          <ButtonText>Arch</ButtonText>
+          <ButtonText>ArchitechtureToolWindow</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -68,7 +68,7 @@
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidVSPackageCmdSet" value="{789b5525-1334-4403-8382-b0adb17f3ff7}">
-      <IDSymbol value="258" name="cmdidArchCommand" />
+      <IDSymbol value="258" name="cmdidArchitechtureToolWindowCommand" />
       <IDSymbol value="258" name="cmdidWindowsDiagonalOpen" />
     </GuidSymbol>
 
