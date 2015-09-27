@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using EnvDTE;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.FindSymbols;
+using Document = Microsoft.CodeAnalysis.Document;
+using Project = Microsoft.CodeAnalysis.Project;
 
 namespace Analysis
 {
@@ -36,12 +40,11 @@ namespace Analysis
         {
             return ChildsList.Select(x => x.FindNodeWithSymbol(symbol)).FirstOrDefault(x => x != null);
         }
-
     }
 
     public static class NodeExtensions
     {
-        public static Node WithName(this IEnumerable<Node> nodeList,string name)
+        public static T WithName<T>(this IEnumerable<T> nodeList,string name) where T : Node
         {
             return nodeList.FirstOrDefault(x => x.Name == name);
         }
@@ -53,6 +56,22 @@ namespace Analysis
         public static IEnumerable<Node> SiblingDependencies(this IEnumerable<Node> nodeList)
         {
             return nodeList.SelectMany(x => x.SiblingDependencies);
+        }
+        public static IReadOnlyList<Node> DependantOfNode(this IEnumerable<Node> nodeList ,Node node)
+        {
+            return nodeList.Where(x => x.SiblingDependencies.Contains(node)).ToList();
+        }
+
+        public static IEnumerable<Node> DescendantNodes(this Tree tree)
+        {
+            foreach (var child in tree.Childs)
+            {
+                    yield return child;
+                    foreach (var descendantsOfChild in child.DescendantNodes())
+                    {
+                        yield return descendantsOfChild;
+                    }
+            }
         }
     }
 
@@ -98,6 +117,34 @@ namespace Analysis
         public new Node  FindNodeWithSymbol(ISymbol symbol)
         {
             return Equals(Symbol, symbol) ? this : Childs.Select(x => x.FindNodeWithSymbol(symbol)).FirstOrDefault(x => x != null);
+        }
+    }
+
+    public class ProjectNode : Node
+    {
+        public ProjectNode(ProjectItem p) : base(p.Name)
+        { }
+        public IEnumerable<Document> Documents = new List<Document>();
+
+        public ProjectNode(Project project) : base(project.Name)
+        {
+            Documents = project.Documents;
+        }
+    }
+
+    public class SiblingHolderNode : Node
+    {
+
+        public SiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
+        {
+            UpdateChildren(siblingNodes);
+        }
+    }
+
+    public class VerticalSiblingHolderNode : SiblingHolderNode
+    {
+        public VerticalSiblingHolderNode(IEnumerable<Node> siblingNodes) : base(siblingNodes)
+        {
         }
     }
 
