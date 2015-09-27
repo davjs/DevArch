@@ -39,5 +39,22 @@ namespace Analysis.Tests
             CollectionAssert.Contains(anonymousLayer.Childs.ToArray(),b);
             CollectionAssert.Contains(anonymousLayer.Childs.ToArray(), c);
         }
+
+        [TestMethod]
+        public void PutsIndependentSiblingsIntoHorizontalLayer()
+        {
+            var a = new Node("A");
+            var b = new Node("B");
+            var c = new Node("C");
+
+            a.AddChild(b);
+            a.AddChild(c);
+
+            var newSiblings = Analyser.OrderChildsBySiblingsDependencies(new List<Node> {a});
+            var newRoot = newSiblings.First();
+            Assert.IsTrue(newRoot.Horizontal);
+            CollectionAssert.Contains(newRoot.Childs.ToArray(), b);
+            CollectionAssert.Contains(newRoot.Childs.ToArray(), c);
+        }
     }
 }

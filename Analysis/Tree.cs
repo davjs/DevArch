@@ -14,9 +14,19 @@ namespace Analysis
         private List<Node> ChildsList { get; set; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;
         IEnumerable<INodeViewModel> ITreeViewModel.Childs => ChildsList;
+        public bool Horizontal { get; set; }
         public override string ToString()
         {
             return string.Join(",", ChildsList);
+        }
+
+        public int Id;
+        public static int LastId = 0;
+
+        public Tree()
+        {
+            Id = LastId;
+            LastId++;
         }
 
         public void AddChild(Node childNode)
@@ -33,7 +43,9 @@ namespace Analysis
 
         public void UpdateChildren(IEnumerable<Node> children)
         {
-            ChildsList = children.ToList();
+            var newList = children.ToList();
+            ChildsList.Clear();
+            AddChilds(newList);
         }
 
         public Node FindNodeWithSymbol(ISymbol symbol)
@@ -52,6 +64,11 @@ namespace Analysis
         public static IEnumerable<Node> Dependencies(this IEnumerable<Node> nodeList)
         {
             return nodeList.SelectMany(x => x.Dependencies);
+        }
+        
+        public static IEnumerable<Node> AllSubDependencies(this Node node)
+        {
+            return node.Dependencies.Concat(node.Childs.SelectMany(AllSubDependencies)).Distinct();
         }
         public static IEnumerable<Node> SiblingDependencies(this IEnumerable<Node> nodeList)
         {
@@ -82,6 +99,7 @@ namespace Analysis
 
     public interface INodeViewModel : ITreeViewModel
     {
+        bool Horizontal { get; set; }
         string Name { get;}
         IEnumerable<INodeViewModel> Dependencies { get;}
     }
@@ -102,7 +120,6 @@ namespace Analysis
 
         IEnumerable<INodeViewModel> ITreeViewModel.Childs => Childs;
         IEnumerable<INodeViewModel> INodeViewModel.Dependencies => Childs;
-
 
         public readonly ISymbol Symbol;
         public IEnumerable<ReferencedSymbol> References = new List<ReferencedSymbol>();
@@ -138,22 +155,17 @@ namespace Analysis
         public SiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
         {
             UpdateChildren(siblingNodes);
+            Horizontal = true;
         }
     }
-
-    public class VerticalSiblingHolderNode : SiblingHolderNode
-    {
-        public VerticalSiblingHolderNode(IEnumerable<Node> siblingNodes) : base(siblingNodes)
-        {
-        }
-    }
-
     public class NodeViewModel : INodeViewModel
     {
         public NodeViewModel(string name)
         {
             Name = name;
         }
+
+        public bool Horizontal { get; set; }
         public string Name { get;}
         public IEnumerable<INodeViewModel> Childs { get; set; }
         public IEnumerable<INodeViewModel> Dependencies { get; set; }

@@ -22,6 +22,8 @@ namespace Presentation
     [ContentProperty("Children")]
     public partial class LayerControl : UserControl
     {
+        public Orientation Orientation { get; set; }
+
         public static readonly DependencyPropertyKey ChildrenProperty = DependencyProperty.RegisterReadOnly(
            "Children",
            typeof(UIElementCollection),
@@ -38,17 +40,31 @@ namespace Presentation
 
         public void AddChild(LayerControl layer)
         {
+            var count = ChildPanel.Children.Count;
             ChildPanel.Children.Add(layer);
-            Grid.SetColumn(layer, ChildPanel.Children.Count -1);
-            ChildPanel.ColumnDefinitions.Add(new ColumnDefinition());
+            if(Orientation == Orientation.Horizontal)
+            { 
+                Grid.SetColumn(layer, count);
+                ChildPanel.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+            else
+            {
+                Grid.SetRow(layer, count);
+                ChildPanel.RowDefinitions.Add(new RowDefinition());
+            }
         }
 
-        public LayerControl(string name)
+        public LayerControl(string name, Color color, Orientation orientation = Orientation.Vertical)
         {
             LayerName = name;
             InitializeComponent();
             Children = ChildPanel.Children;
             DataContext = this;
+            Orientation = orientation;
+            Border.Background = new SolidColorBrush(color);
+            if (name.Any()) return;
+            Border.BorderThickness = new Thickness(0);
+            Border.Margin = new Thickness(0);
         }
 
         public string LayerName { get; set; }

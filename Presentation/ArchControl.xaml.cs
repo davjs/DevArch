@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Analysis;
 using EnvDTE;
+using Color = System.Drawing.Color;
 
 namespace Presentation
 {
@@ -54,50 +55,25 @@ namespace Presentation
             RenderModel(model);
         }
 
-        /*public StackPanel RenderChilrenToPanel()
+        public LayerControl RenderNode(INodeViewModel node, int depth, System.Windows.Media.Color color)
         {
-            
-        }*/
-
-        /*public void RenderModel(ITreeViewModel model)
-        {
-            foreach (var child in model.Childs)
-            {
-                var layerContents = new StackPanel ();
-                layerContents.Children.Add(new Button {Content = child.Name});
-                var layerBorder = new Border { Style = Resources["LayerBorderStyle"] as Style};
-                if (child.Childs.Any())
-                {
-                    var layerChildren = new StackPanel { Orientation = Orientation.Horizontal };
-                    foreach (var c in child.Childs)
-                    {
-                        layerChildren.Children.Add(new Button {Content = c.Name});
-                    }
-                    layerContents.Children.Add(layerChildren);
-                }
-                layerBorder.Child = layerContents;
-                MasterPanel.Children.Add(layerBorder);
-            }
-        }*/
-
-        public LayerControl RenderNode(INodeViewModel node)
-        {
-            var layer = new LayerControl(node.Name);
+            var orientation = node.Horizontal ? Orientation.Horizontal : Orientation.Vertical;
+            var layer = new LayerControl(node.Name, color, orientation);
+            if (depth <= 0) return layer;
             foreach (var c in node.Childs)
             {
-                layer.AddChild(RenderNode(c));
+                layer.AddChild(RenderNode(c, depth--, color));
             }
             return layer;
         }
 
         public void RenderModel(ITreeViewModel model)
         {
+            var c = System.Windows.Media.Color.FromRgb(0,43,54);
             foreach (var child in model.Childs)
             {
-                MasterPanel.Children.Add(RenderNode(child));
+                MasterPanel.Children.Add(RenderNode(child, 3,c));
             }
         }
-
-
     }
 }
