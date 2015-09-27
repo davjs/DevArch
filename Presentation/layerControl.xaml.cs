@@ -45,12 +45,12 @@ namespace Presentation
             if(Orientation == Orientation.Horizontal)
             { 
                 Grid.SetColumn(layer, count);
-                ChildPanel.ColumnDefinitions.Add(new ColumnDefinition());
+                ChildPanel.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.Auto});
             }
             else
             {
                 Grid.SetRow(layer, count);
-                ChildPanel.RowDefinitions.Add(new RowDefinition());
+                ChildPanel.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
             }
         }
 

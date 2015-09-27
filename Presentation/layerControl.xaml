@@ -4,22 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Presentation"
-             mc:Ignorable="d" 
-             d:DesignHeight="80" d:DesignWidth="200" d:DataContext="{d:DesignInstance local:LayerControl}">
+             mc:Ignorable="d"  d:DataContext="{d:DesignInstance local:LayerControl}">
 
     <UserControl.Resources>
         <!-- Layer border style -->
         <Style x:Key="LayerBorderStyle" TargetType="{x:Type Border}">
-            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Margin" Value="5"/>
             <Setter Property="BorderThickness" Value="3"/>
-            <Setter Property="BorderBrush" Value="#0B353E"/>
+            <Setter Property="BorderBrush" Value="#0F383E"/>
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
     </UserControl.Resources>
 
-    <Border x:Name="Border" Style="{StaticResource LayerBorderStyle}" Background="#002B36">
-            <DockPanel>
-            <TextBlock HorizontalAlignment="Center" Foreground="#839496"  DockPanel.Dock="Top" Text="{Binding LayerName}"/>
+    <Border x:Name="Border" Width="Auto" Style="{StaticResource LayerBorderStyle}" Background="#002B36">
+        <DockPanel Width="Auto" >
+            <TextBlock HorizontalAlignment="Center" Width="Auto" Padding="5" Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}"/>
                 <Grid x:Name="ChildPanel">
                 </Grid>
             </DockPanel>
