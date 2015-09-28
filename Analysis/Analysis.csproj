@@ -103,14 +103,16 @@
   <ItemGroup>
     <Compile Include="Analyser.cs" />
     <Compile Include="bio\blah\Class1.cs" />
+    <Compile Include="Building\ProjectTreeBuilder.cs" />
     <Compile Include="ClassInfo.cs" />
-    <Compile Include="ClassTreeBuilder.cs" />
-    <Compile Include="Namespaceboo.cs" />
-    <Compile Include="ProjectTreeBuilder.cs" />
+    <Compile Include="Building\ClassTreeBuilder.cs" />
+    <Compile Include="patternFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceLocationExtensions.cs" />
     <Compile Include="SemanticModelWalker.cs" />
-    <Compile Include="SemanticTreeBuilder.cs" />
+    <Compile Include="Building\SemanticTreeBuilder.cs" />
+    <Compile Include="SiblingReorderer.cs" />
+    <Compile Include="SiblingReordrer.cs" />
     <Compile Include="Tree.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,7 @@ namespace Analysis.Tests
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> { a, b }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { b, a }));
             a.SiblingDependencies.Add(b);
-            siblings = Analyser.OrderChildsBySiblingsDependencies(siblings).ToList();
+            siblings = SiblingReordrer.OrderChildsBySiblingsDependencies(siblings).ToList();
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> { b, a }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b }));
         }
@@ -32,7 +32,7 @@ namespace Analysis.Tests
             b.SiblingDependencies.Add(a);
             c.SiblingDependencies.Add(a);
 
-            var newSiblings = Analyser.OrderChildsBySiblingsDependencies(new List<Node> {a, b, c});
+            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> {a, b, c});
 
             var anonymousLayer = newSiblings.OfType<SiblingHolderNode>().FirstOrDefault();
             Assert.IsNotNull(anonymousLayer);
@@ -50,11 +50,27 @@ namespace Analysis.Tests
             a.AddChild(b);
             a.AddChild(c);
 
-            var newSiblings = Analyser.OrderChildsBySiblingsDependencies(new List<Node> {a});
+            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> {a});
             var newRoot = newSiblings.First();
             Assert.IsTrue(newRoot.Horizontal);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), b);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), c);
+        }
+
+        [TestMethod]
+        public void FindsDirectionBetweenMultiLayers()
+        {
+            var a = new Node("A");//-
+            var b = new Node("B");//^
+            var c = new Node("C");//^^
+
+            c.SiblingDependencies.Add(b);
+            c.SiblingDependencies.Add(a);
+            b.SiblingDependencies.Add(a);
+
+            var newList = new List<Node>();
+            SiblingReordrer.RegroupSiblingNodes(a,new List<Node> { c,b,a},ref newList);
+            Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
         }
     }
 }

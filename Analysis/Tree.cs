@@ -74,7 +74,7 @@ namespace Analysis
         {
             return nodeList.SelectMany(x => x.SiblingDependencies);
         }
-        public static IReadOnlyList<Node> DependantOfNode(this IEnumerable<Node> nodeList ,Node node)
+        public static IEnumerable<Node> DependantOfNode(this IEnumerable<Node> nodeList ,Node node)
         {
             return nodeList.Where(x => x.SiblingDependencies.Contains(node)).ToList();
         }

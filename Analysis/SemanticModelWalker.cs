@@ -16,7 +16,7 @@ namespace Analysis
             return classAnalysis;
         }
 
-        private static ClassInfo GetClassInfo(SemanticModel model, SyntaxNode c, Solution solution)
+        private static ClassInfo GetClassInfo(SemanticModel model, ClassDeclarationSyntax c, Solution solution)
         {
             var declaredSymbol = model.GetDeclaredSymbol(c);
             var references = SymbolFinder.FindReferencesAsync(declaredSymbol,solution ).Result;
