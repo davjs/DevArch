@@ -24,7 +24,7 @@ Generated using the settings:
  - Skip single containers
 
 ###To try it out
-Right click on Clients->Standalone and press F5 to view a diagram of the current architechture.
+Set the project "Standalone" to current startup project and press F5 to view a diagram of the current architechture.
 
 ###Todo:
 * **Filters to add:**
