@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Analysis.Building;
+using Analysis.SemanticTree;
 using EnvDTE;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

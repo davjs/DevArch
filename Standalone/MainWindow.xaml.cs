@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Analysis;
+using Analysis.SemanticTree;
 using EnvDTE;
 using Window = System.Windows.Window;
 

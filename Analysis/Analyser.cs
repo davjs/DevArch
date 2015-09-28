@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
+using Analysis.Building;
+using Analysis.SemanticTree;
 using EnvDTE;
-using EnvDTE80;
 using Microsoft.CodeAnalysis.MSBuild;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
@@ -18,13 +17,13 @@ namespace Analysis
             var name = GetSolutionName(dte);
             var solution = build.OpenSolutionAsync(name).Result;
             var tree = ProjectTreeBuilder.GetSolutionFoldersTree(dte);
-            AnalyzeSolutionToTree(solution,ref tree);
+            AnalyzeSolutionToTree(solution, ref tree);
             return tree;
         }
 
-        public static void AnalyzeSolutionToTree(Solution solution,ref Tree tree)
+        public static void AnalyzeSolutionToTree(Solution solution, ref Tree tree)
         {
-            ProjectTreeBuilder.AddProjectsToTree(solution,ref tree);
+            ProjectTreeBuilder.AddProjectsToTree(solution, ref tree);
             ClassTreeBuilder.AddClassesToTree(solution, tree);
             tree = SemanticTreeBuilder.BuildDependenciesFromReferences(tree);
             tree = RemoveTests(tree);
@@ -36,28 +35,41 @@ namespace Analysis
 
         private static Tree FindSiblingPatterns(Tree tree)
         {
-            var pattern = PatternFinder.FindPattern(tree.Childs.Select(x => x.Name));
-            if (pattern != null)
+            if (!tree.Childs.Any())
+                return tree;
+            var baseClassPattern = PatternFinder.FindBaseClassPattern(tree.Childs);
+            if (baseClassPattern != null)
             {
                 tree.UpdateChildren(new List<Node>());
-                tree.AddChild(new Node(pattern + "s"));
+                tree.AddChild(new Node(baseClassPattern + "s"));
             }
-            tree.UpdateChildren(tree.Childs.Select(Analyser.FindSiblingPatterns).Cast<Node>());
+            else
+            {
+                var namingPattern = PatternFinder.FindNamingPattern(tree.Childs.Select(x => x.Name));
+                if (namingPattern != null)
+                {
+                    tree.UpdateChildren(new List<Node>());
+                    tree.AddChild(new Node(namingPattern + "s"));
+                }
+            }
+            tree.UpdateChildren(tree.Childs.Select(FindSiblingPatterns).Cast<Node>());
             return tree;
         }
 
         private static Tree RemoveTests(Tree tree)
         {
-            tree.UpdateChildren(tree.Childs.Select(Analyser.RemoveTests).Cast<Node>());
-            tree.UpdateChildren(tree.Childs.Where(x => !x.Name.EndsWith("test",StringComparison.InvariantCultureIgnoreCase)).ToList());
-            tree.UpdateChildren(tree.Childs.Where(x => !x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase)).ToList());
+            tree.UpdateChildren(tree.Childs.Select(RemoveTests).Cast<Node>());
+            tree.UpdateChildren(
+                tree.Childs.Where(x => !x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)).ToList());
+            tree.UpdateChildren(
+                tree.Childs.Where(x => !x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase)).ToList());
             return tree;
         }
 
 
         public static Node FindSiblingDependencies(Node node)
         {
-            node.UpdateChildren(node.Childs.Select(Analyser.FindSiblingDependencies).ToList());
+            node.UpdateChildren(node.Childs.Select(FindSiblingDependencies).ToList());
             if (node.Parent == null) return node;
             var allSubDependencies = node.AllSubDependencies().ToList();
             var dependenciesWhereAncestorsAreSiblings = allSubDependencies
@@ -85,7 +97,7 @@ namespace Analysis
 
         public static Tree RemoveSinglePaths(Tree tree)
         {
-            tree.UpdateChildren(tree.Childs.Select(Analyser.RemoveSinglePaths).Cast<Node>().ToList());
+            tree.UpdateChildren(tree.Childs.Select(RemoveSinglePaths).Cast<Node>().ToList());
             return tree.Childs.Count == 1 ? tree.Childs.First() : tree;
         }
 

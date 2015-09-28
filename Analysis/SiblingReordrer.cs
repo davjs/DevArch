@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Analysis.SemanticTree;
 
 namespace Analysis
 {
@@ -10,7 +11,7 @@ namespace Analysis
             foreach (var child in childs)
             {
                 if(child.Childs.Any())
-                    child.UpdateChildren(SiblingReordrer.OrderChildsBySiblingsDependencies(child.Childs));
+                    child.UpdateChildren(OrderChildsBySiblingsDependencies(child.Childs));
             }
 
             if (!childs.SiblingDependencies().Any())
@@ -41,7 +42,7 @@ namespace Analysis
                 if (!dependantOfNode.Any())
                     break;
 
-                newChildOrder.Add(node); // Refactor out
+                newChildOrder.Add(node);
                 oldChildList.Remove(node);
                 if (dependantOfNode.Count == 1)
                 {

@@ -21,7 +21,14 @@ namespace Analysis
             var declaredSymbol = model.GetDeclaredSymbol(c);
             var references = SymbolFinder.FindReferencesAsync(declaredSymbol,solution ).Result;
             var namespaceSymbol = declaredSymbol.ContainingNamespace;
-            return new ClassInfo { NameSpace = namespaceSymbol,References = references,Symbol = declaredSymbol };
+            IEnumerable<TypeSyntax> basetypes = new List<TypeSyntax>();
+            if (c.BaseList != null && c.BaseList.Types.Any())
+                basetypes = c.BaseList.Types.Select(x => x.Type);
+            return new ClassInfo
+            {
+                NameSpace = namespaceSymbol,References = references,Symbol = declaredSymbol,
+                BaseTypes = basetypes
+};
         }
 
         public static IReadOnlyList<ClassInfo> GetClassesInModels(IEnumerable<SemanticModel> semanticModels, Solution solution)

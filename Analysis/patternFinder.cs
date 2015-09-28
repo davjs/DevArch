@@ -1,35 +1,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Analysis.SemanticTree;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Analysis
 {
     public static class PatternFinder
     {
-        public static string FindPattern(IEnumerable<string> names)
+        public static string FindNamingPattern(IEnumerable<string> names)
         {
             var splitNames = names.Select(SplitCamelCase).Where(x => x.Any()).ToList();
-            var patterns = new List<string>();
-            foreach (var name in splitNames)
-            {
-                foreach (var name2 in splitNames)
-                {
-                    if(name2 == name)
-                        continue;
-                    if (name.Last().Equals(name2.Last()))
-                    {
-                        patterns.Add(name.Last());
-                    }
-                }
-            }
-            if (patterns.Any())
-                return patterns.First();
-            return null;
+            var patterns = (from name in splitNames
+                from name2 in splitNames
+                where !Equals(name2, name)
+                where name.Last().Equals(name2.Last())
+                select name.Last()).ToList();
+
+            return patterns.Any() ? patterns.First() : null;
         }
 
         public static IEnumerable<string> SplitCamelCase(string input)
         {
             return Regex.Split(input, "([A-Z][a-z]+)").Where(x => x.Any()).ToList();
+        }
+
+        public static string FindBaseClassPattern(IReadOnlyList<Node> nodes)
+        {
+            var lists = nodes.Select(x => x.BaseClasses.Select(y => y.ToString())).ToList();
+
+            var common = lists.Aggregate((a, b) => a.Intersect(b)).ToList();
+            if (common.Any())
+                return common.First();
+            return null;
         }
     }
 }

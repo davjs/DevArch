@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Analysis.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 
-namespace Analysis
+namespace Analysis.Building
 {
     static public class SemanticTreeBuilder
     {
@@ -61,7 +62,7 @@ namespace Analysis
                             topLevel.Add(nspace);
                         }
                     }
-                    nspace.AddChild(new Node(@class.Symbol) {References = @class.References});
+                    nspace.AddChild(new Node(@class));
                 }
                 previousLevel = currentLevel;
             }

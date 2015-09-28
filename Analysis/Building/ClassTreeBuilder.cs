@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
+using Analysis.SemanticTree;
 using Microsoft.CodeAnalysis;
 
-namespace Analysis
+namespace Analysis.Building
 {
     public static class ClassTreeBuilder
     {

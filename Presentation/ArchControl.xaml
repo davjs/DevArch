@@ -5,20 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              Name="MyToolWindow">
-
-    <UserControl.Resources>
-        <!-- Layer border style -->
-        <Style x:Key="LayerBorderStyle" TargetType="{x:Type Border}">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="BorderThickness" Value="4"/>
-            <Setter Property="BorderBrush" Value="SandyBrown"/>
-            <Setter Property="CornerRadius" Value="5"/>
-        </Style>
-    </UserControl.Resources>
-
     <Grid>
         <StackPanel Orientation="Vertical" Name="MasterPanel" Margin="10,0" >
-            <TextBlock Margin="10" HorizontalAlignment="Center" Foreground="#839496">Arch</TextBlock>
+            <TextBlock Margin="10" HorizontalAlignment="Center" Foreground="#839496">DevArch</TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

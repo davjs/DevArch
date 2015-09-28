@@ -1,5 +1,6 @@
 ﻿using Analysis;
 using System.Linq;
+using Analysis.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

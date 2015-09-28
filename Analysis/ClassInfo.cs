@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 
 namespace Analysis
@@ -9,5 +10,6 @@ namespace Analysis
         public INamespaceSymbol NameSpace;
         public IEnumerable<ReferencedSymbol> References;
         public ISymbol Symbol;
+        public IEnumerable<TypeSyntax> BaseTypes { get; set; }
     }
 }

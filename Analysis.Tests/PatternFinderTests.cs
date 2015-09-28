@@ -14,7 +14,7 @@ namespace Analysis.Tests
         [TestMethod()]
         public void FindPatternTest()
         {
-            Assert.AreEqual("Service",PatternFinder.FindPattern(new List<string>() {"CalculatorService","ParserService"}));
+            Assert.AreEqual("Service",PatternFinder.FindNamingPattern(new List<string>() {"CalculatorService","ParserService"}));
         }
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using Analysis.Building;
+using Analysis.SemanticTree;
 using EnvDTE;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -13,15 +15,11 @@ namespace Analysis.Tests
     [TestClass]
     public class AnalyserTests
     {
-        private readonly SiblingOrderTests _siblingOrderTests = new SiblingOrderTests();
-
         [TestMethod]
         public void Analyse()
         {
-            var tree = Analyser.AnalyseEnviroment((DTE)Marshal.
+            var tree = Analyser.AnalyseEnviroment((DTE) Marshal.
                 GetActiveObject("VisualStudio.DTE.14.0"));
-
-
         }
 
         [TestMethod]
