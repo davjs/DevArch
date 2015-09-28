@@ -30,6 +30,7 @@ Set the project "Standalone" to current startup project and press F5 to view a d
 * **Filters to add:**
 * Reference count filter
 * Lines of code count filter
+* Exceptions filter
 * **Patterns to find:**
 * Facade
 * Singleton
