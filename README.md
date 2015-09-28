@@ -20,7 +20,7 @@ Generated using the settings:
  - Pluralize name patterns (unused)
  - Pluralize base class patterns (LayerControl and ArchControl where merged into 'UserControls')
  - Depth: 3
- - Treat chained dependencies as linnear ones
+ - Treat chained dependencies as linnear ones ('Clients' depend on both Presentation and Analysis, but the analysis dependency is viewed as an indirectional result of being dependant on Presentation)
  - Skip single child containers (the default namespaces are not displayed inside the projects)
  - Remove tests (the whole test project is skipped)
 
@@ -36,4 +36,5 @@ Set the project "Standalone" to current startup project and press F5 to view a d
 * Facade
 * Singleton
 * Vertical layers
+* **Enable dependency order setting **
 * **Enable generation of class diagrams**
