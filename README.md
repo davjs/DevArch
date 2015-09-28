@@ -21,6 +21,7 @@ Generated using the settings:
  - Pluralize base class patterns
  - Depth: 3
  - Treat chained dependencies as linnear ones
+ - Skip single containers
 
 ###To try it out
 Right click on Clients->Standalone and press F5 to view a diagram of the current architechture.
@@ -34,4 +35,3 @@ Right click on Clients->Standalone and press F5 to view a diagram of the current
 * Singleton
 * Vertical layers
 * **Enable generation of class diagrams**
-
