@@ -3,7 +3,7 @@
 
 DevArch provides an alternative method for creating architecture diagrams.
 
-Following in the footsteps of reverse-architechting, DevArch aims to provide one button press diagram generation.
+Following the footsteps of reverse-architechting, DevArch aims to provide one button press diagram generation.
 
 However, instead of allowing the developer to later modify the generated diagrams to their liking (which can be extremely demanding), DevArch relies on smart filtering algorithms that allows the user to customize *how* the diagram is generated.
 
