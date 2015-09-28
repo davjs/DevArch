@@ -17,11 +17,12 @@ This means that anyone with the sourcecode are able to regenerate diagrams that 
 ![Alt text](/Current arch.PNG?raw=true "Optional Title")
 
 Generated using the settings:
- - Pluralize name patterns
- - Pluralize base class patterns
+ - Pluralize name patterns (unused)
+ - Pluralize base class patterns (LayerControl and ArchControl where merged into 'UserControls')
  - Depth: 3
  - Treat chained dependencies as linnear ones
- - Skip single containers
+ - Skip single child containers (the default namespaces are not displayed inside the projects)
+ - Remove tests (the whole test project is skipped)
 
 ###To try it out
 Set the project "Standalone" to current startup project and press F5 to view a diagram of the current architechture.
