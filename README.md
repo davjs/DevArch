@@ -32,6 +32,7 @@ Set the project "Standalone" to current startup project and press F5 to view a d
 * Reference count filter
 * Lines of code count filter
 * Exceptions filter
+* Max number of classes, instead of specifying depth
 * **Patterns to find:**
 * Facade
 * Singleton
