@@ -18,7 +18,7 @@
 
     <Border x:Name="Border" Width="Auto" Style="{StaticResource LayerBorderStyle}" Background="#002B36">
         <DockPanel Width="Auto" >
-            <TextBlock HorizontalAlignment="Center" Width="Auto" Padding="5" Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}"/>
+            <TextBlock x:Name="NameBlock"  HorizontalAlignment="Center" Width="Auto" Padding="5" Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}"/>
                 <Grid x:Name="ChildPanel">
                 </Grid>
             </DockPanel>

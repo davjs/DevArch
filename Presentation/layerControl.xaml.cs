@@ -63,6 +63,7 @@ namespace Presentation
             Orientation = orientation;
             Border.Background = new SolidColorBrush(color);
             if (name.Any()) return;
+            NameBlock.Visibility = Visibility.Collapsed;
             Border.BorderThickness = new Thickness(0);
             Border.Margin = new Thickness(0);
         }
