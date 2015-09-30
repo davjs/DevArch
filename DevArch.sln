@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Package", "Package\Package.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analysis", "Analysis\Analysis.csproj", "{1F8DFDED-338B-4FD8-950A-11C287455373}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analysis.Tests", "Analysis.Tests\Analysis.Tests.csproj", "{80FB344A-529D-4CE8-831B-2492D7DBEC24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Analysis.Tests\Tests.csproj", "{80FB344A-529D-4CE8-831B-2492D7DBEC24}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Standalone", "Standalone\Standalone.csproj", "{56F223C0-727A-4024-A33C-01C6DAAFCF8B}"
 EndProject

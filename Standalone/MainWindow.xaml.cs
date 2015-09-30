@@ -16,14 +16,7 @@ namespace Standalone
         {
             InitializeComponent();
             var tree = new NodeViewModel("");
-            var DAL = new NodeViewModel("Data Access");
-            var LOGIC = new NodeViewModel("Logic") { Dependencies = new List<INodeViewModel> { DAL } }; ;
-            var PRES = new NodeViewModel("Presentation") {Dependencies = new List<INodeViewModel> {LOGIC} };
-            var childs = new List<NodeViewModel>
-            {
-                DAL,LOGIC,PRES
-            };
-            tree.Childs = childs;
+
             ArchControl.GenerateDiagram(GetDte());
         }
 

@@ -39,7 +39,7 @@ namespace Package
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             //TODO: Enable reopening with different project
-            var toolWindow = new Presentation.ArchControl(Enviro);
+            var toolWindow = new Presentation.ArchView(Enviro);
             toolWindow.GenerateDiagram(Enviro);
             Content = toolWindow;
 

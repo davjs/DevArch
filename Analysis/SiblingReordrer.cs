@@ -46,7 +46,6 @@ namespace Analysis
                 oldChildList.Remove(node);
                 if (dependantOfNode.Count == 1)
                 {
-                    previousNode = node;
                     node = dependantOfNode.First();
                     newChildOrder.Add(node);
                     oldChildList.Remove(node);
