@@ -15,8 +15,6 @@ namespace Standalone
         public MainWindow()
         {
             InitializeComponent();
-            var tree = new NodeViewModel("");
-
             ArchControl.GenerateDiagram(GetDte());
         }
 

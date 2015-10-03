@@ -9,7 +9,7 @@ namespace Analysis.Tests
     public class SiblingOrderTests
     {
         [TestMethod]
-        public void SiblingsAreOrderedByDependency()
+        public void TwoSiblingsAreOrderedByDependency()
         {
             var a = new Node("A");
             var b = new Node("B");
@@ -20,6 +20,22 @@ namespace Analysis.Tests
             siblings = SiblingReordrer.OrderChildsBySiblingsDependencies(siblings).ToList();
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> { b, a }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b }));
+        }
+
+        [TestMethod]
+        public void ThreeSiblingsAreOrderedByDependency()
+        {
+            var a = new Node("A");
+            var b = new Node("B");
+            var c = new Node("C");
+            var siblings = new List<Node> { a, b,c };
+            Assert.IsTrue(siblings.SequenceEqual(new List<Node> { a, b ,c }));
+            Assert.IsFalse(siblings.SequenceEqual(new List<Node> { c, b, a }));
+            a.SiblingDependencies.Add(b);
+            b.SiblingDependencies.Add(c);
+            siblings = SiblingReordrer.OrderChildsBySiblingsDependencies(siblings).ToList();
+            Assert.IsTrue(siblings.SequenceEqual(new List<Node> {c, b, a }));
+            Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b ,c}));
         }
 
 

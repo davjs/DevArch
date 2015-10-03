@@ -36,19 +36,20 @@ namespace Analysis
         {
             var previousNode = startingNode;
             var node = startingNode;
+            newChildOrder.Add(startingNode);
+            oldChildList.Remove(startingNode);
             while (node != null)
             {
                 var dependantOfNode = oldChildList.DependantOfNode(previousNode).ToList();
                 if (!dependantOfNode.Any())
                     break;
 
-                newChildOrder.Add(node);
-                oldChildList.Remove(node);
                 if (dependantOfNode.Count == 1)
                 {
                     node = dependantOfNode.First();
                     newChildOrder.Add(node);
                     oldChildList.Remove(node);
+                    previousNode = node;
                 }
                 else
                 {
