@@ -9,7 +9,7 @@ However, instead of allowing the developer to later modify the generated diagram
 
 These customizations, or rather, *diagram definitions*, can then be checked in together with the sourcecode. 
 
-This means that anyone with the sourcecode are able to regenerate diagrams that are tailored for comunicating the original intent.
+This means that anyone with the sourcecode are able to review the architechture without losing the original architechts intent.
 
 ####DevArch makes architechting more formal, more explicit, faster and easier.
 
