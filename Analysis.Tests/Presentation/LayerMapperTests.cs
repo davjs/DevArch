@@ -1,15 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Analysis.SemanticTree;
+using EnvDTE;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
 using Presentation.ViewModels;
+using Thread = System.Threading.Thread;
 
 namespace Analysis.Tests.Presentation
 {
     [TestClass]
     public class LayerMapperTests
     {
+        private readonly PngGenerationTests _pngGenerationTests = new PngGenerationTests();
+
         [TestMethod]
         public void NodeViewModelToLayerViewModelTest()
         {

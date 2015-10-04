@@ -15,7 +15,9 @@ namespace Analysis
         {
             var build = MSBuildWorkspace.Create();
             var name = GetSolutionName(dte);
-            var solution = build.OpenSolutionAsync(name).Result;
+            
+            var solution = GetSolution(build,name);
+
             var tree = ProjectTreeBuilder.GetSolutionFoldersTree(dte);
             AnalyzeSolutionToTree(solution, ref tree);
             return tree;
@@ -117,6 +119,23 @@ namespace Analysis
                 }
             }
             return name;
+        }
+
+        private static Solution GetSolution(MSBuildWorkspace build,string name)
+        {
+            Solution solution = null;
+            while (solution == null)
+            {
+                try
+                {
+                    solution = build.OpenSolutionAsync(name).Result;
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+            return solution;
         }
     }
 
