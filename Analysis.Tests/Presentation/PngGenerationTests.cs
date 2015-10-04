@@ -19,7 +19,7 @@ namespace Analysis.Tests.Presentation
             var path = currentDir.Parent?.Parent?.Parent?.FullName + @"\Current arch.png";
             if(File.Exists(path))
                 File.Delete(path);
-            BitmapRenderer.RenderArchToBitmap(enviroment, 960, 1080, path);
+            BitmapRenderer.RenderArchToBitmap(enviroment, 960, 680, path);
             Assert.IsTrue(File.Exists(path));
         }
 
