@@ -9,7 +9,7 @@ namespace Analysis.Tests
     [TestClass]
     public class SiblingOrderTests
     {
-        [TestCategory("SiblingOrderTests")]
+        [TestCategory("SiblingOrder")]
         [TestMethod]
         public void TwoSiblingsAreOrderedByDependency()
         {
@@ -24,7 +24,7 @@ namespace Analysis.Tests
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b }));
         }
 
-        [TestCategory("SiblingOrderTests")]
+        [TestCategory("SiblingOrder")]
         [TestMethod]
         public void ThreeSiblingsAreOrderedByDependency()
         {
@@ -42,7 +42,7 @@ namespace Analysis.Tests
         }
 
 
-        [TestCategory("SiblingOrderTests")]
+        [TestCategory("SiblingOrder")]
         [TestMethod]
         public void DiscoversAnonymousLayer()
         {
@@ -61,7 +61,7 @@ namespace Analysis.Tests
             CollectionAssert.Contains(anonymousLayer.Childs.ToArray(), c);
         }
 
-        [TestCategory("SiblingOrderTests")]
+        [TestCategory("SiblingOrders")]
         [TestMethod]
         public void PutsIndependentSiblingsIntoHorizontalLayer()
         {
@@ -79,7 +79,7 @@ namespace Analysis.Tests
             CollectionAssert.Contains(newRoot.Childs.ToArray(), c);
         }
 
-        [TestCategory("SiblingOrderTests")]
+        [TestCategory("SiblingOrder")]
         [TestMethod]
         public void FindsDirectionBetweenMultiLayers()
         {
@@ -96,7 +96,7 @@ namespace Analysis.Tests
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
         }
 
-        [TestCategory("SiblingOrderTests")]
+        [TestCategory("SiblingOrder.Circular")]
         [TestMethod]
         public void FindCircularReference()
         {
@@ -110,7 +110,7 @@ namespace Analysis.Tests
             Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
         }
 
-        [TestCategory("SiblingOrderTests")]
+        [TestCategory("SiblingOrder.Circular")]
         [TestMethod]
         public void FindCircularReferenceWhenItsFirst()
         {
@@ -126,7 +126,7 @@ namespace Analysis.Tests
             Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
         }
 
-        [TestCategory("SiblingOrderTests")]
+        [TestCategory("SiblingOrder.Circular")]
         [TestMethod]
         public void FindCircularReferenceWhenItsLast()
         {

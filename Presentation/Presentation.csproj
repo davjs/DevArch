@@ -59,6 +59,7 @@
       <DependentUpon>ArchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="BitmapRenderer.cs" />
+    <Compile Include="Colors.cs" />
     <Compile Include="LayerView.xaml.cs">
       <DependentUpon>LayerView.xaml</DependentUpon>
     </Compile>

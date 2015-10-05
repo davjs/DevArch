@@ -1,4 +1,7 @@
+using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Analysis.SemanticTree;
 using EnvDTE;
 using EnvDTE80;
@@ -32,7 +35,8 @@ namespace Analysis.Building
             Tree GetSolutionFoldersTree(DTE dte)
         {
             var tree = new Tree();
-            var projects = (dte.Solution as Solution2)?.Projects;
+            var solution2 = GetSolution2(dte);
+            var projects = solution2.Projects;
             if (projects == null) return tree;
             foreach (Project project in projects)
             {
@@ -43,6 +47,24 @@ namespace Analysis.Building
                 tree.AddChild(node);
             }
             return tree;
+        }
+
+        private static Solution2 GetSolution2(DTE dte)
+        {
+            EnvDTE.Solution sol = null;
+            while (sol == null)
+            {
+                try
+                {
+                sol = dte.Solution;
+                }
+                catch (COMException)
+                {
+                    // ignored
+                }
+            }
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            return (sol as Solution2);
         }
     }
 }
