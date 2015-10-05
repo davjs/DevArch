@@ -61,7 +61,7 @@ namespace Analysis.Tests
             CollectionAssert.Contains(anonymousLayer.Childs.ToArray(), c);
         }
 
-        [TestCategory("SiblingOrders")]
+        [TestCategory("SiblingOrder")]
         [TestMethod]
         public void PutsIndependentSiblingsIntoHorizontalLayer()
         {

@@ -86,6 +86,38 @@ namespace Analysis.Tests
         }
 
         [TestMethod]
+        [TestCategory("ModelBuilder")]
+        public void FindsClassesOnDifferentLevels2()
+        {
+            using (var fakeWorkspace = new AdhocWorkspace())
+            {
+                var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
+                fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace GUI {class GuiFacade {}}}"));
+                fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace GUI {namespace Buttons { namespace Purple {class Button {}}}}}"));
+                var tree = new Tree();
+                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                Assert.IsNotNull(tree.Childs.WithName("GuiFacade"));
+                Assert.IsNotNull(tree.Childs.WithName("Button"));
+            }
+        }
+
+
+        [TestMethod]
+        [TestCategory("ModelBuilder")]
+        public void PutsNestedClassesInsideHolderClass()
+        {
+            using (var fakeWorkspace = new AdhocWorkspace())
+            {
+                var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
+                fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA { class ClassA { class ClassB {}}}" +
+                                                                                      "namespace NamespaceA { class classC {} }"));
+                var tree = new Tree();
+                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                Assert.IsTrue(tree.Childs.First().Name == "ClassB");
+            }
+        }
+
+        [TestMethod]
         public void DependenciesAreConvertedToSiblingsIfAvailible()
         {
             var root = new Node("R");
