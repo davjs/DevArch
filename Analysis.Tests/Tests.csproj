@@ -161,7 +161,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>CD "$(TargetDir)"
-"$(DevEnvDir)MSTEST.exe" /testcontainer:"$(TargetFileName)" /test:MakePng /unique</PostBuildEvent>
+"$(DevEnvDir)MSTEST.exe" /testcontainer:"$(TargetFileName)" /test:MakePng /unique 2&gt;nul 1&gt;nul
+EXIT 0</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

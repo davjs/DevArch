@@ -5,9 +5,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Analysis.Tests
 {
+
     [TestClass]
     public class SiblingOrderTests
     {
+        [TestCategory("SiblingOrderTests")]
         [TestMethod]
         public void TwoSiblingsAreOrderedByDependency()
         {
@@ -22,6 +24,7 @@ namespace Analysis.Tests
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b }));
         }
 
+        [TestCategory("SiblingOrderTests")]
         [TestMethod]
         public void ThreeSiblingsAreOrderedByDependency()
         {
@@ -39,6 +42,7 @@ namespace Analysis.Tests
         }
 
 
+        [TestCategory("SiblingOrderTests")]
         [TestMethod]
         public void DiscoversAnonymousLayer()
         {
@@ -57,6 +61,7 @@ namespace Analysis.Tests
             CollectionAssert.Contains(anonymousLayer.Childs.ToArray(), c);
         }
 
+        [TestCategory("SiblingOrderTests")]
         [TestMethod]
         public void PutsIndependentSiblingsIntoHorizontalLayer()
         {
@@ -74,6 +79,7 @@ namespace Analysis.Tests
             CollectionAssert.Contains(newRoot.Childs.ToArray(), c);
         }
 
+        [TestCategory("SiblingOrderTests")]
         [TestMethod]
         public void FindsDirectionBetweenMultiLayers()
         {
@@ -88,6 +94,54 @@ namespace Analysis.Tests
             var newList = new List<Node>();
             SiblingReordrer.RegroupSiblingNodes(a,new List<Node> { c,b,a},ref newList);
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
+        }
+
+        [TestCategory("SiblingOrderTests")]
+        [TestMethod]
+        public void FindCircularReference()
+        {
+            var a = new Node("A");
+            var b = new Node("B");
+            
+            a.SiblingDependencies.Add(b);
+            b.SiblingDependencies.Add(a);
+            
+            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a , b });
+            Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
+        }
+
+        [TestCategory("SiblingOrderTests")]
+        [TestMethod]
+        public void FindCircularReferenceWhenItsFirst()
+        {
+            var a = new Node("A");
+            var b = new Node("B");
+            var c = new Node("C");
+
+            a.SiblingDependencies.Add(b);
+            b.SiblingDependencies.Add(a);
+            c.SiblingDependencies.Add(b);
+
+            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b ,c });
+            Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
+        }
+
+        [TestCategory("SiblingOrderTests")]
+        [TestMethod]
+        public void FindCircularReferenceWhenItsLast()
+        {
+            var a = new Node("A");
+            var b = new Node("B");
+            var c = new Node("C");
+
+            a.SiblingDependencies.Add(b);
+            b.SiblingDependencies.Add(a);
+            b.SiblingDependencies.Add(c);
+            a.SiblingDependencies.Add(c);
+
+            var childList = new List<Node> { a, b, c };
+            SiblingReordrer.FindCircularReferences(ref childList);
+            Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.Last().GetType());
         }
     }
 }

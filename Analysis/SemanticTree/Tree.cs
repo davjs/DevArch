@@ -78,11 +78,18 @@ namespace Analysis.SemanticTree
 
     public class SiblingHolderNode : Node
     {
-
-        public SiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
+       public SiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
         {
             UpdateChildren(siblingNodes);
             Horizontal = true;
         }
     }
+
+    public class CircularDependencyHolderNode : SiblingHolderNode
+    {
+        public CircularDependencyHolderNode(IEnumerable<Node> siblingNodes) : base(siblingNodes)
+        {
+        }
+    }
+
 }

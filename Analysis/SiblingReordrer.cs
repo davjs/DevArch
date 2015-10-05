@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Analysis.SemanticTree;
@@ -10,21 +11,23 @@ namespace Analysis
         {
             foreach (var child in childs)
             {
-                if(child.Childs.Any())
+                if (child.Childs.Any())
                     child.UpdateChildren(OrderChildsBySiblingsDependencies(child.Childs));
             }
 
             if (!childs.SiblingDependencies().Any())
             {
-                if(childs.Any() && childs.First().Parent != null)
+                if (childs.Any() && childs.First().Parent != null)
                     childs.First().Parent.Horizontal = true;
                 return childs;
             }
-            var nodesWithoutDependency = childs.Where(c => !c.SiblingDependencies.Any()).ToList();
+
+            var oldChildList = childs.ToList();
+            FindCircularReferences(ref oldChildList);
+            var nodesWithoutDependency = oldChildList.Where(c => !c.SiblingDependencies.Any()).ToList();
+            var newChildOrder = new List<Node>();
             if (nodesWithoutDependency.Count == 0)
                 throw new LayerViolationException();
-            var oldChildList = childs.ToList();
-            var newChildOrder = new List<Node>();
             foreach (var node in nodesWithoutDependency)
             {
                 RegroupSiblingNodes(node, oldChildList, ref newChildOrder);
@@ -32,7 +35,46 @@ namespace Analysis
             return newChildOrder;
         }
 
-        public static void RegroupSiblingNodes(Node startingNode, List<Node> oldChildList,ref List<Node> newChildOrder)
+        public static void FindCircularReferences(ref List<Node> childList)
+        {
+            var circularRefs = new List<Tuple<Node, Node>>();
+            foreach (var node in childList)
+            {
+                foreach (var node2 in from node2 in childList.Where(n => n != node)
+                    where node.SiblingDependencies.Contains(node2)
+                    where node2.SiblingDependencies.Contains(node)
+                    where circularRefs.All(x => x.Item1 != node2)
+                    select node2)
+                {
+                    circularRefs.Add(new Tuple<Node, Node>(node, node2));
+                }
+            }
+
+            foreach (var circularRef in circularRefs)
+            {
+                var circularDependencyHolderNode = new CircularDependencyHolderNode(new List<Node> { circularRef.Item1, circularRef.Item2});
+                circularDependencyHolderNode.SiblingDependencies.AddRange(
+                    circularRef.Item1.SiblingDependencies.Concat(circularRef.Item2.SiblingDependencies));
+                childList.Add(circularDependencyHolderNode);
+                circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item1);
+                circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item2);
+                childList.Remove(circularRef.Item1);
+                childList.Remove(circularRef.Item2);
+                foreach (var node3 in childList.Where(n => n != circularDependencyHolderNode))
+                {
+                    var containedNode1 = node3.SiblingDependencies.Contains(circularRef.Item1);
+                    var containedNode2 = node3.SiblingDependencies.Contains(circularRef.Item2);
+                    if (containedNode1 || containedNode2)
+                        node3.SiblingDependencies.Add(circularDependencyHolderNode);
+                    if (containedNode1)
+                        node3.SiblingDependencies.Remove(circularRef.Item1);
+                    if (containedNode2)
+                        node3.SiblingDependencies.Remove(circularRef.Item2);
+                }
+            }
+        }
+
+        public static void RegroupSiblingNodes(Node startingNode, List<Node> oldChildList, ref List<Node> newChildOrder)
         {
             var previousNode = startingNode;
             var node = startingNode;
@@ -53,8 +95,8 @@ namespace Analysis
                 }
                 else
                 {
-                    if(!TryGroupSiblingsLinearly(node,dependantOfNode,ref newChildOrder))
-                    { 
+                    if (!TryGroupSiblingsLinearly(node, dependantOfNode, ref newChildOrder))
+                    {
                         newChildOrder.Add(new SiblingHolderNode(dependantOfNode));
                         oldChildList.RemoveAll(x => dependantOfNode.Contains(x));
                         var dependantOfNodes = dependantOfNode.SelectMany(oldChildList.DependantOfNode).ToList();
@@ -65,7 +107,7 @@ namespace Analysis
             }
         }
 
-        public static bool TryGroupSiblingsLinearly(Node startNode,IList<Node> nodes, ref List<Node> newChildOrder)
+        public static bool TryGroupSiblingsLinearly(Node startNode, IList<Node> nodes, ref List<Node> newChildOrder)
         {
             while (true)
             {

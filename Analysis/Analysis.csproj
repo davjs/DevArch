@@ -113,7 +113,6 @@
     <Compile Include="Building\SemanticTreeBuilder.cs" />
     <Compile Include="SemanticTree\Node.cs" />
     <Compile Include="SemanticTree\NodeExtensions.cs" />
-    <Compile Include="SemanticTree\NodeViewModel.cs" />
     <Compile Include="SiblingReordrer.cs" />
     <Compile Include="SemanticTree\Tree.cs" />
   </ItemGroup>
