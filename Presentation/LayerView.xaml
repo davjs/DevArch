@@ -16,10 +16,10 @@
         </Style>
     </UserControl.Resources>
 
-    <Border x:Name="Border" Width="Auto" Style="{StaticResource LayerBorderStyle}" Background="#002B36">
-        <DockPanel Width="Auto" >
-            <TextBlock x:Name="NameBlock"  HorizontalAlignment="Center" Width="Auto" Padding="5" Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}"/>
-                <Grid x:Name="ChildHolder">
+    <Border x:Name="Border" Height="Auto" Width="Auto" Style="{StaticResource LayerBorderStyle}" Background="#002B36">
+        <DockPanel Width="Auto" Height="Auto">
+            <TextBlock x:Name="NameBlock" Height="Auto"  HorizontalAlignment="Center" Width="Auto" Padding="5" Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}"/>
+            <Grid  Height="Auto"  x:Name="ChildHolder">
                 </Grid>
             </DockPanel>
         </Border>

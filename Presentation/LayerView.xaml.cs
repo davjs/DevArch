@@ -15,6 +15,11 @@ namespace Presentation
         private readonly int _column;
         private readonly int _row;
 
+        public LayerView()
+        {
+            InitializeComponent();
+        }
+
         public LayerView(string name, Color backgroundColor, IEnumerable<LayerView> childs, int column, int row,bool visible,int columns,int rows)
         {
             InitializeComponent();
@@ -31,7 +36,7 @@ namespace Presentation
             }
 
             for (var i = 0; i < rows; i++)
-                ChildHolder.RowDefinitions.Add(new RowDefinition());
+                ChildHolder.RowDefinitions.Add(new RowDefinition() {Height = GridLength.Auto});
 
             for (var i = 0; i < columns; i++)
                 ChildHolder.ColumnDefinitions.Add(new ColumnDefinition());

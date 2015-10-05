@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalyserTests.cs" />
+    <Compile Include="Building\SemanticTreeBuilderTests.cs" />
     <Compile Include="Presentation\LayerMapperTests.cs" />
     <Compile Include="PatternFinderTests.cs" />
     <Compile Include="Presentation\PngGenerationTests.cs" />

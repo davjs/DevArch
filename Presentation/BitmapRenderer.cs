@@ -27,8 +27,9 @@ namespace Presentation
 
             control.GenerateDiagram(enviroment);
 
-            control.Measure(new Size(width, height));
-            control.Arrange(new Rect(new Size(width, height)));
+            var availableSize = new Size(width, height);
+            control.Measure(availableSize);
+            control.Arrange(new Rect(availableSize));
 
             var bmp = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
 

@@ -31,23 +31,24 @@ namespace Analysis.Building
             return node;
         }
 
-        public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassInfo> classes)
+        /*public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassInfo> classes)
         {
-            var groupedByLevel = classes.ToLookup(x => GetNameSpaceDepth(x.NameSpace), info => info);
+            var groupedByDepth = classes.ToLookup(x => GetDepth(x.Symbol), info => info);
             var topLevel = new List<Node>();
             var previousLevel = topLevel;
-            foreach (var classesInLevel in groupedByLevel.OrderBy(x => x.Key))
+            foreach (var classesInLevel in groupedByDepth.OrderBy(x => x.Key))
             {
                 var currentLevel = new List<Node>();
                 foreach (var @class in classesInLevel)
                 {
-                    var nspace = currentLevel.Find(x => x.Name == @class.NameSpace.Name);
+                    var nspace = currentLevel.Find(x => Equals(x.Symbol, @class.Symbol.ContainingSymbol))
+                        ;//?? previousLevel.Find(x => Equals(x.Symbol, @class.Symbol.ContainingSymbol));
                     if (nspace == null)
                     {
-                        nspace = new Node(@class.NameSpace);
+                        nspace = new Node(@class.Symbol.ContainingSymbol);
                         currentLevel.Add(nspace);
-                        var containedNamespace = @class.NameSpace.ContainingNamespace;
-                        if (containedNamespace != null)
+                        var containedNamespace = nspace.Symbol.ContainingSymbol;
+                        if (containedNamespace is INamespaceOrTypeSymbol)
                         {
                             var linkedNameSpace = previousLevel.Find(x => Equals(x.Symbol, containedNamespace));
                             if (linkedNameSpace == null)
@@ -67,15 +68,50 @@ namespace Analysis.Building
                 previousLevel = currentLevel;
             }
             return topLevel;
+        }*/
+
+        public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassInfo> classes)
+        {
+            var all = new List<Node>();
+            var classList = classes.ToList();
+            for (var i = 0; i < classList.Count; i++)
+            {
+                var @class = classList[i];
+                FindParent(ref all, ref classList, @class.Symbol);
+            }
+            return all.Where(x => x.Parent == null);
         }
 
-        public static int GetNameSpaceDepth(INamespaceSymbol namespaceSymbol)
+        private static Node FindParent(ref List<Node> all, ref List<ClassInfo> classList, ISymbol symbol)
         {
-            if (namespaceSymbol.IsGlobalNamespace)
-                return 0;
-            if (namespaceSymbol.ContainingNamespace != null)
-                return 1 + GetNameSpaceDepth(namespaceSymbol.ContainingNamespace);
-            return namespaceSymbol.Name.Count(x=> x == '.');
+            var node = all.Find(x => Equals(x.Symbol, symbol));
+            if (node != null)
+                return node;
+            var classInfo = classList.FirstOrDefault(x => Equals(x.Symbol, symbol));
+            if (classInfo != null)
+            {
+                node = new Node(classInfo);
+            }
+            else
+            {
+                node = new Node(symbol);
+            }
+            all.Add(node);
+            if (symbol.ContainingSymbol is INamespaceOrTypeSymbol)
+            {
+                var parent = FindParent(ref all, ref classList, symbol.ContainingSymbol);
+                parent.AddChild(node);
+                return node;
+            }
+
+            return node;
+        }
+
+        public static int GetDepth(ISymbol symbol)
+        {
+            if (symbol.ContainingSymbol is INamespaceOrTypeSymbol)
+                return 1 + GetDepth(symbol.ContainingSymbol);
+            return symbol.Name.Count(x=> x == '.');
         }
     }
 }
