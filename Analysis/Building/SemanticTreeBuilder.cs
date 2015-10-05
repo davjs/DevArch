@@ -31,87 +31,33 @@ namespace Analysis.Building
             return node;
         }
 
-        /*public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassInfo> classes)
-        {
-            var groupedByDepth = classes.ToLookup(x => GetDepth(x.Symbol), info => info);
-            var topLevel = new List<Node>();
-            var previousLevel = topLevel;
-            foreach (var classesInLevel in groupedByDepth.OrderBy(x => x.Key))
-            {
-                var currentLevel = new List<Node>();
-                foreach (var @class in classesInLevel)
-                {
-                    var nspace = currentLevel.Find(x => Equals(x.Symbol, @class.Symbol.ContainingSymbol))
-                        ;//?? previousLevel.Find(x => Equals(x.Symbol, @class.Symbol.ContainingSymbol));
-                    if (nspace == null)
-                    {
-                        nspace = new Node(@class.Symbol.ContainingSymbol);
-                        currentLevel.Add(nspace);
-                        var containedNamespace = nspace.Symbol.ContainingSymbol;
-                        if (containedNamespace is INamespaceOrTypeSymbol)
-                        {
-                            var linkedNameSpace = previousLevel.Find(x => Equals(x.Symbol, containedNamespace));
-                            if (linkedNameSpace == null)
-                            {
-                                linkedNameSpace = new Node(containedNamespace);
-                                previousLevel.Add(linkedNameSpace);
-                            }
-                            linkedNameSpace.AddChild(nspace);
-                        }
-                        else
-                        {
-                            topLevel.Add(nspace);
-                        }
-                    }
-                    nspace.AddChild(new Node(@class));
-                }
-                previousLevel = currentLevel;
-            }
-            return topLevel;
-        }*/
-
         public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassInfo> classes)
         {
             var all = new List<Node>();
             var classList = classes.ToList();
-            for (var i = 0; i < classList.Count; i++)
+            foreach (var @class in classList)
             {
-                var @class = classList[i];
-                FindParent(ref all, ref classList, @class.Symbol);
+                FindParent(ref all, classList, @class.Symbol);
             }
             return all.Where(x => x.Parent == null);
         }
 
-        private static Node FindParent(ref List<Node> all, ref List<ClassInfo> classList, ISymbol symbol)
+        private static Node FindParent(ref List<Node> all, List<ClassInfo> classList, ISymbol symbol)
         {
             var node = all.Find(x => Equals(x.Symbol, symbol));
             if (node != null)
                 return node;
             var classInfo = classList.FirstOrDefault(x => Equals(x.Symbol, symbol));
-            if (classInfo != null)
-            {
-                node = new Node(classInfo);
-            }
-            else
-            {
-                node = new Node(symbol);
-            }
+            node = classInfo != null ? new Node(classInfo) : new Node(symbol);
             all.Add(node);
             if (symbol.ContainingSymbol is INamespaceOrTypeSymbol)
             {
-                var parent = FindParent(ref all, ref classList, symbol.ContainingSymbol);
+                var parent = FindParent(ref all, classList, symbol.ContainingSymbol);
                 parent.AddChild(node);
                 return node;
             }
 
             return node;
-        }
-
-        public static int GetDepth(ISymbol symbol)
-        {
-            if (symbol.ContainingSymbol is INamespaceOrTypeSymbol)
-                return 1 + GetDepth(symbol.ContainingSymbol);
-            return symbol.Name.Count(x=> x == '.');
         }
     }
 }
