@@ -4,6 +4,7 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -54,22 +55,28 @@ namespace Presentation
 
         public LayerView RenderNode(LayerViewModel layerModel, int depth, Color color)
         {
-            var childs =
-                //depth > 0 ? 
-                layerModel.Children.Select(n => RenderNode(n, depth, color))
-                //    : new List<LayerView>()
-                ;
-            var layerView = new LayerView(layerModel.Name, color, childs, layerModel.Column, layerModel.Row,
+            depth -= 1;
+            var oldColor = color;
+            var childs = new List<LayerView>();
+            foreach (var child in layerModel.Children)
+            {
+                //color.R += (byte)(100 - depth * 10);
+                childs.Add(RenderNode(child, depth, color));
+            }
+
+            //var childs =
+            //    layerModel.Children.Select(n => RenderNode(n, depth, color));
+            var layerView = new LayerView(layerModel.Name, oldColor, childs, layerModel.Column, layerModel.Row,
                 !layerModel.Anonymous,layerModel.Columns,layerModel.Rows);
             return layerView;
         }
 
         public void RenderModel(ArchViewModel model)
         {
-            var c = Color.FromRgb(0, 43, 54);
+            var colors = new Stack<Color>(Colors.GetNColors(model.Layers.Count()));
             foreach (var layer in model.Layers)
             {
-                MasterPanel.Children.Add(RenderNode(layer, 10, c));
+                MasterPanel.Children.Add(RenderNode(layer, 10, colors.Pop()));
             }
         }
     }

@@ -38,8 +38,20 @@ namespace Presentation
 
             DataContext = this;
 
+
             Border.Background = new SolidColorBrush(backgroundColor);
+            Border.BorderBrush = new SolidColorBrush(CalculateBorderColor(backgroundColor));
             if (!visible) Hide();
+        }
+
+        //TODO: Move to model?
+        private static Color CalculateBorderColor(Color backgroundColor)
+        {
+            var hsl = Colors.Rgbhsl.RGB_to_HSL(backgroundColor);
+            hsl.S *= 0.9;
+            hsl.L *= 1.1;
+            var borderColor = Colors.Rgbhsl.HSL_to_RGB(hsl);
+            return borderColor;
         }
 
         private void Hide()
