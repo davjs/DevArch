@@ -26,7 +26,7 @@ namespace Analysis.SemanticTree
         public readonly ISymbol Symbol;
         public IEnumerable<ReferencedSymbol> References = new List<ReferencedSymbol>();
         public readonly List<Node> Dependencies = new List<Node>();
-        public readonly List<Node> SiblingDependencies = new List<Node>();
+        public readonly HashSet<Node> SiblingDependencies = new HashSet<Node>();
         public Tree Parent;
         public IEnumerable<TypeSyntax> BaseClasses = new List<TypeSyntax>();
 

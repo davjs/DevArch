@@ -28,48 +28,30 @@ namespace Analysis
             var newChildOrder = new List<Node>();
             if (nodesWithoutDependency.Count == 0)
                 throw new LayerViolationException();
-            foreach (var node in nodesWithoutDependency)
-            {
-                RegroupSiblingNodes(node, oldChildList, ref newChildOrder);
-            }
+                RegroupSiblingNodes(new List<Node>(), oldChildList, ref newChildOrder);
             return newChildOrder;
         }
 
-        public static void FindCircularReferences(ref List<Node> childList)
+        public static void RegroupSiblingNodes(List<Node> nodesWithoutDependency, List<Node> oldChildList, ref List<Node> newChildOrder)
         {
-            var circularRefs = new List<Tuple<Node, Node>>();
-            foreach (var node in childList)
+            while (oldChildList.Any())
             {
-                foreach (var node2 in from node2 in childList.Where(n => n != node)
-                    where node.SiblingDependencies.Contains(node2)
-                    where node2.SiblingDependencies.Contains(node)
-                    where circularRefs.All(x => x.Item1 != node2)
-                    select node2)
+                foreach (var node1 in nodesWithoutDependency)
                 {
-                    circularRefs.Add(new Tuple<Node, Node>(node, node2));
+                    foreach (var node in oldChildList)
+                    {
+                        node.SiblingDependencies.Remove(node1);
+                    }
                 }
-            }
-
-            foreach (var circularRef in circularRefs)
-            {
-                var circularDependencyHolderNode = new CircularDependencyHolderNode(new List<Node> { circularRef.Item1, circularRef.Item2});
-                circularDependencyHolderNode.SiblingDependencies.AddRange(
-                    circularRef.Item1.SiblingDependencies.Concat(circularRef.Item2.SiblingDependencies));
-                childList.Add(circularDependencyHolderNode);
-                circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item1);
-                circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item2);
-                childList.Remove(circularRef.Item1);
-                childList.Remove(circularRef.Item2);
-                foreach (var node3 in childList.Where(n => n != circularDependencyHolderNode))
+                nodesWithoutDependency = oldChildList.Where(x => !x.SiblingDependencies.Any()).ToList();
+                if(!nodesWithoutDependency.Any())
+                    throw new LayerViolationException();
+                newChildOrder.Add(nodesWithoutDependency.Count == 1
+                    ? nodesWithoutDependency.First()
+                    : new SiblingHolderNode(nodesWithoutDependency));
+                foreach (var node in nodesWithoutDependency)
                 {
-                    var containedNode1 = node3.SiblingDependencies.Contains(circularRef.Item1);
-                    var containedNode2 = node3.SiblingDependencies.Contains(circularRef.Item2);
-                    if (containedNode1 || containedNode2)
-                        node3.SiblingDependencies.Add(circularDependencyHolderNode);
-                    if (containedNode1)
-                        node3.SiblingDependencies.Remove(circularRef.Item1);
-                    if (containedNode2)
-                        node3.SiblingDependencies.Remove(circularRef.Item2);
+                    oldChildList.Remove(node);
                 }
             }
         }
@@ -103,6 +85,45 @@ namespace Analysis
                         if (!dependantOfNodes.Any())
                             node = null;
                     }
+                }
+            }
+        }
+
+        public static void FindCircularReferences(ref List<Node> childList)
+        {
+            var circularRefs = new List<Tuple<Node, Node>>();
+            foreach (var node in childList)
+            {
+                foreach (var node2 in from node2 in childList.Where(n => n != node)
+                    where node.SiblingDependencies.Contains(node2)
+                    where node2.SiblingDependencies.Contains(node)
+                    where circularRefs.All(x => x.Item1 != node2)
+                    select node2)
+                {
+                    circularRefs.Add(new Tuple<Node, Node>(node, node2));
+                }
+            }
+
+            foreach (var circularRef in circularRefs)
+            {
+                var circularDependencyHolderNode = new CircularDependencyHolderNode(new List<Node> { circularRef.Item1, circularRef.Item2});
+                circularDependencyHolderNode.SiblingDependencies.UnionWith(
+                    circularRef.Item1.SiblingDependencies.Union(circularRef.Item2.SiblingDependencies));
+                childList.Add(circularDependencyHolderNode);
+                circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item1);
+                circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item2);
+                childList.Remove(circularRef.Item1);
+                childList.Remove(circularRef.Item2);
+                foreach (var node3 in childList.Where(n => n != circularDependencyHolderNode))
+                {
+                    var containedNode1 = node3.SiblingDependencies.Contains(circularRef.Item1);
+                    var containedNode2 = node3.SiblingDependencies.Contains(circularRef.Item2);
+                    if (containedNode1 || containedNode2)
+                        node3.SiblingDependencies.Add(circularDependencyHolderNode);
+                    if (containedNode1)
+                        node3.SiblingDependencies.Remove(circularRef.Item1);
+                    if (containedNode2)
+                        node3.SiblingDependencies.Remove(circularRef.Item2);
                 }
             }
         }

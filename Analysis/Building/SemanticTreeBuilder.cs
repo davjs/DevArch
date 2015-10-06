@@ -50,7 +50,9 @@ namespace Analysis.Building
             var classInfo = classList.FirstOrDefault(x => Equals(x.Symbol, symbol));
             node = classInfo != null ? new Node(classInfo) : new Node(symbol);
             all.Add(node);
-            if (symbol.ContainingSymbol is INamespaceOrTypeSymbol)
+            if (symbol.ContainingSymbol is INamespaceSymbol 
+                && !((INamespaceSymbol) symbol.ContainingSymbol).IsGlobalNamespace 
+                || symbol.ContainingSymbol is INamedTypeSymbol)
             {
                 var parent = FindParent(ref all, classList, symbol.ContainingSymbol);
                 parent.AddChild(node);

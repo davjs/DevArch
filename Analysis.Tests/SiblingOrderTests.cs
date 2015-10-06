@@ -55,10 +55,57 @@ namespace Analysis.Tests
 
             var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> {a, b, c});
 
-            var anonymousLayer = newSiblings.OfType<SiblingHolderNode>().FirstOrDefault();
+            var anonymousLayer = newSiblings.OfType<SiblingHolderNode>().LastOrDefault();
             Assert.IsNotNull(anonymousLayer);
             CollectionAssert.Contains(anonymousLayer.Childs.ToArray(),b);
             CollectionAssert.Contains(anonymousLayer.Childs.ToArray(), c);
+        }
+
+        /*[TestCategory("SiblingOrder")]
+        [TestMethod]
+        public void DiscoversAnonymousVerticalLayers()
+        {
+            var a = new Node("A");
+            var b = new Node("B");
+            
+            var one = new Node("1");
+            var two = new Node("2");
+
+            b.SiblingDependencies.Add(a);
+            
+            two.SiblingDependencies.Add(one);
+            
+            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b,one,two});
+
+            var anonymousHorizontalLayer = newSiblings.FirstOrDefault();
+            Assert.IsNotNull(anonymousHorizontalLayer);
+            Assert.AreEqual(typeof(SiblingHolderNode),anonymousHorizontalLayer.GetType());
+            Assert.IsTrue(anonymousHorizontalLayer.Childs.First() is VerticalSiblingHolderNode);
+            Assert.IsTrue(anonymousHorizontalLayer.Childs.Last() is VerticalSiblingHolderNode);
+        }*/
+
+
+        [TestCategory("SiblingOrder")]
+        [TestMethod]
+        public void PutsIndependentNodesOnTop()
+        {
+            var a = new Node("A");
+            var b = new Node("B");
+            
+            var one = new Node("1");
+            var two = new Node("2");
+
+
+            one.SiblingDependencies.Add(a);
+            two.SiblingDependencies.Add(b);
+
+            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b, one, two });
+
+            var anonymousHorizontalLayer = newSiblings.FirstOrDefault();
+            Assert.IsNotNull(anonymousHorizontalLayer);
+            Assert.AreEqual(typeof(SiblingHolderNode), anonymousHorizontalLayer.GetType());
+            Assert.AreEqual(anonymousHorizontalLayer.Childs.First(),a);
+            Assert.AreEqual(anonymousHorizontalLayer.Childs.Last(), b);
         }
 
         [TestCategory("SiblingOrder")]
@@ -92,7 +139,7 @@ namespace Analysis.Tests
             b.SiblingDependencies.Add(a);
 
             var newList = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(a,new List<Node> { c,b,a},ref newList);
+            SiblingReordrer.RegroupSiblingNodes(new List<Node>(), new List<Node> { c,b,a},ref newList);
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
         }
 

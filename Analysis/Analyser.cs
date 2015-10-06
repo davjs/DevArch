@@ -29,8 +29,8 @@ namespace Analysis
             ClassTreeBuilder.AddClassesToTree(solution, tree);
             tree = SemanticTreeBuilder.BuildDependenciesFromReferences(tree);
             tree = RemoveTests(tree);
-            tree = RemoveSinglePaths(tree);
             tree.UpdateChildren(tree.Childs.Select(FindSiblingDependencies).ToList());
+            tree = RemoveSinglePaths(tree);
             tree.UpdateChildren(SiblingReordrer.OrderChildsBySiblingsDependencies(tree.Childs).ToList());
             tree = FindSiblingPatterns(tree);
         }
@@ -100,7 +100,24 @@ namespace Analysis
         public static Tree RemoveSinglePaths(Tree tree)
         {
             tree.UpdateChildren(tree.Childs.Select(RemoveSinglePaths).Cast<Node>().ToList());
-            return tree.Childs.Count == 1 ? tree.Childs.First() : tree;
+            if (tree.Childs.Count == 1)
+            {
+                var node = tree as Node;
+                var newTree = tree.Childs.First();
+                if (node != null)
+                {
+                    newTree.SiblingDependencies.UnionWith(node.SiblingDependencies);
+                    var dependsOnNode = node.Parent.Childs.Where(x => x.SiblingDependencies.Contains(tree));
+                    foreach (var dependant in dependsOnNode)
+                    {
+                        dependant.SiblingDependencies.Remove(node);
+                        dependant.SiblingDependencies.Add(newTree);
+                    }
+                }
+                return newTree;
+            }
+            return tree;
+            
         }
 
         private static string GetSolutionName(_DTE dte2)

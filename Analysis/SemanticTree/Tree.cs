@@ -9,7 +9,7 @@ namespace Analysis.SemanticTree
 {
     public class Tree : ITreeViewModel
     {
-        private List<Node> ChildsList { get; } = new List<Node>();
+        public List<Node> ChildsList { get; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;
         IEnumerable<INodeViewModel> ITreeViewModel.Childs => ChildsList;
         public bool Horizontal { get; set; }
@@ -84,6 +84,16 @@ namespace Analysis.SemanticTree
             Horizontal = true;
         }
     }
+
+    public class VerticalSiblingHolderNode : Node
+    {
+        public VerticalSiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
+        {
+            UpdateChildren(siblingNodes);
+            Horizontal = false;
+        }
+    }
+
 
     public class CircularDependencyHolderNode : SiblingHolderNode
     {
