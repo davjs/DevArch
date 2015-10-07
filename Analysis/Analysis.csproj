@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyser.cs" />
+    <Compile Include="BuilderSettings.cs" />
     <Compile Include="Building\ProjectTreeBuilder.cs" />
     <Compile Include="ClassInfo.cs" />
     <Compile Include="Building\ClassTreeBuilder.cs" />

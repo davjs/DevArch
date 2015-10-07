@@ -62,7 +62,7 @@ namespace Analysis.Tests
                 fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace NamespaceAA {namespace NamespaceAAA {class ClassA {}}}}"));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace NamespaceAB {namespace NamespaceABB {class ClassB {}}}}"));
                 var tree = new Tree();
-                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree,BuilderSettings.Default);
                 tree = Analyser.RemoveSinglePaths(tree);
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "ClassA"));
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "ClassB"));
@@ -79,7 +79,7 @@ namespace Analysis.Tests
                 fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace GUI {class GuiFacade {}}}"));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace GUI {namespace Buttons {class Button {}}}}"));
                 var tree = new Tree();
-                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution,ref tree);
+                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution,ref tree, BuilderSettings.Default);
                 Assert.IsNotNull(tree.Childs.WithName("GuiFacade"));
                 Assert.IsNotNull(tree.Childs.WithName("Button"));
             }
@@ -95,7 +95,7 @@ namespace Analysis.Tests
                 fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace GUI {class GuiFacade {}}}"));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace GUI {namespace Buttons { namespace Purple {class Button {}}}}}"));
                 var tree = new Tree();
-                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree, BuilderSettings.Default);
                 Assert.IsNotNull(tree.Childs.WithName("GuiFacade"));
                 Assert.IsNotNull(tree.Childs.WithName("Button"));
             }
@@ -112,7 +112,7 @@ namespace Analysis.Tests
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA { class ClassA { class ClassB {}}}" +
                                                                                       "namespace NamespaceA { class classC {} }"));
                 var tree = new Tree();
-                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree, BuilderSettings.Default);
                 Assert.IsTrue(tree.Childs.First().Name == "ClassB");
             }
         }

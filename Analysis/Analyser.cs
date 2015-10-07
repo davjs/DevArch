@@ -11,7 +11,7 @@ namespace Analysis
 {
     public static class Analyser
     {
-        public static Tree AnalyseEnviroment(DTE dte)
+        public static Tree AnalyseEnviroment(DTE dte,BuilderSettings settings = null)
         {
             var build = MSBuildWorkspace.Create();
             var name = GetSolutionName(dte);
@@ -19,14 +19,22 @@ namespace Analysis
             var solution = GetSolution(build,name);
 
             var tree = ProjectTreeBuilder.GetSolutionFoldersTree(dte);
-            AnalyzeSolutionToTree(solution, ref tree);
+            settings = settings ?? BuilderSettings.Default;
+            AnalyzeSolutionToTree(solution, ref tree, settings);
             return tree;
         }
 
-        public static void AnalyzeSolutionToTree(Solution solution, ref Tree tree)
+        public static void AnalyzeSolutionToTree(Solution solution, ref Tree tree, BuilderSettings settings)
         {
             ProjectTreeBuilder.AddProjectsToTree(solution, ref tree);
             ClassTreeBuilder.AddClassesToTree(solution, tree);
+            if (settings.Scope != null)
+            {
+                var scope = tree.DescendantNodes().WithName(settings.Scope);
+                if (scope != null)
+                    tree = scope;
+            }
+
             tree = SemanticTreeBuilder.BuildDependenciesFromReferences(tree);
             tree = RemoveTests(tree);
             tree.UpdateChildren(tree.Childs.Select(FindSiblingDependencies).ToList());

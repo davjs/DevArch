@@ -25,7 +25,7 @@ namespace Analysis.Tests
                 ));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("class Button {public void Bar(){}}"));
                 var tree = new Tree();
-                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree, BuilderSettings.Default);
                 var compile = project.GetCompilationAsync().Result;
                 var diagnostics = compile.GetParseDiagnostics();
                 Assert.IsTrue(!diagnostics.Any());
@@ -51,7 +51,7 @@ namespace Analysis.Tests
                 ));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("class Button {public void Bar(){}}"));
                 var tree = new Tree();
-                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree, BuilderSettings.Default);
                 var button = tree.Childs.FirstOrDefault(x => x.Name == "Button");
                 var guiFacade = tree.Childs.FirstOrDefault(x => x.Name == "GuiFacade");
                 Assert.IsNotNull(button);

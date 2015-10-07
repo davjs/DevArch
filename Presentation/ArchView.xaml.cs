@@ -44,12 +44,12 @@ namespace Presentation
         /// <param name="e">The event args.</param>
         private void GenerateDiagram(object sender, RoutedEventArgs e)
         {
-            GenerateDiagram(_enviroment);
+            GenerateDiagram(_enviroment,BuilderSettings.Default);
         }
 
-        public void GenerateDiagram(DTE enviroment)
+        public void GenerateDiagram(DTE enviroment,BuilderSettings settings)
         {
-            var model = Analyser.AnalyseEnviroment(enviroment);
+            var model = Analyser.AnalyseEnviroment(enviroment,settings);
             RenderModel(LayerMapper.TreeModelToArchViewModel(model));
         }
 
@@ -60,12 +60,9 @@ namespace Presentation
             var childs = new List<LayerView>();
             foreach (var child in layerModel.Children)
             {
-                //color.R += (byte)(100 - depth * 10);
                 childs.Add(RenderNode(child, depth, color));
             }
-
-            //var childs =
-            //    layerModel.Children.Select(n => RenderNode(n, depth, color));
+            
             var layerView = new LayerView(layerModel.Name, oldColor, childs, layerModel.Column, layerModel.Row,
                 !layerModel.Anonymous,layerModel.Columns,layerModel.Rows);
             return layerView;
