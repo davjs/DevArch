@@ -59,6 +59,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DiagonalSign.snk" />
+    <Content Include="ItemTemplates\Model Definition.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="Key.snk" />
     <None Include="key2.pfx" />
     <None Include="packages.config" />
@@ -252,6 +256,13 @@
     <ProjectReference Include="..\Presentation\Presentation.csproj">
       <Project>{1209b622-4bab-413a-a6a0-4ee05c8b2f02}</Project>
       <Name>Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="DevArchProject\DevArchProject\DevArchProject.ProjectTemplate\DevArchProject.ProjectTemplate.csproj">
+      <Project>{e7caf7eb-980d-487d-8801-c6f7f4130b94}</Project>
+      <Name>DevArchProject.ProjectTemplate</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     <ProjectReference Include="DevArchProject\DevArchProject\DevArchProject.ProjectType\DevArchProject.ProjectType.csproj">
       <Project>{5E197B51-FE5B-452F-A3E9-27D0E95563FB}</Project>
