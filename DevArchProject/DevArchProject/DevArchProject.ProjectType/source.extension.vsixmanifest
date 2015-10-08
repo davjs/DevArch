@@ -16,5 +16,6 @@
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="DevArchProject.ProjectType" Path="|DevArchProject.ProjectType|"/>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="DevArchProject.ProjectType" Path="|DevArchProject.ProjectType;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="DevArchProject.ProjectTemplate" d:TargetPath="|DevArchProject.ProjectTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="File" Path="ItemTemplates" d:TargetPath="ItemTemplates\Model Definition.zip" />
   </Assets>
 </PackageManifest>
