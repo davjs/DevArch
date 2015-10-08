@@ -7,6 +7,7 @@
 using System;
 using System.Composition;
 using System.Runtime.InteropServices;
+using Analysis;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 
@@ -40,7 +41,7 @@ namespace Package
             // the object returned by the Content property.
             //TODO: Enable reopening with different project
             var toolWindow = new Presentation.ArchView(Enviro);
-            toolWindow.GenerateDiagram(Enviro);
+            toolWindow.GenerateDiagram(Enviro, BuilderSettings.Default);
             Content = toolWindow;
 
         }

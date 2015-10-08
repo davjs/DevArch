@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Diagonal2.Company.30931fb3-a000-4ad2-94aa-ce8a95207eae" Version="0.02" Language="en-US" Publisher="David Jensen" />
+    <Identity Id="Diagonal2.Company.30931fb3-a000-4ad2-94aa-ce8a95207eae" Version="0.03" Language="en-US" Publisher="David Jensen" />
     <DisplayName>DevArch</DisplayName>
-    <Description xml:space="preserve">Architechting for lazy</Description>
+    <Description xml:space="preserve">Architechting for lazy folks</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
@@ -14,5 +14,6 @@
   </Dependencies>
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="DevArchProject.ProjectType" Path="|DevArchProject.ProjectType;PkgdefProjectOutputGroup|" />
   </Assets>
 </PackageManifest>

@@ -15,7 +15,7 @@ namespace Standalone
         public MainWindow()
         {
             InitializeComponent();
-            ArchControl.GenerateDiagram(GetDte());
+            ArchControl.GenerateDiagram(GetDte(), BuilderSettings.Default);
         }
 
 
