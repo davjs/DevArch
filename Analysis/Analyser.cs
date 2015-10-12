@@ -33,6 +33,7 @@ namespace Analysis
             tree = RemoveSinglePaths(tree);
             tree.UpdateChildren(SiblingReordrer.OrderChildsBySiblingsDependencies(tree.Childs).ToList());
             tree = FindSiblingPatterns(tree);
+            tree = RemoveSinglePaths(tree);
         }
 
         private static Tree FindSiblingPatterns(Tree tree)
