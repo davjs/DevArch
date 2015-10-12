@@ -1,13 +1,12 @@
-using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Analysis.SemanticTree;
 using EnvDTE;
 using EnvDTE80;
+using Logic.Analysis.SemanticTree;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
-namespace Analysis.Building
+namespace Logic.Analysis.Building
 {
     public static class ProjectTreeBuilder
     {
@@ -31,40 +30,37 @@ namespace Analysis.Building
             }
         }
 
+        public static void AddProjectToTree(Solution solution, ref Tree tree, string name)
+        {
+            var project = solution.Projects.First(p => p.Name == name);
+            tree.AddChild(new ProjectNode(project));
+        }
+
         public static
-            Tree GetSolutionFoldersTree(DTE dte)
+            Tree AddSolutionFoldersToTree(Projects projects)
         {
             var tree = new Tree();
-            var solution2 = GetSolution2(dte);
-            var projects = solution2.Projects;
             if (projects == null) return tree;
             foreach (Project project in projects)
             {
                 if (project?.Kind != ProjectKinds.vsProjectKindSolutionFolder) continue;
                 var node = new Node(project.Name);
-                var subProjects = project.ProjectItems.Cast<ProjectItem>().Select(p => new ProjectNode(p));
+                var items = project.ProjectItems.Cast<ProjectItem>();
+
+                var projectNodes = new List<ProjectNode>();
+                foreach (var item in items)
+                {
+                    Node itemNode = null;
+                    if (item?.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                    {
+                        itemNode = new Node(item.Name);
+                    }
+                }
+                var subProjects = items.Select(p => new ProjectNode(p));
                 node.AddChilds(subProjects);
                 tree.AddChild(node);
             }
             return tree;
-        }
-
-        private static Solution2 GetSolution2(DTE dte)
-        {
-            EnvDTE.Solution sol = null;
-            while (sol == null)
-            {
-                try
-                {
-                sol = dte.Solution;
-                }
-                catch (COMException)
-                {
-                    // ignored
-                }
-            }
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            return (sol as Solution2);
         }
     }
 }

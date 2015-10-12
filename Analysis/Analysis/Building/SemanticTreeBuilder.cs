@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Analysis.SemanticTree;
+using Logic.Analysis.SemanticTree;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.FindSymbols;
 
-namespace Analysis.Building
+namespace Logic.Analysis.Building
 {
     static public class SemanticTreeBuilder
     {

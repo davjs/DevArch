@@ -148,9 +148,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Analysis\Analysis.csproj">
+    <ProjectReference Include="..\Analysis\Logic.csproj">
       <Project>{1F8DFDED-338B-4FD8-950A-11C287455373}</Project>
-      <Name>Analysis</Name>
+      <Name>Logic</Name>
     </ProjectReference>
     <ProjectReference Include="..\Presentation\Presentation.csproj">
       <Project>{1209B622-4BAB-413A-A6A0-4EE05C8B2F02}</Project>

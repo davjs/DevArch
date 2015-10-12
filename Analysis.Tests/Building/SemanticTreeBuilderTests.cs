@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Analysis.Building;
-using Analysis.SemanticTree;
+using Logic.Analysis.Building;
+using Logic.Analysis.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

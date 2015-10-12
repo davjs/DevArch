@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:presentation="clr-namespace:Presentation"
              mc:Ignorable="d"
-             Name="MyToolWindow">
+             Name="MyToolWindow" d:DataContext="{d:DesignInstance presentation:ArchView }">
     <StackPanel Orientation="Vertical" Height="Auto"  Name="MasterPanel" Margin="10,0" >
-        <TextBlock Margin="10" HorizontalAlignment="Center" Foreground="#839496">DevArch</TextBlock>
     </StackPanel>
 </UserControl>

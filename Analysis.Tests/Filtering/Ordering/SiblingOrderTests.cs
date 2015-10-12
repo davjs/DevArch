@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Analysis.SemanticTree;
+using Logic.Analysis;
+using Logic.Analysis.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Analysis.Tests
+namespace Analysis.Tests.Filtering.Ordering
 {
 
     [TestClass]
@@ -141,54 +142,6 @@ namespace Analysis.Tests
             var newList = new List<Node>();
             SiblingReordrer.RegroupSiblingNodes(new List<Node>(), new List<Node> { c,b,a},ref newList);
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
-        }
-
-        [TestCategory("SiblingOrder.Circular")]
-        [TestMethod]
-        public void FindCircularReference()
-        {
-            var a = new Node("A");
-            var b = new Node("B");
-            
-            a.SiblingDependencies.Add(b);
-            b.SiblingDependencies.Add(a);
-            
-            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a , b });
-            Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
-        }
-
-        [TestCategory("SiblingOrder.Circular")]
-        [TestMethod]
-        public void FindCircularReferenceWhenItsFirst()
-        {
-            var a = new Node("A");
-            var b = new Node("B");
-            var c = new Node("C");
-
-            a.SiblingDependencies.Add(b);
-            b.SiblingDependencies.Add(a);
-            c.SiblingDependencies.Add(b);
-
-            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b ,c });
-            Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
-        }
-
-        [TestCategory("SiblingOrder.Circular")]
-        [TestMethod]
-        public void FindCircularReferenceWhenItsLast()
-        {
-            var a = new Node("A");
-            var b = new Node("B");
-            var c = new Node("C");
-
-            a.SiblingDependencies.Add(b);
-            b.SiblingDependencies.Add(a);
-            b.SiblingDependencies.Add(c);
-            a.SiblingDependencies.Add(c);
-
-            var childList = new List<Node> { a, b, c };
-            SiblingReordrer.FindCircularReferences(ref childList);
-            Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.Last().GetType());
         }
     }
 }

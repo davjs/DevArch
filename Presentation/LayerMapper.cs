@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Analysis.SemanticTree;
+using Logic.Analysis.SemanticTree;
 using Presentation.ViewModels;
 
 namespace Presentation
 {
     public static class LayerMapper
     {
-        public static ArchViewModel TreeModelToArchViewModel(ITreeViewModel model)
+        public static ArchViewModel TreeModelToArchViewModel(Tree model)
         {
             return new ArchViewModel
             {
@@ -15,7 +15,7 @@ namespace Presentation
             };
         }
 
-        public static LayerViewModel NodeViewModelToLayerViewModel(INodeViewModel node)
+        public static LayerViewModel NodeViewModelToLayerViewModel(Node node)
         {
             var children = new List<LayerViewModel>();
 

@@ -3,36 +3,43 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Analysis;
-using EnvDTE;
+using Logic;
+using Logic.Analysis.SemanticTree;
 using Thread = System.Threading.Thread;
 
 namespace Presentation
 {
     public static class BitmapRenderer
     {
-        public static void RenderArchToBitmap(DTE enviroment, int width, int height, string path, string scopeName = null)
+
+        public static void RenderTreeToBitmap(Tree tree, string path, OutputSettings outputSettings)
         {
             var thread = new Thread(() =>
             {
-                _RenderArchToBitmap(enviroment, width, height, path, scopeName);
+                _RenderTreeToBitmap(tree, path, outputSettings.Size);
             });
-            thread.SetApartmentState(ApartmentState.STA); //Set the thread to STA
+            thread.SetApartmentState(ApartmentState.STA); //Make the thread a ui thread
             thread.Start();
             thread.Join();
         }
 
-        private static void _RenderArchToBitmap(DTE enviroment, int width, int height, string path, string scopeName = null)
+        private static void _RenderTreeToBitmap(Tree tree, string path, int scale = 1, double maxWidth = double.PositiveInfinity, double maxheight = double.PositiveInfinity)
         {
             var control = new ArchView();
+            var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
+            control.RenderModel(viewModel);
+            RenderControlToBitmap(control, path,scale, maxWidth, maxheight);
+        }
 
-            control.GenerateDiagram(enviroment,new BuilderSettings {Scope = scopeName});
-
-            var availableSize = new Size(width, height);
+        private static void RenderControlToBitmap(UIElement control, string path, int scale = 1,
+            double maxWidth = double.PositiveInfinity, double maxheight = double.PositiveInfinity)
+        {
+            var availableSize = new Size(maxWidth, maxheight);
             control.Measure(availableSize);
-            control.Arrange(new Rect(availableSize));
-
-            var bmp = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+            var desiredSize = control.DesiredSize;
+            control.Arrange(new Rect(desiredSize));
+            var dpi = scale * 96;
+            var bmp = new RenderTargetBitmap((int)desiredSize.Width * scale, (int)desiredSize.Height * scale, dpi, dpi, PixelFormats.Pbgra32);
 
             bmp.Render(control);
 
