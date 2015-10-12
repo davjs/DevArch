@@ -1,11 +1,10 @@
 using System.Linq;
-using System.Runtime.InteropServices;
-using Analysis.SemanticTree;
 using EnvDTE;
 using EnvDTE80;
+using Logic.Analysis.SemanticTree;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
-namespace Analysis.Building
+namespace Logic.Analysis.Building
 {
     public static class ProjectTreeBuilder
     {
@@ -13,7 +12,7 @@ namespace Analysis.Building
         {
             var projects = solution.Projects.ToList();
             var allreadyAddedProjects = tree.DescendantNodes().OfType<ProjectNode>().ToList();
-
+            
             foreach (var project in projects)
             {
                 var existingProject = allreadyAddedProjects.WithName(project.Name);
@@ -29,12 +28,16 @@ namespace Analysis.Building
             }
         }
 
+        public static void AddProjectToTree(Solution solution, ref Tree tree, string name)
+        {
+            var project = solution.Projects.First(p => p.Name == name);
+            tree.AddChild(new ProjectNode(project));
+        }
+
         public static
-            Tree GetSolutionFoldersTree(DTE dte)
+            Tree AddSolutionFoldersToTree(Projects projects)
         {
             var tree = new Tree();
-            var solution2 = GetSolution2(dte);
-            var projects = solution2.Projects;
             if (projects == null) return tree;
             foreach (
                 var folder in projects.Cast<Project>()
@@ -59,24 +62,6 @@ namespace Analysis.Building
             if (project.SubProject == null
                 || project.SubProject.Kind != ProjectKinds.vsProjectKindSolutionFolder) return new ProjectNode(project);
             return GetSolutionFolderNode(project.SubProject);
-        }
-
-        private static Solution2 GetSolution2(DTE dte)
-        {
-            EnvDTE.Solution sol = null;
-            while (sol == null)
-            {
-                try
-                {
-                    sol = dte.Solution;
-                }
-                catch (COMException)
-                {
-                    // ignored
-                }
-            }
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            return (sol as Solution2);
         }
     }
 }

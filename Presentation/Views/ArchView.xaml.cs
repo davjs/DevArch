@@ -9,8 +9,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Analysis;
 using EnvDTE;
+using Logic;
+using Logic.Analysis;
 using Presentation.ViewModels;
 
 namespace Presentation
@@ -37,6 +38,9 @@ namespace Presentation
             InitializeComponent();
         }
 
+        public string DiagramName { get; set; }
+
+        /*
         /// <summary>
         ///     Handles click on the button by displaying a message box.
         /// </summary>
@@ -44,14 +48,14 @@ namespace Presentation
         /// <param name="e">The event args.</param>
         private void GenerateDiagram(object sender, RoutedEventArgs e)
         {
-            GenerateDiagram(_enviroment,BuilderSettings.Default);
+            GenerateDiagram(_enviroment,ModelDefinition.Default);
         }
 
-        public void GenerateDiagram(DTE enviroment,BuilderSettings settings)
+        public void GenerateDiagram(DTE enviroment,ModelDefinition settings)
         {
-            var model = Analyser.AnalyseEnviroment(enviroment,settings);
+            var model = DiagramFromModelDefinitionGenerator.GenerateDiagrams(enviroment);
             RenderModel(LayerMapper.TreeModelToArchViewModel(model));
-        }
+        }*/
 
         public LayerView RenderNode(LayerViewModel layerModel, int depth, AdvancedColor color)
         {

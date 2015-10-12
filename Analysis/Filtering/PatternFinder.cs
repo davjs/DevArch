@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Analysis.SemanticTree;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Logic.Analysis.SemanticTree;
 
-namespace Analysis
+namespace Logic.Filtering
 {
     public static class PatternFinder
     {

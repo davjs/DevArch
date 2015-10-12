@@ -249,9 +249,9 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Analysis\Analysis.csproj">
+    <ProjectReference Include="..\Analysis\Logic.csproj">
       <Project>{1F8DFDED-338B-4FD8-950A-11C287455373}</Project>
-      <Name>Analysis</Name>
+      <Name>Logic</Name>
     </ProjectReference>
     <ProjectReference Include="..\Presentation\Presentation.csproj">
       <Project>{1209b622-4bab-413a-a6a0-4ee05c8b2f02}</Project>

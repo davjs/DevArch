@@ -55,12 +55,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchView.xaml.cs">
+    <Compile Include="Views\ArchView.xaml.cs">
       <DependentUpon>ArchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="BitmapRenderer.cs" />
     <Compile Include="Colors.cs" />
-    <Compile Include="LayerView.xaml.cs">
+    <Compile Include="Views\LayerView.xaml.cs">
       <DependentUpon>LayerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="LayerMapper.cs" />
@@ -68,19 +68,19 @@
     <Compile Include="ViewModels\LayerViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ArchView.xaml">
+    <Page Include="Views\ArchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="LayerView.xaml">
+    <Page Include="Views\LayerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Analysis\Analysis.csproj">
+    <ProjectReference Include="..\Analysis\Logic.csproj">
       <Project>{1f8dfded-338b-4fd8-950a-11c287455373}</Project>
-      <Name>Analysis</Name>
+      <Name>Logic</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

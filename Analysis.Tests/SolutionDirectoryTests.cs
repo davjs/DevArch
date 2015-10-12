@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Analysis.Building;
-using Analysis.SemanticTree;
 using EnvDTE;
+using Logic.Analysis.Building;
+using Logic.Analysis.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Analysis.Tests
@@ -15,9 +15,9 @@ namespace Analysis.Tests
         [TestCategory("ProjectModel")]
         public void ContainsSolutionDirectories()
         {
-            var tree = ProjectTreeBuilder.GetSolutionFoldersTree((DTE) Marshal.
-                GetActiveObject("VisualStudio.DTE.14.0"));
-
+            var dte = (DTE) Marshal.
+                GetActiveObject("VisualStudio.DTE.14.0");
+            var tree = ProjectTreeBuilder.AddSolutionFoldersToTree(dte.Solution.Projects);
             Assert.IsTrue(tree.Childs.WithName("Clients") != null);
         }
 
@@ -26,8 +26,9 @@ namespace Analysis.Tests
         [TestCategory("ProjectModel")]
         public void ContainsNestedSolutionDirectories()
         {
-            var tree = ProjectTreeBuilder.GetSolutionFoldersTree((DTE)Marshal.
-                GetActiveObject("VisualStudio.DTE.14.0"));
+            var dte = (DTE)Marshal.
+                GetActiveObject("VisualStudio.DTE.14.0");
+            var tree = ProjectTreeBuilder.AddSolutionFoldersToTree(dte.Solution.Projects);
 
             var clientNode = tree.Childs.WithName("Clients");
             Assert.IsNotNull(clientNode);
