@@ -53,16 +53,21 @@ namespace Presentation
             RenderModel(LayerMapper.TreeModelToArchViewModel(model));
         }
 
-        public LayerView RenderNode(LayerViewModel layerModel, int depth, Color color)
+        public LayerView RenderNode(LayerViewModel layerModel, int depth, AdvancedColor color)
         {
             depth -= 1;
-            var oldColor = color;
+            var oldColor = color.Clone();
             var childs = new List<LayerView>();
+            if (!layerModel.Anonymous)
+            {
+                color.L *= 1.1;
+                color.S *= 1.2;
+            }
             foreach (var child in layerModel.Children)
             {
-                childs.Add(RenderNode(child, depth, color));
+                childs.Add(RenderNode(child, depth, color.Clone()));
             }
-            
+
             var layerView = new LayerView(layerModel.Name, oldColor, childs, layerModel.Column, layerModel.Row,
                 !layerModel.Anonymous,layerModel.Columns,layerModel.Rows);
             return layerView;
@@ -70,7 +75,7 @@ namespace Presentation
 
         public void RenderModel(ArchViewModel model)
         {
-            var colors = new Stack<Color>(Colors.GetNColors(model.Layers.Count()));
+            var colors = new Stack<AdvancedColor>(Colors.GetNColors(model.Layers.Count()));
             foreach (var layer in model.Layers)
             {
                 MasterPanel.Children.Add(RenderNode(layer, 10, colors.Pop()));

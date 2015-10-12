@@ -5,19 +5,48 @@ using System.Windows.Media;
 
 namespace Presentation
 {
+    public class AdvancedColor
+    {
+        private readonly Colors.Rgbhsl.Hsl _hslColor;
+        private readonly Color _rgbColor;
+
+        public AdvancedColor(Colors.Rgbhsl.Hsl hslColor)
+        {
+            _hslColor = hslColor;
+        }
+
+        public Color ToRgb()
+        {
+            return Colors.Rgbhsl.HSL_to_RGB(_hslColor);
+        }
+
+        public AdvancedColor Clone()
+        {
+            return new AdvancedColor(_hslColor.Clone());
+        }
+
+        public static implicit operator Color(AdvancedColor c)
+        {
+            return c.ToRgb();
+        }
+
+        public double H { get { return _hslColor.H; } set { _hslColor.H = value; } }
+        public double S { get { return _hslColor.S; } set { _hslColor.S = value; } }
+        public double L { get { return _hslColor.L; } set { _hslColor.L = value; } }
+    }
+
+
     public static class Colors
     {
 
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
         {
             if (val.CompareTo(min) < 0) return min;
-            else if (val.CompareTo(max) > 0) return max;
-            else return val;
+            return val.CompareTo(max) > 0 ? max : val;
         }
 
-        public static IEnumerable<Color> GetNColors(int numColors)
+        public static IEnumerable<AdvancedColor> GetNColors(int numColors)
         {
-            var list = new List<Color>();
             var random = new Random();
 
             var ranges = Enumerable.Range(1, numColors);
@@ -26,11 +55,11 @@ namespace Presentation
                    new Rgbhsl.Hsl
                    {
                        H = hue,
-                       S = 0.3,//random.NextDouble().Clamp(0.2, 0.5),
-                       L = 0.3//random.NextDouble().Clamp(0.2, 0.3)
+                       S = 0.2,//random.NextDouble().Clamp(0.2, 0.5),
+                       L = 0.2//random.NextDouble().Clamp(0.2, 0.3)
                    });
 
-            return hslColors.Select(Rgbhsl.HSL_to_RGB);
+            return hslColors.Select(x => new AdvancedColor(x));
         } 
 
         private static readonly IReadOnlyList<Color> KellysMaxContrastSet = new List<Color>
@@ -134,6 +163,16 @@ namespace Presentation
                         _l = value;
                         _l = _l > 1 ? 1 : _l < 0 ? 0 : _l;
                     }
+                }
+                
+                public Hsl Clone()
+                {
+                    return new Hsl()
+                    {
+                        H = _h,
+                        L = _l,
+                        S = _s
+                    };
                 }
             }
 
