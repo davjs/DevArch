@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Model scope ="Root">
+  <Scope>
+    <Document Name ="Tests\Sample\FindsAnononymousLayer.cs"/>
+  </Scope>
+  <Output Path="Samples\FindsAnononymousLayer.png" Scale="5"/>
+  <Filters>
+    <RemoveTests>Off</RemoveTests>
+  </Filters>
+</Model>
