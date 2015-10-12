@@ -17,7 +17,7 @@ namespace Logic.Filtering
             tree.UpdateChildren(SiblingReordrer.OrderChildsBySiblingsDependencies(tree.Childs).ToList());
             tree = FindSiblingPatterns(tree);
         }
-
+            
 
         public static Tree RemoveSinglePaths(Tree tree)
         {
@@ -44,7 +44,7 @@ namespace Logic.Filtering
 
 
         private static Tree RemoveTests(Tree tree)
-        {
+            {
             tree.UpdateChildren(tree.Childs.Select(RemoveTests).Cast<Node>());
             tree.UpdateChildren(
                 tree.Childs.Where(x => !x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)).ToList());

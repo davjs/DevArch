@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
 using Logic.Analysis.SemanticTree;
@@ -10,7 +8,7 @@ namespace Logic.Analysis.Building
 {
     public static class ProjectTreeBuilder
     {
-        public static void AddProjectsToTree(Solution solution,ref Tree tree)
+        public static void AddProjectsToTree(Solution solution, ref Tree tree)
         {
             var projects = solution.Projects.ToList();
             var allreadyAddedProjects = tree.DescendantNodes().OfType<ProjectNode>().ToList();
@@ -41,26 +39,29 @@ namespace Logic.Analysis.Building
         {
             var tree = new Tree();
             if (projects == null) return tree;
-            foreach (Project project in projects)
+            foreach (
+                var folder in projects.Cast<Project>()
+                .Where(x => x.Kind == ProjectKinds.vsProjectKindSolutionFolder))
             {
-                if (project?.Kind != ProjectKinds.vsProjectKindSolutionFolder) continue;
-                var node = new Node(project.Name);
-                var items = project.ProjectItems.Cast<ProjectItem>();
-
-                var projectNodes = new List<ProjectNode>();
-                foreach (var item in items)
-                {
-                    Node itemNode = null;
-                    if (item?.Kind == ProjectKinds.vsProjectKindSolutionFolder)
-                    {
-                        itemNode = new Node(item.Name);
-                    }
-                }
-                var subProjects = items.Select(p => new ProjectNode(p));
-                node.AddChilds(subProjects);
+                var node = GetSolutionFolderNode(folder);
                 tree.AddChild(node);
             }
             return tree;
+        }
+
+        private static Node GetSolutionFolderNode(Project folder)
+        {
+            var node = new Node(folder.Name);
+            var subProjects = folder.ProjectItems.Cast<ProjectItem>().Select(GetProjectItemNode).ToList();
+            node.AddChilds(subProjects);
+            return node;
+        }
+
+        private static Node GetProjectItemNode(ProjectItem project)
+        {
+            if (project.SubProject == null
+                || project.SubProject.Kind != ProjectKinds.vsProjectKindSolutionFolder) return new ProjectNode(project);
+            return GetSolutionFolderNode(project.SubProject);
         }
     }
 }
