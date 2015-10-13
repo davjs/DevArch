@@ -180,7 +180,9 @@
     <None Include="BuildSystem\DeployedBuildSystem\CustomProject.Default.props" />
     <None Include="BuildSystem\DeployedBuildSystem\CustomProject.props" />
     <None Include="BuildSystem\DeployedBuildSystem\CustomProject.targets" />
-    <None Include="BuildSystem\DeployedBuildSystem\CustomProjectCs.targets" />
+    <None Include="BuildSystem\DeployedBuildSystem\CustomProjectCs.targets">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <!--
   The XAML files provide buth compile-time implementations for CPS rules as well as
@@ -213,31 +215,7 @@
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
     </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\assemblyreference.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\comreference.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\projectreference.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedAssemblyReference.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedCOMReference.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\ResolvedProjectReference.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\resolvedsdkreference.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
     <XamlPropertyRule Include="BuildSystem\Rules\scc.xaml">
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\sdkreference.xaml">
       <SubType>Designer</SubType>
     </XamlPropertyRule>
     <XamlPropertyRule Include="BuildSystem\Rules\debugger_general.xaml">

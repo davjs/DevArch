@@ -35,11 +35,12 @@
 
     <!-- MODEL DEFINITION CONTENT -->
     <ContentType
-	    Name="modeldefinitionSourceFile" 
-	    DisplayName="modeldefinition source file" 
+	    Name="modeldefinitionFile" 
+	    DisplayName="Model Definition" 
 	    ItemType="modeldefinitionCompile">
     </ContentType>
-    <ItemType Name="modeldefinitionCompile" DisplayName="modeldefinition source file"/>
+    
+    <ItemType Name="modeldefinitionCompile" DisplayName="DevArch diagram generator"/>
     <FileExtension Name=".modeldefinition" ContentType="modeldefinitionSourceFile" />
 
     <ItemType Name="Compile" DisplayName="C# compiler"/>

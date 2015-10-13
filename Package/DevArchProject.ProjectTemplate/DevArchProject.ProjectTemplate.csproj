@@ -76,9 +76,9 @@
   remove files here, you must also reference them in the ProjectTemplateTemplate.vstemplate file.
   -->
   <ItemGroup>
-    <None Include="complete.modeldefinition" />
     <None Include="DevArchProject.archproj" />
     <None Include="DevArchProject.ico" />
+    <None Include="complete.modeldefinition" />
     <None Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -11,17 +11,12 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
 
-    <OutputType>exe</OutputType>
+    <OutputType>Software architechture diagrams</OutputType>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DebugSymbols>true</DebugSymbols>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
 
-    <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
-    <AssemblyReferenceTabs>TAB_ASSEMBLY_ALL</AssemblyReferenceTabs>
-
     <Name>$(MSBuildProjectName)</Name>
-    <RootNamespace>$(Name)</RootNamespace>
-    <AssemblyName>$(Name)</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">

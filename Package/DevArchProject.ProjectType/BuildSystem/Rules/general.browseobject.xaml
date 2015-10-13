@@ -24,9 +24,7 @@
 	</StringProperty>
 	<StringProperty Name="OutputName" />
 	<EnumProperty Name="OutputType">
-		<EnumValue Name="dll" DisplayName="Class Library" />
-		<EnumValue Name="exe" DisplayName="Console Application" />
-		<EnumValue Name="winexe" DisplayName="Windows Application" />
+        <EnumValue Name="diagrams" DisplayName="Software architechture diagrams" />
 	</EnumProperty>
 	<StringListProperty Name="AvailablePlatforms" Separator="," />
 	<StringProperty Name="FullPath" ReadOnly="True">
