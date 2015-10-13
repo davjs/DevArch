@@ -33,6 +33,15 @@
         ItemType="Compile">
     </ContentType>
 
+    <!-- MODEL DEFINITION CONTENT -->
+    <ContentType
+	    Name="modeldefinitionSourceFile" 
+	    DisplayName="modeldefinition source file" 
+	    ItemType="modeldefinitionCompile">
+    </ContentType>
+    <ItemType Name="modeldefinitionCompile" DisplayName="modeldefinition source file"/>
+    <FileExtension Name=".modeldefinition" ContentType="modeldefinitionSourceFile" />
+
     <ItemType Name="Compile" DisplayName="C# compiler"/>
     <ItemType Name="EmbeddedResource" DisplayName="Embedded Resource"/>
     <ItemType Name="None" DisplayName="Does not participate in build"/>

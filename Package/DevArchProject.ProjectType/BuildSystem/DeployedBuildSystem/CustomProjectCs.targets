@@ -7,6 +7,11 @@
     <ProjectCapability Include="ReferencesFolder"/>
 
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\csProjectItemsSchema.xaml;"/>
+
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\modeldefinition.xaml;">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+    
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\csharp.xaml;">
       <Context>File</Context>
     </PropertyPageSchema>
