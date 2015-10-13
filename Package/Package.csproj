@@ -257,14 +257,14 @@
       <Project>{1209b622-4bab-413a-a6a0-4ee05c8b2f02}</Project>
       <Name>Presentation</Name>
     </ProjectReference>
-    <ProjectReference Include="DevArchProject\DevArchProject\DevArchProject.ProjectTemplate\DevArchProject.ProjectTemplate.csproj">
+    <ProjectReference Include="DevArchProject.ProjectTemplate\DevArchProject.ProjectTemplate.csproj">
       <Project>{e7caf7eb-980d-487d-8801-c6f7f4130b94}</Project>
       <Name>DevArchProject.ProjectTemplate</Name>
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
-    <ProjectReference Include="DevArchProject\DevArchProject\DevArchProject.ProjectType\DevArchProject.ProjectType.csproj">
+    <ProjectReference Include="DevArchProject.ProjectType\DevArchProject.ProjectType.csproj">
       <Project>{5E197B51-FE5B-452F-A3E9-27D0E95563FB}</Project>
       <Name>DevArchProject.ProjectType</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>

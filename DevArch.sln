@@ -17,9 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{B7CE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudio", "{338BC8C2-0D31-46B9-BF91-C8886F0F99FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevArchProject.ProjectTemplate", "Package\DevArchProject\DevArchProject\DevArchProject.ProjectTemplate\DevArchProject.ProjectTemplate.csproj", "{E7CAF7EB-980D-487D-8801-C6F7F4130B94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevArchProject.ProjectTemplate", "Package\DevArchProject.ProjectTemplate\DevArchProject.ProjectTemplate.csproj", "{E7CAF7EB-980D-487D-8801-C6F7F4130B94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevArchProject.ProjectType", "Package\DevArchProject\DevArchProject\DevArchProject.ProjectType\DevArchProject.ProjectType.csproj", "{5E197B51-FE5B-452F-A3E9-27D0E95563FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevArchProject.ProjectType", "Package\DevArchProject.ProjectType\DevArchProject.ProjectType.csproj", "{5E197B51-FE5B-452F-A3E9-27D0E95563FB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{99918937-841C-45AA-95F9-4115B733D791}"
 EndProject
