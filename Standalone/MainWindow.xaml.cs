@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Analysis;
-using Analysis.SemanticTree;
 using EnvDTE;
+using Logic;
+using Presentation;
 using Window = System.Windows.Window;
 
 namespace Standalone
@@ -15,7 +15,11 @@ namespace Standalone
         public MainWindow()
         {
             InitializeComponent();
-            ArchControl.GenerateDiagram(GetDte());
+            //TODO: Generalize?
+            var modelGen = new DiagramFromModelDefinitionGenerator(GetDte());
+            var tree = modelGen.GenerateDiagram(ModelDefinition.RootDefault);
+            var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
+            ArchControl.RenderModel(viewModel);
         }
 
 

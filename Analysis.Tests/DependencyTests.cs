@@ -1,6 +1,7 @@
 ﻿using Analysis;
 using System.Linq;
-using Analysis.SemanticTree;
+using Logic.Analysis;
+using Logic.Analysis.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,12 +26,12 @@ namespace Analysis.Tests
                 ));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("class Button {public void Bar(){}}"));
                 var tree = new Tree();
-                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 var compile = project.GetCompilationAsync().Result;
                 var diagnostics = compile.GetParseDiagnostics();
                 Assert.IsTrue(!diagnostics.Any());
-
-                var button = tree.Childs.FirstOrDefault(x => x.Name == "Button");
+                var projectA = tree.Childs.First();
+                var button = projectA.Childs.FirstOrDefault(x => x.Name == "Button");
                 Assert.IsNotNull(button);
                 Assert.IsTrue(button.References.Any());
             }
@@ -51,9 +52,10 @@ namespace Analysis.Tests
                 ));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("class Button {public void Bar(){}}"));
                 var tree = new Tree();
-                Analyser.AnalyzeSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
-                var button = tree.Childs.FirstOrDefault(x => x.Name == "Button");
-                var guiFacade = tree.Childs.FirstOrDefault(x => x.Name == "GuiFacade");
+                Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                var projectA = tree.Childs.First();
+                var button = projectA.Childs.WithName("Button");
+                var guiFacade = projectA.Childs.WithName("GuiFacade");
                 Assert.IsNotNull(button);
                 Assert.IsNotNull(guiFacade);
                 Assert.IsTrue(button.References.Any());
