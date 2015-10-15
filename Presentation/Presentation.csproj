@@ -78,7 +78,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Analysis\Logic.csproj">
+    <ProjectReference Include="..\Logic\Logic.csproj">
       <Project>{1f8dfded-338b-4fd8-950a-11c287455373}</Project>
       <Name>Logic</Name>
     </ProjectReference>
