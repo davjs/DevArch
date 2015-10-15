@@ -2,24 +2,15 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <CustomProjectExtensionsPath>$(LocalAppData)\CustomProjectSystems\DevArchProject\</CustomProjectExtensionsPath>
-    <ProjectGuid>3ab4cdac-0c75-4c24-984c-5315bb89e1f9</ProjectGuid>
+    <ProjectGuid>7ccd7c74-9e89-496a-9a80-1697f8ae063a</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(CustomProjectExtensionsPath)CustomProject.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
-  </PropertyGroup>
   <Import Project="$(CustomProjectExtensionsPath)CustomProject.props" />
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="complete.modeldefinition">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="complete.modeldefinition" />
+    <None Include="complete.modeldefinition"/>
     <None Include="FindsAnononymousLayerSample.modeldefinition" />
   </ItemGroup>
   <Import Project="$(CustomProjectExtensionsPath)CustomProjectCs.targets" />

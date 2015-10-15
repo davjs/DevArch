@@ -17,9 +17,7 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="complete.modeldefinition">
-      <SubType>Code</SubType>
-    </Compile>
+    <None Include="complete.modeldefinition"/>
   </ItemGroup>
 
   <Import Project="$(CustomProjectExtensionsPath)CustomProjectCs.targets" />

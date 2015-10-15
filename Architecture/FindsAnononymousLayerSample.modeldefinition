@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Model scope ="Root">
+<Model>
   <Scope>
     <Document Name ="Tests\Sample\FindsAnononymousLayer.cs"/>
   </Scope>

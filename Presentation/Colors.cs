@@ -8,7 +8,6 @@ namespace Presentation
     public class AdvancedColor
     {
         private readonly Colors.Rgbhsl.Hsl _hslColor;
-        private readonly Color _rgbColor;
 
         public AdvancedColor(Colors.Rgbhsl.Hsl hslColor)
         {
