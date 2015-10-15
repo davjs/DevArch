@@ -37,18 +37,6 @@ namespace Analysis.Tests.Presentation
         }
 
         /*
-                [TestCategory("PngGeneration")]
-                [TestMethod]
-                public void GenerateSampleFindsAnononymousLayer()
-                {
-                    var name = "sample1";
-                    var enviroment = GetDte();
-                    var path = GetFileSlot(name);
-
-                    BitmapRenderer.RenderArchToBitmap(enviroment, 180, 180, path , "FindsAnononymousLayer");
-                    Assert.IsTrue(File.Exists(path));
-                }
-
                 private static string GetFileSlot(string png)
                 {
                     var currentDir = new DirectoryInfo(Directory.GetCurrentDirectory());
