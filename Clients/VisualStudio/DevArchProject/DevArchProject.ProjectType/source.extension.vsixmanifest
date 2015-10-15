@@ -1,24 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Diagonal2.Company.30931fb3-a000-4ad2-94aa-ce8a95207eae" Version="0.034" Language="en-US" Publisher="David Jensen" />
-    <DisplayName>DevArch</DisplayName>
-    <Description xml:space="preserve">Architechting for lazy folks</Description>
+    <Identity Id="DevArchProject.ProjectType..176af6c4-a776-4336-af3f-06545fd49661" Version="1.0" Language="en-US" Publisher="DevArchProject.ProjectType" />
+    <DisplayName>DevArch VSIX</DisplayName>
+    <Description xml:space="preserve">A template for creating a DevArch project.</Description>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="14.0" />
   </Installation>
   <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-    <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
+    <!--<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.6" />-->
+    <!--<Dependency d:Source="Installed" Id="B73A99D8-FCAA-4197-9122-F8ABA095A72F" DisplayName="Visual Studio Common Project System v14" Version="[11.2,14.0)" />-->
   </Dependencies>
   <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="DevArchProject.ProjectType" Path="|DevArchProject.ProjectType|"/>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="DevArchProject.ProjectType" Path="|DevArchProject.ProjectType;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="DevArchProject.ProjectTemplate" d:TargetPath="|DevArchProject.ProjectTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="File" Path="ItemTemplates" d:TargetPath="ItemTemplates\Model Definition.zip" />
-
   </Assets>
 </PackageManifest>

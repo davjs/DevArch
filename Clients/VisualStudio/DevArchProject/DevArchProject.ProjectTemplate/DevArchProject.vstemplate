@@ -2,12 +2,12 @@
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <Name>DevArch Project</Name>
-    <Description>A template for creating a DevArch project2.</Description>
+    <Description>A template for creating a DevArch project.</Description>
     <Icon>DevArchProject.ico</Icon>
     <ProjectType>DevArchProject</ProjectType>
     <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
     <SortOrder>1</SortOrder>
-    <TemplateID>{63cccaa9-d5ba-454a-bd43-46003be81a5e}</TemplateID>
+    <TemplateID>{6a4f00a1-d703-4451-9e63-4890c075701d}</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>Architechture</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>

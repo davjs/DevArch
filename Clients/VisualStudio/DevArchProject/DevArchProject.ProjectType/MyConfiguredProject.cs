@@ -9,7 +9,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 ***************************************************************************/
 
-namespace DevArchProject
+namespace DevArch
 {
     using System;
     using System.ComponentModel.Composition;

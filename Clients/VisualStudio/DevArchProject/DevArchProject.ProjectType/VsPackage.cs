@@ -9,7 +9,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 ***************************************************************************/
 
-namespace DevArchProject
+namespace DevArch
 {
     using System;
     using System.ComponentModel;
@@ -32,13 +32,13 @@ namespace DevArchProject
         /// <summary>
         /// The GUID for this package.
         /// </summary>
-        public const string PackageGuid = "ebbfd95d-01dc-4993-9fcf-1a570c6b5423";
+        public const string PackageGuid = "72c0a38d-9617-4ccf-80a6-40e16728ca30";
 
         /// <summary>
         /// The GUID for this project type.  It is unique with the project file extension and
         /// appears under the VS registry hive's Projects key.
         /// </summary>
-        public const string ProjectTypeGuid = "72baba2a-db73-4be2-9524-b0f54b2aaffa";
+        public const string ProjectTypeGuid = "317691c9-cf46-4aee-b0e5-e193dec63799";
 
         /// <summary>
         /// The file extension of this project type.  No preceding period.
@@ -49,6 +49,6 @@ namespace DevArchProject
         /// The default namespace this project compiles with, so that manifest
         /// resource names can be calculated for embedded resources.
         /// </summary>
-        internal const string DefaultNamespace = "DevArchProject";
+        internal const string DefaultNamespace = "DevArch";
     }
 }

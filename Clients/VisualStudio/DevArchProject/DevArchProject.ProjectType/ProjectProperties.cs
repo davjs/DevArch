@@ -1,4 +1,4 @@
-namespace DevArchProject
+namespace DevArch
 {
     using System;
     using System.Collections.Generic;
