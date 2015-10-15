@@ -20,7 +20,7 @@ namespace Logic.Analysis.Building
                 var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result);
                 var classes = SemanticModelWalker.GetClassesInModels(semanticModels, solution);
                 if (!classes.Any())
-                    throw new Exception("No classes found");
+                    continue;
                 var classnodes = SemanticTreeBuilder.BuildTreeFromClasses(classes);
                 project.AddChilds(classnodes);
             }
