@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Package", "Package\Package.csproj", "{DE7D01D7-D3B5-468B-BA3D-BB63EDC2368D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualStudio", "VisualStudio\Package.csproj", "{DE7D01D7-D3B5-468B-BA3D-BB63EDC2368D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Analysis\Logic.csproj", "{1F8DFDED-338B-4FD8-950A-11C287455373}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Logic\Logic.csproj", "{1F8DFDED-338B-4FD8-950A-11C287455373}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Analysis.Tests\Tests.csproj", "{80FB344A-529D-4CE8-831B-2492D7DBEC24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{80FB344A-529D-4CE8-831B-2492D7DBEC24}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Standalone", "Standalone\Standalone.csproj", "{56F223C0-727A-4024-A33C-01C6DAAFCF8B}"
 EndProject
@@ -17,9 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{B7CE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudio", "{338BC8C2-0D31-46B9-BF91-C8886F0F99FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevArchProject.ProjectTemplate", "Package\DevArchProject.ProjectTemplate\DevArchProject.ProjectTemplate.csproj", "{E7CAF7EB-980D-487D-8801-C6F7F4130B94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevArchProject.ProjectTemplate", "VisualStudio\DevArchProject.ProjectTemplate\DevArchProject.ProjectTemplate.csproj", "{E7CAF7EB-980D-487D-8801-C6F7F4130B94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevArchProject.ProjectType", "Package\DevArchProject.ProjectType\DevArchProject.ProjectType.csproj", "{5E197B51-FE5B-452F-A3E9-27D0E95563FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevArchProject.ProjectType", "VisualStudio\DevArchProject.ProjectType\DevArchProject.ProjectType.csproj", "{5E197B51-FE5B-452F-A3E9-27D0E95563FB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{99918937-841C-45AA-95F9-4115B733D791}"
 EndProject

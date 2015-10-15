@@ -98,7 +98,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Analysis\Logic.csproj">
+    <ProjectReference Include="..\Logic\Logic.csproj">
       <Project>{1F8DFDED-338B-4FD8-950A-11C287455373}</Project>
       <Name>Logic</Name>
     </ProjectReference>

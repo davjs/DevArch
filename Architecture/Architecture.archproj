@@ -23,9 +23,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Content Include="complete.modeldefinition">
       <SubType>Designer</SubType>
     </Content>
