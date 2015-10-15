@@ -57,7 +57,8 @@ namespace Analysis.Tests.Filtering.Ordering
             Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.Last().GetType());
         }
 
-        [TestCategory("SiblingOrder.Circular")]
+        //TODO: Undefined behavior
+        /*[TestCategory("SiblingOrder.Circular")]
         [TestMethod]
         public void SolvesCircularReferenceInvolvingMoreThreeComponents()
         {
@@ -76,6 +77,6 @@ namespace Analysis.Tests.Filtering.Ordering
             SiblingReordrer.FindCircularReferences(ref childList);
             Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.First().GetType());
             //TODO: Define wanted behaviour
-        }
+        }*/
     }
 }
