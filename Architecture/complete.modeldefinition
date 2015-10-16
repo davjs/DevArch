@@ -3,7 +3,7 @@
   <Scope>
     <Root/>
   </Scope>
-  <Output Path = "Current arch" Scale="1"/>
+  <Output Path = "Current arch.png" Scale="1"/>
   <Filters>
   </Filters>
 </Model>
