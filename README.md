@@ -11,6 +11,6 @@ These customizations, or rather, *diagram definitions*, can then be checked in t
 
 This means that anyone with the sourcecode are able to review the architecture without losing the original architects intent.
 ___
-**DevArch makes architecting more formal, more explicit, faster and easier.**
+**DevArch makes diagram generation faster, easier and more formal.**
 
 
