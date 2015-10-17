@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="DevArchProject.ProjectType..176af6c4-a776-4336-af3f-06545fd49661" Version="1.0" Language="en-US" Publisher="DevArchProject.ProjectType" />
+    <Identity Id="DevArchProject.ProjectType..176af6c4-a776-4336-af3f-06545fd49661" Version="1.1" Language="en-US" Publisher="DevArchProject.ProjectType" />
     <DisplayName>DevArch VSIX</DisplayName>
     <Description xml:space="preserve">A template for creating a DevArch project.</Description>
   </Metadata>

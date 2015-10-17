@@ -5,16 +5,8 @@
 
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-
-    <TargetPlatformVersion>7.0</TargetPlatformVersion>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
-
     <OutputType>Software architechture diagrams</OutputType>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <DebugSymbols>true</DebugSymbols>
-    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
 
     <Name>$(MSBuildProjectName)</Name>
   </PropertyGroup>
