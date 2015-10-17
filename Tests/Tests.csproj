@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Analysis.Tests</RootNamespace>
     <AssemblyName>Analysis.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -18,6 +18,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -98,11 +99,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Logic\Logic.csproj">
+    <ProjectReference Include="..\Lib\Lib.csproj">
+      <Project>{dc505588-5385-4b7b-9432-fe0ebd560287}</Project>
+      <Name>Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\Logic\Logic.csproj">
       <Project>{1F8DFDED-338B-4FD8-950A-11C287455373}</Project>
       <Name>Logic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Presentation\Presentation.csproj">
+    <ProjectReference Include="..\Lib\Presentation\Presentation.csproj">
       <Project>{1209B622-4BAB-413A-A6A0-4EE05C8B2F02}</Project>
       <Name>Presentation</Name>
     </ProjectReference>

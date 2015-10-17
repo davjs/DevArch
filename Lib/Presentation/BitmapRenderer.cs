@@ -25,7 +25,7 @@ namespace Presentation
 
         private static void _RenderTreeToBitmap(Tree tree, string path, int scale = 1, double maxWidth = double.PositiveInfinity, double maxheight = double.PositiveInfinity)
         {
-            var control = new ArchView();
+            var control = new Views.Diagram();
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
             control.RenderModel(viewModel);
             RenderControlToBitmap(control, path,scale, maxWidth, maxheight);

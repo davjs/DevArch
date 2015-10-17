@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using EnvDTE;
-using Logic;
-using Presentation;
 using Window = System.Windows.Window;
 
 namespace Standalone
@@ -15,11 +12,7 @@ namespace Standalone
         public MainWindow()
         {
             InitializeComponent();
-            //TODO: Generalize?
-            var modelGen = new DiagramFromModelDefinitionGenerator(GetDte());
-            var tree = modelGen.GenerateDiagram(ModelDefinition.RootDefault);
-            var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
-            ArchControl.RenderModel(viewModel);
+            DevArch.lib.DevArch.RenderCompleteDiagramToView(GetDte(), ref ArchView);
         }
 
 

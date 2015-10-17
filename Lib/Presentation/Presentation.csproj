@@ -55,8 +55,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Views\ArchView.xaml.cs">
-      <DependentUpon>ArchView.xaml</DependentUpon>
+    <Compile Include="Views\Diagram.xaml.cs">
+      <DependentUpon>Diagram.xaml</DependentUpon>
     </Compile>
     <Compile Include="BitmapRenderer.cs" />
     <Compile Include="Colors.cs" />
@@ -68,7 +68,7 @@
     <Compile Include="ViewModels\LayerViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\ArchView.xaml">
+    <Page Include="Views\Diagram.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

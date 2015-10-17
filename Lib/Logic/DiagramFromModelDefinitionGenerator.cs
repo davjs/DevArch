@@ -13,20 +13,13 @@ namespace Logic
 {
     public class DiagramFromModelDefinitionGenerator
     {
-        private readonly DTE _dte;
+        private readonly _DTE _dte;
         private readonly Projects _projects;
-        public DiagramFromModelDefinitionGenerator(DTE dte)
+        public DiagramFromModelDefinitionGenerator(_DTE dte)
         {
             _dte = dte;
             var solution = GetSolution(dte);
             _projects = solution.Projects;
-        }
-
-        public IEnumerable<Tree> GenerateDiagrams(DTE dte)
-        {
-            var modelDefinitions = ModelDefinitionParser.GetModelDefinitionsFromSolution(_projects);
-            var diagramTrees = modelDefinitions.Select(modelDefinition => GenerateTreeFromModelDefinition(modelDefinition, dte, _projects));
-            return diagramTrees;
         }
 
         public IEnumerable<ModelDefinition> GetModelDefinitions()
@@ -40,7 +33,7 @@ namespace Logic
             return GenerateTreeFromModelDefinition(modelDef, _dte, _projects);
         }
 
-        public static Tree GenerateTreeFromModelDefinition(ModelDefinition modeldefinition, DTE dte, Projects projects)
+        public static Tree GenerateTreeFromModelDefinition(ModelDefinition modeldefinition, _DTE dte, Projects projects)
         {
             Tree tree = null;
             if (modeldefinition.Scope is RootScope)
@@ -60,7 +53,7 @@ namespace Logic
         }
 
 
-        private static Solution GetSolution(DTE dte)
+        private static Solution GetSolution(_DTE dte)
         {
             Solution sol = null;
             while (sol == null)

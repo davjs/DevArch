@@ -1,4 +1,5 @@
-﻿namespace Analysis.Tests.Sample
+﻿#pragma warning disable 169
+namespace Analysis.Tests.Sample
 {
     class FindsAnononymousLayer
     {
@@ -8,12 +9,12 @@
     
         class B
         {
-            public A UsesA;
+            A _usesA;
         }
 
         class C
         {
-            public A UsesA;
+            A _usesA;
         }
 
     }

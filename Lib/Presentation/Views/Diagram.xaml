@@ -1,11 +1,9 @@
-﻿<UserControl x:Class="Presentation.ArchView"
+﻿<UserControl x:Class="Presentation.Views.Diagram"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:presentation="clr-namespace:Presentation"
-             mc:Ignorable="d"
-             Name="MyToolWindow" d:DataContext="{d:DesignInstance presentation:ArchView }">
+             mc:Ignorable="d">
     <StackPanel Orientation="Vertical" Height="Auto"  Name="MasterPanel" Margin="10,0" >
     </StackPanel>
 </UserControl>

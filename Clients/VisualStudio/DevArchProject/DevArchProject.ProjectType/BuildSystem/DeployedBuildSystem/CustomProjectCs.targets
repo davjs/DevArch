@@ -6,8 +6,6 @@
   </Target>
   <Target Name="Rebuild">
   </Target>
-  
-  <!--<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />-->
 
   <ItemGroup>
 

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using EnvDTE;
 using Logic.Analysis.Building;
 using Logic.Analysis.SemanticTree;
@@ -12,7 +10,7 @@ namespace Logic.Analysis
 {
     public static class Analyser
     {
-        public static Tree AnalyseSolution(DTE dte, Projects projects)
+        public static Tree AnalyseSolution(_DTE dte, Projects projects)
         {
             var build = MSBuildWorkspace.Create();
             var name = GetSolutionName(dte);
@@ -31,7 +29,7 @@ namespace Logic.Analysis
         }
 
 
-        public static Tree AnalyseDocument(DTE dte, string name)
+        public static Tree AnalyseDocument(_DTE dte, string name)
         {
             var build = MSBuildWorkspace.Create();
             var sname = GetSolutionName(dte);
@@ -45,7 +43,7 @@ namespace Logic.Analysis
             return tree;
         }
 
-        public static Tree AnalyseClass(DTE dte, string name)
+        public static Tree AnalyseClass(_DTE dte, string name)
         {
             throw new NotImplementedException();
 

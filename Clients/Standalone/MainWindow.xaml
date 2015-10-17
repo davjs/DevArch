@@ -3,11 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:diagonal2="clr-namespace:Presentation;assembly=Presentation"
-    xmlns:presentation="clr-namespace:Presentation;assembly=Presentation"
-    x:Class="Standalone.MainWindow"
+        xmlns:lib="clr-namespace:DevArch.lib;assembly=DevArch.lib"
+        x:Class="Standalone.MainWindow"
         mc:Ignorable="d"
         Background="#001E26"
         Title="MainWindow" Height="Auto" Width="Auto"  SizeToContent="WidthAndHeight">
-    <presentation:ArchView Name="ArchControl" HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="Auto"/>
+    <lib:ArchView Name="ArchView"/>
 </Window>
