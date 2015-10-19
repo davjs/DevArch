@@ -104,7 +104,6 @@
     <Compile Include="Analysis\Analyser.cs" />
     <Compile Include="ModelDefinition.cs" />
     <Compile Include="Analysis\Building\ProjectTreeBuilder.cs" />
-    <Compile Include="Analysis\ClassInfo.cs" />
     <Compile Include="Analysis\Building\ClassTreeBuilder.cs" />
     <Compile Include="DiagramFromModelDefinitionGenerator.cs" />
     <Compile Include="ModelDefinitionParser.cs" />

@@ -29,6 +29,8 @@
     public class Filters
     {
         public bool RemoveTests = true;
+        public int ByReference = 1;
+        public bool RemoveSinglePaths = true;
     }
 
     public interface IScope

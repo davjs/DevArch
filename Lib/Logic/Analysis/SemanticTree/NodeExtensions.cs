@@ -19,6 +19,10 @@ namespace Logic.Analysis.SemanticTree
         {
             return node.Dependencies.Concat(node.Childs.SelectMany(AllSubDependencies)).Distinct();
         }
+        public static bool HasChildren(this Node node)
+        {
+            return node.Childs.Any();
+        }
         public static IEnumerable<Node> SiblingDependencies(this IEnumerable<Node> nodeList)
         {
             return nodeList.SelectMany(x => x.SiblingDependencies);
@@ -27,6 +31,11 @@ namespace Logic.Analysis.SemanticTree
         {
             return nodeList.Where(x => x.SiblingDependencies.Contains(node)).ToList();
         }
+
+        /*public static int TotalReferences(this IEnumerable<Node> nodes)
+        {
+            return nodes.Select(n => n.References).Distinct().Count();
+        }*/
 
         public static IEnumerable<Node> DescendantNodes(this Tree tree)
         {

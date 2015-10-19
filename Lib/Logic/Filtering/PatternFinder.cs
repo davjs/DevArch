@@ -26,7 +26,8 @@ namespace Logic.Filtering
 
         public static string FindBaseClassPattern(IReadOnlyList<Node> nodes)
         {
-            var lists = nodes.Select(x => x.BaseClasses.Select(y => y.ToString())).ToList();
+            var classes = nodes.Where(x => x is ClassNode);
+            var lists = classes.Select(x => (x as ClassNode)?.BaseClasses.Select(y => y.ToString())).ToList();
 
             var common = lists.Aggregate((a, b) => a.Intersect(b)).ToList();
             if (common.Any())

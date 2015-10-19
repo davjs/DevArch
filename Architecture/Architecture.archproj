@@ -10,7 +10,8 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="complete.modeldefinition"/>
+    <None Include="complete.modeldefinition" />
+    <None Include="LayerDefaultOrder.modeldefinition" />
     <None Include="FindsAnononymousLayerSample.modeldefinition" />
   </ItemGroup>
   <Import Project="$(CustomProjectExtensionsPath)CustomProjectCs.targets" />

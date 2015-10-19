@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Presentation;
 using EnvDTE;
 using Logic;
 
 namespace DevArch.lib
 {
-    public static class DevArch
+    public class DevArch
     {
         public static void RenderAllArchDiagramsToFiles(_DTE enivorment)
         {
@@ -19,6 +20,8 @@ namespace DevArch.lib
             foreach (var modelDef in modelDefs)
             {
                 var tree = modelGen.GenerateDiagram(modelDef);
+                if (!tree.Childs.Any())
+                    throw new NoClassesFoundException();
                 var outputPath = solutionDir + "\\" + modelDef.Output.Path;
                 if (File.Exists(outputPath))
                     File.Delete(outputPath);
@@ -33,6 +36,10 @@ namespace DevArch.lib
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
             view.Diagram.RenderModel(viewModel);
         }
+    }
+
+    public class NoClassesFoundException : Exception
+    {
     }
 
     public class NoSolutionOpenException : Exception

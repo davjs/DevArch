@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 169
 namespace Analysis.Tests.Sample
 {
-    class FindsAnononymousLayer
+    namespace FindsAnononymousLayer
     {
         class A
         {

@@ -13,11 +13,24 @@ namespace Logic.Filtering
             if(filters.RemoveTests)
                 tree = RemoveTests(tree);
             tree.UpdateChildren(tree.Childs.Select(FindSiblingDependencies).ToList());
-            tree = RemoveSinglePaths(tree);
+            if(filters.RemoveSinglePaths)
+                tree = RemoveSinglePaths(tree);
             tree.UpdateChildren(SiblingReordrer.OrderChildsBySiblingsDependencies(tree.Childs).ToList());
             tree = FindSiblingPatterns(tree);
+            if (filters.ByReference > 0)
+                RemoveNodesReferencedLessThan(tree,filters.ByReference);
+            //tree = RemoveSinglePaths(tree); change to remove projects/namespaces containing zero classes
         }
-            
+
+        private static void RemoveNodesReferencedLessThan(Tree tree, int byReference)
+        {
+            tree.UpdateChildren(tree.Childs.Where(x => !(x is ClassNode) || (x as ClassNode).References.Count() >= byReference));
+            foreach (var child in tree.Childs)
+            {
+                RemoveNodesReferencedLessThan(child, byReference);
+            }
+        }
+
 
         public static Tree RemoveSinglePaths(Tree tree)
         {
@@ -39,7 +52,6 @@ namespace Logic.Filtering
                 return newTree;
             }
             return tree;
-
         }
 
 
@@ -57,19 +69,21 @@ namespace Logic.Filtering
         {
             if (!tree.Childs.Any())
                 return tree;
-            var baseClassPattern = PatternFinder.FindBaseClassPattern(tree.Childs);
-            if (baseClassPattern != null)
-            {
-                tree.UpdateChildren(new List<Node>());
-                tree.AddChild(new Node(baseClassPattern + "s"));
-            }
-            else
-            {
-                var namingPattern = PatternFinder.FindNamingPattern(tree.Childs.Select(x => x.Name));
-                if (namingPattern != null)
+            if(!tree.Childs.Select(x => x.HasChildren()).Any()) { 
+                var baseClassPattern = PatternFinder.FindBaseClassPattern(tree.Childs);
+                if (baseClassPattern != null)
                 {
                     tree.UpdateChildren(new List<Node>());
-                    tree.AddChild(new Node(namingPattern + "s"));
+                    tree.AddChild(new Node(baseClassPattern + "s"));
+                }
+                else
+                {
+                    var namingPattern = PatternFinder.FindNamingPattern(tree.Childs.Select(x => x.Name));
+                    if (namingPattern != null)
+                    {
+                        tree.UpdateChildren(new List<Node>());
+                        tree.AddChild(new Node(namingPattern + "s"));
+                    }
                 }
             }
             tree.UpdateChildren(tree.Childs.Select(FindSiblingPatterns).Cast<Node>());

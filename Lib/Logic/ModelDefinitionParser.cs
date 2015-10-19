@@ -62,6 +62,9 @@ namespace Logic
                     var fname = filter.Name;
                     var value = filter.InnerText == "on";
                     if (fname == "RemoveTests") filters.RemoveTests = value;
+                    if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = value;
+
+                    
                 }
             var modelDefinition = new ModelDefinition(name, scope, outputSettings, filters);
             return modelDefinition;

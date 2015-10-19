@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using EnvDTE;
 using Logic.Analysis.Building;
 using Logic.Analysis.SemanticTree;
@@ -40,6 +41,7 @@ namespace Logic.Analysis
             ProjectTreeBuilder.AddProjectToTree(solution, ref tree, pName);
             ClassTreeBuilder.AddClassesToTree(solution, tree, fname);
             tree = SemanticTreeBuilder.BuildDependenciesFromReferences(tree);
+            tree = tree.DescendantNodes().First(x => x is ClassNode).Parent;
             return tree;
         }
 

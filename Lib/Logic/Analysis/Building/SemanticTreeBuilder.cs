@@ -17,20 +17,23 @@ namespace Logic.Analysis.Building
         public static Node BuildDependenciesFromReferences(Node node,Tree root)
         {
             node.UpdateChildren(node.Childs.Select(x => BuildDependenciesFromReferences(x, root)).ToList());
-            foreach (var reference in node.References)
-            {
-                var usedAt = reference.Locations.Where(x => !x.IsImplicit);
-                var usedBy = usedAt.FindReferencingSymbolsAsync(default(CancellationToken)).Result;
-
-                foreach (var nodeUsingThisNode in usedBy.Select(root.FindNodeWithSymbol))
+            if( node is ClassNode)
+            { 
+                foreach (var reference in (node as ClassNode).References)
                 {
-                    nodeUsingThisNode.Dependencies.Add(node);
+                    var usedAt = reference.Locations.Where(x => !x.IsImplicit);
+                    var usedBy = usedAt.FindReferencingSymbolsAsync(default(CancellationToken)).Result;
+
+                    foreach (var nodeUsingThisNode in usedBy.Select(root.FindNodeWithSymbol))
+                    {
+                        nodeUsingThisNode.Dependencies.Add(node);
+                    }
                 }
             }
             return node;
         }
 
-        public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassInfo> classes)
+        public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassNode> classes)
         {
             var all = new List<Node>();
             var classList = classes.ToList();
@@ -41,13 +44,13 @@ namespace Logic.Analysis.Building
             return all.Where(x => x.Parent == null);
         }
 
-        private static Node FindParent(ref List<Node> all, List<ClassInfo> classList, ISymbol symbol)
+        private static Node FindParent(ref List<Node> all, List<ClassNode> classList, ISymbol symbol)
         {
             var node = all.Find(x => Equals(x.Symbol, symbol));
             if (node != null)
                 return node;
             var classInfo = classList.FirstOrDefault(x => Equals(x.Symbol, symbol));
-            node = classInfo != null ? new Node(classInfo) : new Node(symbol);
+            node = classInfo ?? new Node(symbol);
             all.Add(node);
             if (symbol.ContainingSymbol is INamespaceSymbol 
                 && !((INamespaceSymbol) symbol.ContainingSymbol).IsGlobalNamespace 

@@ -31,7 +31,7 @@ namespace Analysis.Tests
                 var diagnostics = compile.GetParseDiagnostics();
                 Assert.IsTrue(!diagnostics.Any());
                 var projectA = tree.Childs.First();
-                var button = projectA.Childs.FirstOrDefault(x => x.Name == "Button");
+                var button = projectA.Childs.FirstOrDefault(x => x.Name == "Button") as ClassNode;
                 Assert.IsNotNull(button);
                 Assert.IsTrue(button.References.Any());
             }
@@ -54,7 +54,7 @@ namespace Analysis.Tests
                 var tree = new Tree();
                 Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 var projectA = tree.Childs.First();
-                var button = projectA.Childs.WithName("Button");
+                var button = projectA.Childs.WithName("Button") as ClassNode;
                 var guiFacade = projectA.Childs.WithName("GuiFacade");
                 Assert.IsNotNull(button);
                 Assert.IsNotNull(guiFacade);

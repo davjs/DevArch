@@ -24,18 +24,9 @@ namespace Logic.Analysis.SemanticTree
         public string Name => _name ?? Symbol.Name;
 
         public readonly ISymbol Symbol;
-        public readonly IEnumerable<ReferencedSymbol> References = new List<ReferencedSymbol>();
         public readonly List<Node> Dependencies = new List<Node>();
         public readonly HashSet<Node> SiblingDependencies = new HashSet<Node>();
         public Tree Parent;
-        public readonly IEnumerable<TypeSyntax> BaseClasses = new List<TypeSyntax>();
-
-        public Node(ClassInfo @class)
-        {
-            Symbol = @class.Symbol;
-            References = @class.References;
-            BaseClasses = @class.BaseTypes;
-        }
 
         public override string ToString()
         {
@@ -48,7 +39,17 @@ namespace Logic.Analysis.SemanticTree
         }
     }
 
-
+    public class ClassNode : Node
+    {
+        public readonly IEnumerable<ReferencedSymbol> References;
+        public readonly IEnumerable<TypeSyntax> BaseClasses;
+        public ClassNode(ISymbol symbol, IEnumerable<ReferencedSymbol> references,IEnumerable<TypeSyntax> baseClasses) : base(symbol)
+        {
+            References = references;
+            BaseClasses = baseClasses;
+        }
+    }
+    
     public class ProjectNode : Node
     {
         public ProjectNode(ProjectItem p) : base(p.Name)

@@ -42,6 +42,11 @@ namespace Logic.Analysis.SemanticTree
             AddChilds(newList);
         }
 
+        public void RemoveChild(Node n)
+        {
+            ChildsList.Remove(n);
+        }
+
         public Node FindNodeWithSymbol(ISymbol symbol)
         {
             return ChildsList.Select(x => x.FindNodeWithSymbol(symbol)).FirstOrDefault(x => x != null);

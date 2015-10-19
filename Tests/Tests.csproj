@@ -125,6 +125,7 @@
     <Compile Include="DependencyTests.cs" />
     <Compile Include="Sample\FindsAnononymousLayer.cs" />
     <Compile Include="Filtering\Ordering\SiblingOrderTests.cs" />
+    <Compile Include="Sample\Layers.cs" />
     <Compile Include="SolutionDirectoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
