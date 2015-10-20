@@ -29,8 +29,11 @@
     public class Filters
     {
         public bool RemoveTests = true;
-        public int ByReference = 1;
+        public int MinReferences = 1;
         public bool RemoveSinglePaths = true;
+        public int MaxDepth = 0;
+        public bool RemoveDefaultNamespaces = true;
+        public bool RemoveExceptions = true;
     }
 
     public interface IScope

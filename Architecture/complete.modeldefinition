@@ -5,5 +5,9 @@
   </Scope>
   <Output Path = "Current arch.png" Scale="1"/>
   <Filters>
+    <MaxDepth>2</MaxDepth>
+    <RemoveSinglePaths>Off</RemoveSinglePaths>
+    <RemoveExceptions>On</RemoveExceptions>
+    <MinReferences>2</MinReferences>
   </Filters>
 </Model>

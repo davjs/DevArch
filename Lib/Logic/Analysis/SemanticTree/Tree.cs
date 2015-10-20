@@ -35,7 +35,7 @@ namespace Logic.Analysis.SemanticTree
                 AddChild(node);
         }
 
-        public void UpdateChildren(IEnumerable<Node> children)
+        public void SetChildren(IEnumerable<Node> children)
         {
             var newList = children.ToList();
             ChildsList.Clear();

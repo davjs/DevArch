@@ -26,7 +26,7 @@ namespace Logic
                 }
             }
 
-            if (archProjects.Count != 1) throw new NotImplementedException();
+            if (archProjects.Count != 1) throw new NoArchProjectsFound();
             var archProject = archProjects.First();
             var items =
                 archProject.ProjectItems.Cast<ProjectItem>().Where(d => d.Name.EndsWith(".modeldefinition")).ToList();
@@ -59,15 +59,23 @@ namespace Logic
             if (filtersNode?.ChildNodes != null)
                 foreach (XmlNode filter in (filtersNode?.ChildNodes))
                 {
-                    var fname = filter.Name;
-                    var value = filter.InnerText == "on";
-                    if (fname == "RemoveTests") filters.RemoveTests = value;
-                    if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = value;
-
-                    
+                    ParseFilter(filter,ref filters);
                 }
             var modelDefinition = new ModelDefinition(name, scope, outputSettings, filters);
             return modelDefinition;
+        }
+
+        private static void ParseFilter(XmlNode filter,ref Filters filters)
+        {
+            var fname = filter.Name;
+            var on = filter.InnerText.Equals("on", StringComparison.CurrentCultureIgnoreCase);
+            var number = 0;
+            int.TryParse(filter.InnerText, out number);
+            if (fname == "RemoveTests") filters.RemoveTests = on;
+            if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = on;
+            if (fname == "RemoveExceptions") filters.RemoveExceptions = on;
+            if (fname == "MaxDepth") filters.MaxDepth = number;
+            if (fname == "MinReferences") filters.MinReferences = number;
         }
 
         private static OutputSettings ParseOutputSettings(XmlNode output)
@@ -107,5 +115,9 @@ namespace Logic
                 (scope as NamedScope).Name = scopeNode?.Attributes[0].Value;
             return scope;
         }
+    }
+
+    public class NoArchProjectsFound : Exception
+    {
     }
 }

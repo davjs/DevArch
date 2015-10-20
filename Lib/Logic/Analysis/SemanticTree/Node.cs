@@ -66,17 +66,8 @@ namespace Logic.Analysis.SemanticTree
     {
         public SiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
         {
-            UpdateChildren(siblingNodes);
+            SetChildren(siblingNodes);
             Horizontal = true;
-        }
-    }
-
-    public class VerticalSiblingHolderNode : Node
-    {
-        public VerticalSiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
-        {
-            UpdateChildren(siblingNodes);
-            Horizontal = false;
         }
     }
 
@@ -88,3 +79,4 @@ namespace Logic.Analysis.SemanticTree
         }
     }
 }
+ 

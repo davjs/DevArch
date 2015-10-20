@@ -12,7 +12,7 @@ namespace Logic.Analysis
             foreach (var child in childs)
             {
                 if (child.Childs.Any())
-                    child.UpdateChildren(OrderChildsBySiblingsDependencies(child.Childs));
+                    child.SetChildren(OrderChildsBySiblingsDependencies(child.Childs));
             }
 
             if (!childs.SiblingDependencies().Any())

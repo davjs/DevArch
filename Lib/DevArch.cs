@@ -1,17 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Presentation;
 using EnvDTE;
 using Logic;
+using Presentation;
 
-namespace DevArch.lib
+namespace Lib
 {
     public class DevArch
     {
         public static void RenderAllArchDiagramsToFiles(_DTE enivorment)
         {
-            var fullName = enivorment.Solution?.FullName;
+            var fullName = GetSolutionName(enivorment);
+            
             if (fullName == null)
                 throw new NoSolutionOpenException();
             var solutionDir = Path.GetDirectoryName(fullName);
@@ -35,6 +36,22 @@ namespace DevArch.lib
             var tree = modelGen.GenerateDiagram(ModelDefinition.RootDefault);
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
             view.Diagram.RenderModel(viewModel);
+        }
+        private static string GetSolutionName(_DTE dte2)
+        {
+            string name = null;
+            while (name == null)
+            {
+                try
+                {
+                    name = dte2.Solution.FullName;
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+            return name;
         }
     }
 

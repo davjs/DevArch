@@ -37,7 +37,37 @@ namespace Logic.Analysis.SemanticTree
             return nodes.Select(n => n.References).Distinct().Count();
         }*/
 
-        public static IEnumerable<Node> DescendantNodes(this Tree tree)
+        public static IEnumerable<ProjectNode> Projects(this Tree tree)
+        {
+            var projects = new List<ProjectNode>();
+            foreach (var child in tree.Childs)
+            {
+                if(child is ProjectNode)
+                    projects.Add(child as ProjectNode);
+                if (child is ClassNode)
+                    return projects;
+                projects.AddRange(child.Projects());
+            }
+            return projects;
+        }
+
+        /*public static IEnumerable<ProjectNode> Projects(this Tree tree)
+        {
+            foreach (var child in tree.Childs)
+            {
+                if(child is ProjectNode)
+                    yield return child as ProjectNode;
+                if (child is ClassNode)
+                    yield break;
+                foreach (var descendantsOfChild in child.Projects())
+                {
+                    yield return descendantsOfChild;
+                }
+            }
+        } */
+
+            public static
+            IEnumerable<Node> DescendantNodes(this Tree tree)
         {
             foreach (var child in tree.Childs)
             {

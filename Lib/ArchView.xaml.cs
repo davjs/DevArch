@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Markup;
 
-namespace DevArch.lib
+namespace Lib
 {
     /// <summary>
     /// Interaction logic for Diagram.xaml

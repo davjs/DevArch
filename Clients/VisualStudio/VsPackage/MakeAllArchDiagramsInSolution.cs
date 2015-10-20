@@ -94,7 +94,7 @@ namespace VSIXProject1
         private void MenuItemCallback(object sender, EventArgs e)
         {
             var dte = this.ServiceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE._DTE;
-            DevArch.lib.DevArch.RenderAllArchDiagramsToFiles(dte);
+            Lib.DevArch.RenderAllArchDiagramsToFiles(dte);
         }
     }
 }

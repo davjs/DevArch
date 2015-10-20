@@ -12,7 +12,7 @@ namespace Standalone
         public MainWindow()
         {
             InitializeComponent();
-            DevArch.lib.DevArch.RenderCompleteDiagramToView(GetDte(), ref ArchView);
+            Lib.DevArch.RenderCompleteDiagramToView(GetDte(), ref ArchView);
         }
 
 

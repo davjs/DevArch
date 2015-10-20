@@ -7,8 +7,8 @@
     <ProjectGuid>{DC505588-5385-4B7B-9432-FE0EBD560287}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevArch.lib</RootNamespace>
-    <AssemblyName>DevArch.lib</AssemblyName>
+    <RootNamespace>Lib</RootNamespace>
+    <AssemblyName>Lib</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

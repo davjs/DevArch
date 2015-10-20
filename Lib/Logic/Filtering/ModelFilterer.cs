@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Logic.Analysis;
+using Logic.Analysis.Building;
 using Logic.Analysis.SemanticTree;
 
 namespace Logic.Filtering
@@ -10,21 +11,70 @@ namespace Logic.Filtering
     {
         public static void ApplyFilter(ref Tree tree, Filters filters)
         {
-            if(filters.RemoveTests)
+            tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
+            tree.SetChildren(SiblingReordrer.OrderChildsBySiblingsDependencies(tree.Childs));
+
+            if (filters.RemoveTests)
                 tree = RemoveTests(tree);
-            tree.UpdateChildren(tree.Childs.Select(FindSiblingDependencies).ToList());
-            if(filters.RemoveSinglePaths)
+            if (filters.RemoveDefaultNamespaces)
+                RemoveDefaultNamespaces(tree);
+            if (filters.MaxDepth > 0)
+                RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
+            if (filters.RemoveExceptions)
+                RemoveExceptions(tree);
+            if (filters.MinReferences > 0)
+                RemoveNodesReferencedLessThan(tree, filters.MinReferences);
+            if (filters.RemoveSinglePaths)
                 tree = RemoveSinglePaths(tree);
-            tree.UpdateChildren(SiblingReordrer.OrderChildsBySiblingsDependencies(tree.Childs).ToList());
-            tree = FindSiblingPatterns(tree);
-            if (filters.ByReference > 0)
-                RemoveNodesReferencedLessThan(tree,filters.ByReference);
+            //tree = FindSiblingPatterns(tree);
             //tree = RemoveSinglePaths(tree); change to remove projects/namespaces containing zero classes
+        }
+
+        private static void RemoveExceptions(Tree tree)
+        {
+            foreach (var child in tree.Childs.ToList())
+            {
+                if (child is ClassNode)
+                {
+                    var cls = child as ClassNode;
+                    if(cls.BaseClasses.Any(x => x.ToString() == "Exception"))
+                        tree.RemoveChild(cls);
+                }
+                RemoveExceptions(child);
+            }
+        }
+
+        private static void RemoveDefaultNamespaces(Tree tree)
+        {
+            var projects = tree.Projects();
+            var withDefaultNamespaces = projects.Where(p => p.Childs.Count() == 1 && p.Childs.First().Name == p.Name);
+            foreach (var projectNode in withDefaultNamespaces)
+            {
+                var childNode = projectNode.Childs.First();
+                projectNode.Horizontal = childNode.Horizontal;
+                projectNode.SetChildren(childNode.Childs);
+            }
+        }
+
+        public static void RemoveNodesWithMoreDepthThan(Tree tree, int maxDepth, int currDepth = -1)
+        {
+            if (!(tree is SiblingHolderNode))
+                currDepth += 1;
+
+            if (currDepth == maxDepth)
+                tree.SetChildren(new List<Node>());
+            else
+            {
+                foreach (var child in tree.Childs)
+                {
+                    RemoveNodesWithMoreDepthThan(child, maxDepth, currDepth);
+                }
+            }
         }
 
         private static void RemoveNodesReferencedLessThan(Tree tree, int byReference)
         {
-            tree.UpdateChildren(tree.Childs.Where(x => !(x is ClassNode) || (x as ClassNode).References.Count() >= byReference));
+            tree.SetChildren(tree.Childs.Where(x => !(x is ClassNode) || (x as ClassNode).References.Count() >= byReference));
             foreach (var child in tree.Childs)
             {
                 RemoveNodesReferencedLessThan(child, byReference);
@@ -34,7 +84,7 @@ namespace Logic.Filtering
 
         public static Tree RemoveSinglePaths(Tree tree)
         {
-            tree.UpdateChildren(tree.Childs.Select(RemoveSinglePaths).Cast<Node>().ToList());
+            tree.SetChildren(tree.Childs.Select(RemoveSinglePaths).Cast<Node>().ToList());
             if (tree.Childs.Count == 1)
             {
                 var node = tree as Node;
@@ -54,13 +104,12 @@ namespace Logic.Filtering
             return tree;
         }
 
-
         private static Tree RemoveTests(Tree tree)
-            {
-            tree.UpdateChildren(tree.Childs.Select(RemoveTests).Cast<Node>());
-            tree.UpdateChildren(
+        {
+            tree.SetChildren(tree.Childs.Select(RemoveTests).Cast<Node>());
+            tree.SetChildren(
                 tree.Childs.Where(x => !x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)).ToList());
-            tree.UpdateChildren(
+            tree.SetChildren(
                 tree.Childs.Where(x => !x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase)).ToList());
             return tree;
         }
@@ -73,7 +122,7 @@ namespace Logic.Filtering
                 var baseClassPattern = PatternFinder.FindBaseClassPattern(tree.Childs);
                 if (baseClassPattern != null)
                 {
-                    tree.UpdateChildren(new List<Node>());
+                    tree.SetChildren(new List<Node>());
                     tree.AddChild(new Node(baseClassPattern + "s"));
                 }
                 else
@@ -81,22 +130,22 @@ namespace Logic.Filtering
                     var namingPattern = PatternFinder.FindNamingPattern(tree.Childs.Select(x => x.Name));
                     if (namingPattern != null)
                     {
-                        tree.UpdateChildren(new List<Node>());
+                        tree.SetChildren(new List<Node>());
                         tree.AddChild(new Node(namingPattern + "s"));
                     }
                 }
             }
-            tree.UpdateChildren(tree.Childs.Select(FindSiblingPatterns).Cast<Node>());
+            tree.SetChildren(tree.Childs.Select(FindSiblingPatterns).Cast<Node>());
             return tree;
         }
 
         public static Node FindSiblingDependencies(Node node)
         {
-            node.UpdateChildren(node.Childs.Select(FindSiblingDependencies).ToList());
+            node.SetChildren(node.Childs.Select(FindSiblingDependencies).ToList());
             if (node.Parent == null) return node;
             var allSubDependencies = node.AllSubDependencies().ToList();
             var dependenciesWhereAncestorsAreSiblings = allSubDependencies
-                .Select<Node, Node>(dependency => AncestorIsSibling(node.Parent, dependency)).ToList();
+                .Select(dependency => AncestorIsSibling(node.Parent, dependency)).ToList();
             foreach (
                 var sibling in
                     dependenciesWhereAncestorsAreSiblings

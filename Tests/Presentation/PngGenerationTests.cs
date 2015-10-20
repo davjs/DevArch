@@ -21,7 +21,11 @@ namespace Analysis.Tests.Presentation
         public void GenerateAllArchDiagrams()
         {
             var enviroment = GetDte();
-            DevArch.lib.DevArch.RenderAllArchDiagramsToFiles(enviroment);
+            while (enviroment.Solution == null)
+            {
+                enviroment = GetDte();
+            }
+            Lib.DevArch.RenderAllArchDiagramsToFiles(enviroment);
         }
     }
 }

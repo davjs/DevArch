@@ -10,13 +10,13 @@ namespace Logic.Analysis.Building
     {
         public static Tree BuildDependenciesFromReferences(Tree tree)
         {
-            tree.UpdateChildren(tree.Childs.Select(x => BuildDependenciesFromReferences(x, tree)).ToList());
+            tree.SetChildren(tree.Childs.Select(x => BuildDependenciesFromReferences(x, tree)).ToList());
             return tree;
         }
 
         public static Node BuildDependenciesFromReferences(Node node,Tree root)
         {
-            node.UpdateChildren(node.Childs.Select(x => BuildDependenciesFromReferences(x, root)).ToList());
+            node.SetChildren(node.Childs.Select(x => BuildDependenciesFromReferences(x, root)).ToList());
             if( node is ClassNode)
             { 
                 foreach (var reference in (node as ClassNode).References)
@@ -26,7 +26,7 @@ namespace Logic.Analysis.Building
 
                     foreach (var nodeUsingThisNode in usedBy.Select(root.FindNodeWithSymbol))
                     {
-                        nodeUsingThisNode.Dependencies.Add(node);
+                        nodeUsingThisNode?.Dependencies.Add(node);
                     }
                 }
             }

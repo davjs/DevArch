@@ -1,4 +1,5 @@
-﻿using Logic.Analysis;
+﻿using System.Linq;
+using Logic.Analysis;
 using Logic.Analysis.SemanticTree;
 using Logic.Filtering;
 using Microsoft.CodeAnalysis;
@@ -10,6 +11,23 @@ namespace Analysis.Tests.Filtering
     [TestClass]
     public class FilterTests
     {
+        [TestMethod()]
+        public void RemoveNodesWithMoreDepthThanTest()
+        {
+            var t = new Tree();
+            var A = new Node("A");
+            var B = new Node("B");
+            var C = new Node("C");
+            var D = new Node("D");
+            t.AddChild(A);
+            A.AddChild(B);
+            B.AddChild(C);
+            C.AddChild(D);
+            Assert.IsTrue(B.Childs.Any());
+            ModelFilterer.RemoveNodesWithMoreDepthThan(t,2);
+            Assert.IsTrue(!B.Childs.Any());
+        }
+
         [TestMethod]
         [TestCategory("ModelBuilder")]
         public void FindsClassesOnDifferentLevels()
