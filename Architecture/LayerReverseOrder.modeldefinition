@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Model DependencyDirection = "Up">
+  <Scope>
+    <Document Name ="Tests\Sample\Layers.cs"/>
+  </Scope>
+  <Output Path="Samples\LayersReverse.png" Scale="2"/>
+  <Filters>
+    <RemoveTests>Off</RemoveTests>
+    <RemoveSinglePaths>Off</RemoveSinglePaths>
+  </Filters>
+</Model>
