@@ -51,6 +51,10 @@ namespace Logic
                 throw new NotImplementedException();
 
             var scopeHolderNode = modelRoot["Scope"];
+            var dependencyAttributeValue = modelRoot.Attributes?.GetNamedItem("DependencyDirection")?.Value;
+            var dependencyDown = true;
+            if (dependencyAttributeValue != null)
+                dependencyDown = dependencyAttributeValue.Equals("Down");
             var scope = ParseScope(scopeHolderNode);
             var output = modelRoot["Output"];
             var outputSettings = ParseOutputSettings(output);
@@ -61,7 +65,7 @@ namespace Logic
                 {
                     ParseFilter(filter,ref filters);
                 }
-            var modelDefinition = new ModelDefinition(name, scope, outputSettings, filters);
+            var modelDefinition = new ModelDefinition(name, scope, outputSettings, filters, dependencyDown);
             return modelDefinition;
         }
 

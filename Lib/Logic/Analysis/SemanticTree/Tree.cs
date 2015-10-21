@@ -6,7 +6,7 @@ namespace Logic.Analysis.SemanticTree
 {
     public class Tree
     {
-        public List<Node> ChildsList { get; } = new List<Node>();
+        private List<Node> ChildsList { get; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;
         public bool Horizontal { get; set; }
         public override string ToString()

@@ -6,15 +6,17 @@
         public IScope Scope;
         public OutputSettings Output;
 
-        public ModelDefinition(string name, IScope scope, OutputSettings output, Filters filters)
+        public ModelDefinition(string name, IScope scope, OutputSettings output, Filters filters, bool dependencyDown = true)
         {
             Name = name;
             Scope = scope;
             Output = output;
             Filters = filters;
+            DependencyDown = dependencyDown;
         }
 
         public readonly Filters Filters;
+        public readonly bool DependencyDown;
 
         public static readonly ModelDefinition RootDefault 
             = new ModelDefinition("", new RootScope(), new OutputSettings(), new Filters());

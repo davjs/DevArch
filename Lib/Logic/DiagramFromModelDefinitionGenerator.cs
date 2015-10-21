@@ -49,6 +49,15 @@ namespace Logic
                 tree = Analyser.AnalyseClass(dte, ((ClassScope)modeldefinition.Scope).Name);
             }
             ModelFilterer.ApplyFilter(ref tree,modeldefinition.Filters);
+
+            if (modeldefinition.DependencyDown)
+                return ReverseTree(tree);
+            return tree;
+        }
+
+        private static Tree ReverseTree(Tree tree)
+        {
+            tree.SetChildren(tree.Childs.Select(ReverseTree).Reverse().Cast<Node>());
             return tree;
         }
 
