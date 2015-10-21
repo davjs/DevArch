@@ -3,9 +3,11 @@
 ##Ordering
 
 In layered diagrams, dependencies are represented by the vertical order of layers.
-By default DevArch generates diagrams where layers depend on the upper layer. (*TODO*: this can be changed by…)
+By default DevArch generates diagrams where layers depend on the upper layer. This can be changed by setting the DependencyDirection attribute to "up" in the model definition.
 
-![](Layers.png)
+```<Model DependencyDirection = "Down">``` |```<Model DependencyDirection = "Up">```
+:---------------:|:----------------------:
+![](Layers.png)  |  ![](LayersReverse.png)
 
 DevArch automaticly resolves hierarchical dependencies to linnear ones, this is done by finding and defining anonymous layers aswell as linnear dependency patterns. The upper diagram has been resolved to a linnear dependency pattern, if you check the code https://github.com/davidkron/DevArch/blob/master/Tests/Sample/Layers.cs you will se that both logic and dataccess uses the entity class.
 
