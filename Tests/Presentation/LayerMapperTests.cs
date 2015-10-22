@@ -30,7 +30,7 @@ namespace Analysis.Tests.Presentation
                 bottom.AddChild(right);
             }
 
-            var viewModel = LayerMapper.NodeViewModelToLayerViewModel(root);
+            var viewModel = LayerMapper.NodeViewModelToLayerViewModel(root,new Palette());
 
             var vtop = viewModel.Children.First();
             var vbottom = viewModel.Children.Last();

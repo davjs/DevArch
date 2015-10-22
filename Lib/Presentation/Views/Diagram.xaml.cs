@@ -28,7 +28,7 @@ namespace Presentation.Views
                 childs.Add(RenderNode(child, depth, color.Clone()));
             }
 
-            var layerView = new LayerView(layerModel.Name, oldColor, childs, layerModel.Column, layerModel.Row,
+            var layerView = new LayerView(layerModel, oldColor, childs, layerModel.Column, layerModel.Row,
                 !layerModel.Anonymous,layerModel.Columns,layerModel.Rows);
             return layerView;
         }

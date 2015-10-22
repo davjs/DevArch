@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
+using Presentation.ViewModels;
 
 namespace Presentation
 {
@@ -20,11 +21,11 @@ namespace Presentation
             InitializeComponent();
         }
 
-        public LayerView(string name, Color backgroundColor, IEnumerable<LayerView> childs, int column, int row,bool visible,int columns,int rows)
+        public LayerView(LayerViewModel layerModel, Color backgroundColor, IEnumerable<LayerView> childs, int column, int row, bool visible, int columns, int rows)
         {
             InitializeComponent();
-            LayerName = name;
-            NameBlock.Text = name;
+            LayerName = layerModel.Name;
+            NameBlock.Text = layerModel.Name;
             _column = column;
             _row = row;
 
@@ -44,8 +45,8 @@ namespace Presentation
             DataContext = this;
 
 
-            Border.Background = new SolidColorBrush(backgroundColor);
-            Border.BorderBrush = new SolidColorBrush(CalculateBorderColor(backgroundColor));
+            Border.Background = new SolidColorBrush(layerModel.Color);
+            Border.BorderBrush = new SolidColorBrush(CalculateBorderColor(layerModel.Color));
             if (!visible) Hide();
         }
 

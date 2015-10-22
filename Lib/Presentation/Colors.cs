@@ -13,6 +13,11 @@ namespace Presentation
         {
             _hslColor = hslColor;
         }
+        
+        public AdvancedColor(Color color)
+        {
+            _hslColor = Colors.Rgbhsl.RGB_to_HSL(color);
+        }
 
         public Color ToRgb()
         {
@@ -61,7 +66,7 @@ namespace Presentation
             return hslColors.Select(x => new AdvancedColor(x));
         } 
 
-        private static readonly IReadOnlyList<Color> KellysMaxContrastSet = new List<Color>
+        public static readonly IReadOnlyList<Color> KellysMaxContrastSet = new List<Color>
         {
             UIntToColor(0xFFFFB300), //Vivid Yellow
             UIntToColor(0xFF803E75), //Strong Purple

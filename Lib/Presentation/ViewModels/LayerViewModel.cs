@@ -11,6 +11,7 @@ namespace Presentation.ViewModels
         public bool Anonymous;
         public int Rows;
         public int Columns;
+        public AdvancedColor Color;
     }
 
     public class ArchViewModel
