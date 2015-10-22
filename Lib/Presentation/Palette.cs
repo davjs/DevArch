@@ -8,59 +8,56 @@ using System.Windows.Media;
 
 namespace Presentation
 {
-    public class Palette
+    public class ColorRange
     {
-        private readonly List<AdvancedColor> _colors = Colors.KellysMaxContrastSet.Select
-            (x => new AdvancedColor(x)).ToList();
-        private int _takenColors;
-        private AdvancedColor _lastColor;
-        public bool HasMoreUniqueColors()
+        public readonly double Top;
+        public readonly double Bottom;
+        private readonly double _s;
+        private readonly double _l;
+        
+        public ColorRange()
         {
-            return _takenColors >= _colors.Count;
-        }
-        public AdvancedColor GetNextColor()
-        {
-            _lastColor = _dedicatedColors.Pop();
-            _takenColors++;
-            return _lastColor;
+            Top = 1;
+            Bottom = 0;
+            _s = 0.4;
+            //TODO: Increase if three has low depth
+            _l = 0.03;
         }
 
-        private Stack<AdvancedColor> _dedicatedColors = null;
-
-        public void RequestColorsFor(int count)
+        private ColorRange(double top, double bottom, double s, double l)
         {
-            if(_takenColors + count > _colors.Count)
+            Top = top;
+            Bottom = bottom;
+            _s = s;
+            _l = l;
+        }
+
+        public AdvancedColor GetColor()
+        {
+            return new AdvancedColor(new Colors.Rgbhsl.Hsl())
             {
-                var color = _lastColor.Clone();
-                color.L *= 1.1;
-                color.S *= 1.2;
-                _dedicatedColors = new Stack<AdvancedColor>(Enumerable.Repeat(color, count));
-            }
-            else
-            {
-                _dedicatedColors = new Stack<AdvancedColor>(_colors.GetRange(_takenColors, count));
-            }
+                H = (Bottom + Top) / 2,
+                S = _s,
+                L = _l
+            };
         }
 
-        public Stack<AdvancedColor> RequestSubColorsFor(int count)
+        public IEnumerable<ColorRange> Divide(int slices)
         {
-            if(count > _colors.Count)
-                throw new NotImplementedException();
-            return RequestSubColorsFor(null, count);
-        }
-
-        public Stack<AdvancedColor> RequestSubColorsFor(AdvancedColor color, int count)
-        {
-            if (_takenColors + count > _colors.Count)
+            var sizeLeft = Top - Bottom;
+            var sizePerSlice = sizeLeft / slices;
+            var newLight = _l*1.05 + sizeLeft / 12;
+            if (sizePerSlice < 0.05)
+                return Enumerable.Repeat(new ColorRange(Top, Bottom, _s, newLight), slices);
+            var newBottom = Bottom;
+            var ranges = new List<ColorRange>();
+            for (var slice = 0; slice < slices; slice++)
             {
-                var newcolor = color.Clone();
-                newcolor.L *= 1.1;
-                newcolor.S *= 1.2;
-                return new Stack<AdvancedColor>(Enumerable.Repeat(newcolor, count));
+                var newTop = newBottom + sizePerSlice;
+                ranges.Add(new ColorRange(newTop,newBottom, _s, newLight));
+                newBottom = newTop;
             }
-            var colors = new Stack<AdvancedColor>(_colors.GetRange(_takenColors, count));
-            _takenColors += count;
-            return colors;
+            return ranges;
         }
     }
 }

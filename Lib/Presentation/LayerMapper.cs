@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using Logic.Analysis.SemanticTree;
@@ -10,29 +11,50 @@ namespace Presentation
     {
         public static ArchViewModel TreeModelToArchViewModel(Tree model)
         {
-            var palette = new Palette();
-            var colors =  palette.RequestSubColorsFor(model.Childs.Count);
             return new ArchViewModel
             {
-                Layers = model.Childs.Select(c => NodeViewModelToLayerViewModel(c,palette, colors.Pop())).ToList()
+                Layers = PaintAndMapNodes(model.Childs).Item1
             };
         }
 
-        public static LayerViewModel NodeViewModelToLayerViewModel(Node node, Palette palette, AdvancedColor color, int depth = 0)
+        private static Tuple<IEnumerable<LayerViewModel>,ColorRange> PaintAndMapNodes(IReadOnlyCollection<Node> nodes,ColorRange color = null)
+        {
+            List<ColorRange> subcolors;
+            if (color != null)
+            {
+                subcolors = color.Divide(nodes.Count + 1).ToList();
+                color = subcolors.First();
+                subcolors.Remove(color);
+            }
+            else
+            {
+                color =new ColorRange();
+                subcolors = color.Divide(nodes.Count).ToList();
+            }
+            var nodesAndColors = subcolors.Zip(nodes, (colorRange, subNode) => new { color = colorRange, node = subNode });
+            return new Tuple<IEnumerable<LayerViewModel>, ColorRange>(nodesAndColors.Select(x => NodeViewModelToLayerViewModel(x.node,x.color)), color);
+        }
+
+        public static LayerViewModel NodeViewModelToLayerViewModel(Node node, ColorRange color)
         {
             var children = new List<LayerViewModel>();
             var column = 0;
             var row = 0;
-            Stack<AdvancedColor> colors;
-            if(depth >= 1)
-                colors = palette.RequestSubColorsFor(color,200);
+            IEnumerable<LayerViewModel> childLayers;
+            if (node.Horizontal)
+            {
+                var newColors = color.Divide(2);
+                childLayers = node.Childs.Select(n => NodeViewModelToLayerViewModel(n, newColors.Last()));
+                color = newColors.Last();
+            }
             else
             {
-                colors = palette.RequestSubColorsFor(color, node.Childs.Count);
+                var paintedNodes = PaintAndMapNodes(node.Childs, color);
+                childLayers = paintedNodes.Item1;
+                color = paintedNodes.Item2;
             }
-            foreach (var childLayer in node.Childs.Select(node1 => NodeViewModelToLayerViewModel(node1, palette, colors.Pop(),depth +1)))
-            {
-                    
+            foreach (var childLayer in childLayers)
+            {       
                 childLayer.Column = column;
                 childLayer.Row = row;
                 children.Add(childLayer);
@@ -41,8 +63,7 @@ namespace Presentation
                 else
                     row++;
             }
-            return new LayerViewModel {Color = color,Columns = column,Rows = row, Name = node.Name, Anonymous = !node.Name.Any(), Children = children}; 
+            return new LayerViewModel {Color = color.GetColor(), Columns = column,Rows = row, Name = node.Name/* + (color.Bottom + color.Top) /2*/, Anonymous = !node.Name.Any(), Children = children}; 
         }
-        
     }
 }

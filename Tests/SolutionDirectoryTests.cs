@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using EnvDTE;
 using Logic.Analysis.Building;
 using Logic.Analysis.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Analysis.Tests
+namespace Tests
 {
     [TestClass]
     public class SolutionDirectoryTests

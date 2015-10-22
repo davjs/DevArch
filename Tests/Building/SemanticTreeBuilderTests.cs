@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Logic.Analysis.Building;
 using Logic.Analysis.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Analysis.Tests.Building
+namespace Tests.Building
 {
     [TestClass]
     public class SemanticTreeBuilderTests

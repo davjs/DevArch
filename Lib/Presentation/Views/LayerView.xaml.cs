@@ -5,7 +5,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using Presentation.ViewModels;
 
-namespace Presentation
+namespace Presentation.Views
 {
     /// <summary>
     /// Interaction logic for layerControl.xaml

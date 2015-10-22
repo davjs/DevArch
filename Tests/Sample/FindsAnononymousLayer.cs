@@ -1,5 +1,5 @@
 ﻿#pragma warning disable 169
-namespace Analysis.Tests.Sample
+namespace Tests.Sample
 {
     namespace FindsAnononymousLayer
     {

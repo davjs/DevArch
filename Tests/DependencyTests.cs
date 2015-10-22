@@ -1,12 +1,11 @@
-﻿using Analysis;
-using System.Linq;
+﻿using System.Linq;
 using Logic.Analysis;
 using Logic.Analysis.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Analysis.Tests
+namespace Tests
 {
     [TestClass]
     public class DependencyTests

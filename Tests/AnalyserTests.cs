@@ -1,19 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using EnvDTE;
-using Logic;
+﻿using System.Linq;
 using Logic.Analysis;
 using Logic.Analysis.Building;
 using Logic.Analysis.SemanticTree;
 using Logic.Filtering;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Analysis.Tests
+namespace Tests
 {
     [TestClass]
     public class AnalyserTests

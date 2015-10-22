@@ -6,9 +6,9 @@
 
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
+using EnvDTE;
+using Lib;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace VSIXProject1
 {
@@ -41,18 +41,16 @@ namespace VSIXProject1
         {
             if (package == null)
             {
-                throw new ArgumentNullException("package");
+                throw new ArgumentNullException(nameof(package));
             }
 
             this.package = package;
 
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
-            {
-                var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
-                commandService.AddCommand(menuItem);
-            }
+            var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (commandService == null) return;
+            var menuCommandId = new CommandID(CommandSet, CommandId);
+            var menuItem = new MenuCommand(MenuItemCallback, menuCommandId);
+            commandService.AddCommand(menuItem);
         }
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace VSIXProject1
         {
             get
             {
-                return this.package;
+                return package;
             }
         }
 
@@ -93,8 +91,8 @@ namespace VSIXProject1
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            var dte = this.ServiceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE._DTE;
-            Lib.DevArch.RenderAllArchDiagramsToFiles(dte);
+            var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
+            DevArch.RenderAllArchDiagramsToFiles(dte);
         }
     }
 }

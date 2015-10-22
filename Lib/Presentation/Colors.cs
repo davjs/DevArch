@@ -51,8 +51,6 @@ namespace Presentation
 
         public static IEnumerable<AdvancedColor> GetNColors(int numColors)
         {
-            var random = new Random();
-
             var ranges = Enumerable.Range(1, numColors);
             var dividedHues = ranges.Select(range => 1d/ range);
             var hslColors = dividedHues.Select(hue =>

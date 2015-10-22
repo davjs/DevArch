@@ -6,8 +6,8 @@
     <ProjectGuid>{80FB344A-529D-4CE8-831B-2492D7DBEC24}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Analysis.Tests</RootNamespace>
-    <AssemblyName>Analysis.Tests</AssemblyName>
+    <RootNamespace>Tests</RootNamespace>
+    <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="AnalyserTests.cs" />
     <Compile Include="Building\SemanticTreeBuilderTests.cs" />
+    <Compile Include="Presentation\ColorRangeTests.cs" />
     <Compile Include="Filtering\FilterTests.cs" />
     <Compile Include="Filtering\Ordering\CircularReferenceTests.cs" />
     <Compile Include="Presentation\LayerMapperTests.cs" />
