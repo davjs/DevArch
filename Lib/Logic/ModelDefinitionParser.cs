@@ -73,7 +73,7 @@ namespace Logic
         {
             var fname = filter.Name;
             var on = filter.InnerText.Equals("on", StringComparison.CurrentCultureIgnoreCase);
-            var number = 0;
+            int number;
             int.TryParse(filter.InnerText, out number);
             if (fname == "RemoveTests") filters.RemoveTests = on;
             if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = on;

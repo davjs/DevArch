@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
 using Presentation.ViewModels;
+using Colors = Presentation.Coloring.Colors;
 
 namespace Presentation.Views
 {
@@ -21,7 +22,7 @@ namespace Presentation.Views
             InitializeComponent();
         }
 
-        public LayerView(LayerViewModel layerModel, Color backgroundColor, IEnumerable<LayerView> childs, int column, int row, bool visible, int columns, int rows)
+        public LayerView(LayerViewModel layerModel, IEnumerable<LayerView> childs, int column, int row, bool visible, int columns, int rows)
         {
             InitializeComponent();
             LayerName = layerModel.Name;

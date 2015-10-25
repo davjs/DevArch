@@ -13,32 +13,25 @@ namespace Presentation.Views
             InitializeComponent();
         }
 
-        private static LayerView RenderNode(LayerViewModel layerModel, int depth, AdvancedColor color)
+        private static LayerView RenderNode(LayerViewModel layerModel, int depth)
         {
             depth -= 1;
-            var oldColor = color.Clone();
             var childs = new List<LayerView>();
-            if (!layerModel.Anonymous)
-            {
-                color.L *= 1.1;
-                color.S *= 1.2;
-            }
             foreach (var child in layerModel.Children)
             {
-                childs.Add(RenderNode(child, depth, color.Clone()));
+                childs.Add(RenderNode(child, depth));
             }
 
-            var layerView = new LayerView(layerModel, oldColor, childs, layerModel.Column, layerModel.Row,
+            var layerView = new LayerView(layerModel, childs, layerModel.Column, layerModel.Row,
                 !layerModel.Anonymous,layerModel.Columns,layerModel.Rows);
             return layerView;
         }
 
         public void RenderModel(ArchViewModel model)
         {
-            var colors = new Stack<AdvancedColor>(Colors.GetNColors(model.Layers.Count()));
             foreach (var layer in model.Layers)
             {
-                MasterPanel.Children.Add(RenderNode(layer, 10, colors.Pop()));
+                MasterPanel.Children.Add(RenderNode(layer, 10));
             }
         }
     }

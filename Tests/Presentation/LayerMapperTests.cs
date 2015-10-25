@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Logic.Analysis.SemanticTree;
+using Logic.Building.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
 
@@ -28,7 +28,7 @@ namespace Tests.Presentation
                 bottom.AddChild(right);
             }
 
-            var viewModel = LayerMapper.NodeViewModelToLayerViewModel(root,new ColorRange());
+            var viewModel = LayerMapper.NodeViewModelToLayerViewModel(root);
 
             var vtop = viewModel.Children.First();
             var vbottom = viewModel.Children.Last();

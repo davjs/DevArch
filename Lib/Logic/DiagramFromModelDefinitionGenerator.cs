@@ -5,7 +5,8 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
 using Logic.Analysis;
-using Logic.Analysis.SemanticTree;
+using Logic.Building;
+using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Microsoft.CodeAnalysis.MSBuild;
 
@@ -38,15 +39,15 @@ namespace Logic
             Tree tree = null;
             if (modeldefinition.Scope is RootScope)
             {
-                tree = Analyser.AnalyseSolution(dte, projects);
+                tree = SemanticTreeBuilder.AnalyseSolution(dte, projects);
             }
             if (modeldefinition.Scope is DocumentScope)
             {
-                tree = Analyser.AnalyseDocument(dte,((DocumentScope) modeldefinition.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseDocument(dte,((DocumentScope) modeldefinition.Scope).Name);
             }
             if (modeldefinition.Scope is ClassScope)
             {
-                tree = Analyser.AnalyseClass(dte, ((ClassScope)modeldefinition.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseClass(dte, ((ClassScope)modeldefinition.Scope).Name);
             }
             ModelFilterer.ApplyFilter(ref tree,modeldefinition.Filters);
 

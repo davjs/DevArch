@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
+using Presentation.ViewModels;
 
 namespace Tests.Presentation
 {
@@ -21,5 +23,17 @@ namespace Tests.Presentation
             Assert.AreEqual(0.5, highRange.Bottom);
             Assert.AreEqual(1, highRange.Top);
         }
+        /*[TestMethod]
+        public void PaintLayerTest()
+        {
+            var layers = new List<LayerViewModel>();
+            var A = new LayerViewModel {Name = "A"};
+            var B = new LayerViewModel { Name = "B" };
+            layers.Add(A);
+            layers.Add(B);
+            LayerMapper.PaintLayers(layers);
+            Assert.AreEqual(1, A.Color.H);
+            Assert.AreEqual(0.5,B.Color.H);
+        }*/
     }
 }

@@ -1,54 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 
-namespace Presentation
+namespace Presentation.Coloring
 {
     public class AdvancedColor
     {
-        private readonly Colors.Rgbhsl.Hsl _hslColor;
+        private readonly Colors.Rgbhsl.Hsl _hslColor = new Colors.Rgbhsl.Hsl();
 
         public AdvancedColor(Colors.Rgbhsl.Hsl hslColor)
         {
             _hslColor = hslColor;
         }
-        
-        public AdvancedColor(Color color)
-        {
-            _hslColor = Colors.Rgbhsl.RGB_to_HSL(color);
-        }
-
-        public Color ToRgb()
-        {
-            return Colors.Rgbhsl.HSL_to_RGB(_hslColor);
-        }
-
-        public AdvancedColor Clone()
-        {
-            return new AdvancedColor(_hslColor.Clone());
-        }
 
         public static implicit operator Color(AdvancedColor c)
         {
-            return c.ToRgb();
+            return Colors.Rgbhsl.HSL_to_RGB(c._hslColor);
         }
 
         public double H { get { return _hslColor.H; } set { _hslColor.H = value; } }
         public double S { get { return _hslColor.S; } set { _hslColor.S = value; } }
         public double L { get { return _hslColor.L; } set { _hslColor.L = value; } }
+
+
+        public AdvancedColor(double h, double s, double l)
+        {
+            if (h > 1)
+                h = h - 1;
+            H = h;
+            S = s;
+            L = l;
+        }
     }
 
 
     public static class Colors
     {
-
-        public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
-        {
-            if (val.CompareTo(min) < 0) return min;
-            return val.CompareTo(max) > 0 ? max : val;
-        }
-
         public static IEnumerable<AdvancedColor> GetNColors(int numColors)
         {
             var ranges = Enumerable.Range(1, numColors);

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Logic.Analysis.SemanticTree
+namespace Logic.Building.SemanticTree
 {
     public class Tree
     {

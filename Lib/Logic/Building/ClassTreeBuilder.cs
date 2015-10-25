@@ -1,39 +1,32 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Logic.Analysis.SemanticTree;
+using Logic.Building.SemanticTree;
 using Microsoft.CodeAnalysis;
 
-namespace Logic.Analysis.Building
+namespace Logic.Building
 {
-    static public class SemanticTreeBuilder
+    public static class ClassTreeBuilder
     {
-        public static Tree BuildDependenciesFromReferences(Tree tree)
+        public static void AddClassesToTree(Solution solution, Tree tree, string documentName = null)
         {
-            tree.SetChildren(tree.Childs.Select(x => BuildDependenciesFromReferences(x, tree)).ToList());
-            return tree;
-        }
+            foreach (var project in tree.DescendantNodes().OfType<ProjectNode>())
+            {
+                var documents = project.Documents.ToList();
+                if (!documents.Any()) continue;
 
-        public static Node BuildDependenciesFromReferences(Node node,Tree root)
-        {
-            node.SetChildren(node.Childs.Select(x => BuildDependenciesFromReferences(x, root)).ToList());
-            if( node is ClassNode)
-            { 
-                foreach (var reference in (node as ClassNode).References)
-                {
-                    var usedAt = reference.Locations.Where(x => !x.IsImplicit);
-                    var usedBy = usedAt.FindReferencingSymbolsAsync(default(CancellationToken)).Result;
+                if (documentName != null)
+                    documents = documents.Where(d => d.Name == documentName).ToList();
 
-                    foreach (var nodeUsingThisNode in usedBy.Select(root.FindNodeWithSymbol))
-                    {
-                        nodeUsingThisNode?.Dependencies.Add(node);
-                    }
-                }
+                var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result);
+                var classes = SemanticModelWalker.GetClassesInModels(semanticModels, solution);
+                if (!classes.Any())
+                    continue;
+                var classnodes = BuildTreeFromClasses(classes);
+                project.AddChilds(classnodes);
             }
-            return node;
         }
 
-        public static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassNode> classes)
+        private static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassNode> classes)
         {
             var all = new List<Node>();
             var classList = classes.ToList();

@@ -2,14 +2,13 @@
 using System.IO;
 using System.Linq;
 using EnvDTE;
-using Logic.Analysis.Building;
-using Logic.Analysis.SemanticTree;
+using Logic.Building.SemanticTree;
 using Microsoft.CodeAnalysis.MSBuild;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
-namespace Logic.Analysis
+namespace Logic.Building
 {
-    public static class Analyser
+    public static class SemanticTreeBuilder
     {
         public static Tree AnalyseSolution(_DTE dte, Projects projects)
         {
@@ -26,7 +25,7 @@ namespace Logic.Analysis
         {
             ProjectTreeBuilder.AddProjectsToTree(solution, ref tree);
             ClassTreeBuilder.AddClassesToTree(solution, tree);
-            tree = SemanticTreeBuilder.BuildDependenciesFromReferences(tree);
+            tree = DependencyBuilder.BuildDependenciesFromReferences(tree);
         }
 
 
@@ -41,7 +40,7 @@ namespace Logic.Analysis
             ProjectTreeBuilder.AddProjectToTree(solution, ref tree, pName);
             ClassTreeBuilder.AddClassesToTree(solution, tree, fname);
             tree = tree.DescendantNodes().First(x => x is ClassNode).Parent;
-            tree = SemanticTreeBuilder.BuildDependenciesFromReferences(tree);
+            tree = DependencyBuilder.BuildDependenciesFromReferences(tree);
             return tree;
         }
 

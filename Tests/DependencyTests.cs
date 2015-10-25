@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Logic.Analysis;
-using Logic.Analysis.SemanticTree;
+using Logic.Building;
+using Logic.Building.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,7 +26,7 @@ namespace Tests
                 ));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("class Button {public void Bar(){}}"));
                 var tree = new Tree();
-                Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 var compile = project.GetCompilationAsync().Result;
                 var diagnostics = compile.GetParseDiagnostics();
                 Assert.IsTrue(!diagnostics.Any());
@@ -51,7 +52,7 @@ namespace Tests
                 ));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("class Button {public void Bar(){}}"));
                 var tree = new Tree();
-                Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 var projectA = tree.Childs.First();
                 var button = projectA.Childs.WithName("Button") as ClassNode;
                 var guiFacade = projectA.Childs.WithName("GuiFacade");

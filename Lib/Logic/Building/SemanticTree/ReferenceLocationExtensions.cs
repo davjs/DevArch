@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 
-namespace Logic.Analysis
+namespace Logic.Building.SemanticTree
 {
     public static class ReferenceLocationExtensions
     {

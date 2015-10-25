@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using EnvDTE;
-using Logic.Analysis.Building;
-using Logic.Analysis.SemanticTree;
+using Logic.Building;
+using Logic.Building.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests

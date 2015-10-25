@@ -56,12 +56,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coloring\ColoringAlgorithms.cs" />
+    <Compile Include="Coloring\PalletteAlgorithm.cs" />
     <Compile Include="Palette.cs" />
     <Compile Include="Views\Diagram.xaml.cs">
       <DependentUpon>Diagram.xaml</DependentUpon>
     </Compile>
     <Compile Include="BitmapRenderer.cs" />
-    <Compile Include="Colors.cs" />
+    <Compile Include="Coloring\Colors.cs" />
     <Compile Include="Views\LayerView.xaml.cs">
       <DependentUpon>LayerView.xaml</DependentUpon>
     </Compile>

@@ -1,10 +1,10 @@
 using System.Linq;
 using EnvDTE;
 using EnvDTE80;
-using Logic.Analysis.SemanticTree;
+using Logic.Building.SemanticTree;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
-namespace Logic.Analysis.Building
+namespace Logic.Building
 {
     public static class ProjectTreeBuilder
     {

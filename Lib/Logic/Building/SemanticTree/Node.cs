@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.FindSymbols;
 using Document = Microsoft.CodeAnalysis.Document;
 using Project = Microsoft.CodeAnalysis.Project;
 
-namespace Logic.Analysis.SemanticTree
+namespace Logic.Building.SemanticTree
 {
     public class Node : Tree
     {
