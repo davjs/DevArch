@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Analysis.SemanticTree;
+using Logic.Building.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 
-namespace Logic.Analysis
+namespace Logic.Building
 {
     public static class SemanticModelWalker
     {

@@ -119,7 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Lib\Lib.csproj">
-      <Project>{dc505588-5385-4b7b-9432-fe0ebd560287}</Project>
+      <Project>{DC505588-5385-4B7B-9432-FE0EBD560287}</Project>
       <Name>Lib</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Analysis;
-using Logic.Analysis.Building;
-using Logic.Analysis.SemanticTree;
+using Logic.Building.SemanticTree;
 
 namespace Logic.Filtering
 {
@@ -26,6 +24,7 @@ namespace Logic.Filtering
                 RemoveNodesReferencedLessThan(tree, filters.MinReferences);
             if (filters.RemoveSinglePaths)
                 tree = RemoveSinglePaths(tree);
+            tree = RemoveSingleChildAnonymous(tree);
             //tree = FindSiblingPatterns(tree);
             //tree = RemoveSinglePaths(tree); change to remove projects/namespaces containing zero classes
         }
@@ -99,6 +98,17 @@ namespace Logic.Filtering
                         dependant.SiblingDependencies.Add(newTree);
                     }
                 }
+                return newTree;
+            }
+            return tree;
+        }
+
+        public static Tree RemoveSingleChildAnonymous(Tree tree)
+        {
+            tree.SetChildren(tree.Childs.Select(RemoveSingleChildAnonymous).Cast<Node>().ToList());
+            if (tree is SiblingHolderNode && tree.Childs.Count == 1)
+            {
+                var newTree = tree.Childs.First();
                 return newTree;
             }
             return tree;

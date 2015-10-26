@@ -1,10 +1,9 @@
-﻿
-using System.Linq;
-using Logic.Analysis.SemanticTree;
+﻿using System.Linq;
+using Logic.Building.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
 
-namespace Analysis.Tests.Presentation
+namespace Tests.Presentation
 {
     [TestClass]
     public class LayerMapperTests
@@ -19,8 +18,7 @@ namespace Analysis.Tests.Presentation
 
                 var left = new Node("Left");
                 var right = new Node("Right");
-
-
+                
                 root.AddChild(top);
                 root.AddChild(bottom);
 

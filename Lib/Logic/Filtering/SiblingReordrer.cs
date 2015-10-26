@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Analysis.SemanticTree;
+using Logic.Building;
+using Logic.Building.SemanticTree;
 
-namespace Logic.Analysis
+namespace Logic.Filtering
 {
     public static class SiblingReordrer
     {
@@ -99,24 +100,6 @@ namespace Logic.Analysis
                     if (containedNode2)
                         node3.SiblingDependencies.Remove(circularRef.Item2);
                 }
-            }
-        }
-
-        public static bool TryGroupSiblingsLinearly(Node startNode, IList<Node> nodes, ref List<Node> newChildOrder)
-        {
-            while (true)
-            {
-                foreach (var node in nodes)
-                {
-                    node.SiblingDependencies.Remove(startNode);
-                }
-                var nodesWithoutSiblingDependencies = nodes.Where(x => !x.SiblingDependencies.Any()).ToList();
-                if (nodesWithoutSiblingDependencies.Count != 1) return false;
-                newChildOrder.Add(nodesWithoutSiblingDependencies.First());
-                startNode = nodesWithoutSiblingDependencies.First();
-                nodes.Remove(startNode);
-                if (!nodes.Any())
-                    return true;
             }
         }
     }

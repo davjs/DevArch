@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Analysis;
-using Logic.Analysis.SemanticTree;
+using Logic.Building.SemanticTree;
+using Logic.Filtering;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Analysis.Tests.Filtering.Ordering
+namespace Tests.Filtering.Ordering
 {
     [TestClass]
     public class CircularReferenceTests

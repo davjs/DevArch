@@ -1,12 +1,12 @@
 ﻿using System.Linq;
-using Logic.Analysis;
-using Logic.Analysis.SemanticTree;
+using Logic.Building;
+using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Analysis.Tests.Filtering
+namespace Tests.Filtering
 {
     [TestClass]
     public class FilterTests
@@ -38,7 +38,7 @@ namespace Analysis.Tests.Filtering
                 fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace GUI {class GuiFacade {}}}"));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace GUI {namespace Buttons {class Button {}}}}"));
                 var tree = new Tree();
-                Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution,ref tree);
+                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution,ref tree);
                 tree = ModelFilterer.RemoveSinglePaths(tree);
                 Assert.IsNotNull(tree.Childs.WithName("GuiFacade"));
                 Assert.IsNotNull(tree.Childs.WithName("Button"));
@@ -55,7 +55,7 @@ namespace Analysis.Tests.Filtering
                 fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace GUI {class GuiFacade {}}}"));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace GUI {namespace Buttons { namespace Purple {class Button {}}}}}"));
                 var tree = new Tree();
-                Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 tree = ModelFilterer.RemoveSinglePaths(tree);
                 Assert.IsNotNull(tree.Childs.WithName("GuiFacade"));
                 Assert.IsNotNull(tree.Childs.WithName("Button"));

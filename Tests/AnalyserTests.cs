@@ -1,19 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using EnvDTE;
-using Logic;
-using Logic.Analysis;
-using Logic.Analysis.Building;
-using Logic.Analysis.SemanticTree;
+﻿using System.Linq;
+using Logic.Building;
+using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Analysis.Tests
+namespace Tests
 {
     [TestClass]
     public class AnalyserTests
@@ -58,7 +51,7 @@ namespace Analysis.Tests
                 fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace NamespaceAA {namespace NamespaceAAA {class ClassA {}}}}"));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace NamespaceAB {namespace NamespaceABB {class ClassB {}}}}"));
                 var tree = new Tree();
-                Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 tree = ModelFilterer.RemoveSinglePaths(tree);
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "ClassA"));
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "ClassB"));
@@ -76,7 +69,7 @@ namespace Analysis.Tests
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA { class ClassA { class ClassB {}}}" +
                                                                                       "namespace NamespaceA { class classC {} }"));
                 var tree = new Tree();
-                Analyser.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
+                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 Assert.IsTrue(tree.DescendantNodes().WithName("ClassA").Childs.First().Name == "ClassB");
             }
         }

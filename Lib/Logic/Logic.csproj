@@ -101,22 +101,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analysis\Analyser.cs" />
+    <Compile Include="Building\SemanticTreeBuilder.cs" />
     <Compile Include="ModelDefinition.cs" />
-    <Compile Include="Analysis\Building\ProjectTreeBuilder.cs" />
-    <Compile Include="Analysis\Building\ClassTreeBuilder.cs" />
+    <Compile Include="Building\ProjectTreeBuilder.cs" />
+    <Compile Include="Building\ClassTreeBuilder.cs" />
     <Compile Include="DiagramFromModelDefinitionGenerator.cs" />
     <Compile Include="ModelDefinitionParser.cs" />
     <Compile Include="Filtering\PatternFinder.cs" />
     <Compile Include="Filtering\ModelFilterer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Analysis\ReferenceLocationExtensions.cs" />
-    <Compile Include="Analysis\SemanticModelWalker.cs" />
-    <Compile Include="Analysis\Building\SemanticTreeBuilder.cs" />
-    <Compile Include="Analysis\SemanticTree\Node.cs" />
-    <Compile Include="Analysis\SemanticTree\NodeExtensions.cs" />
+    <Compile Include="Building\SemanticTree\ReferenceLocationExtensions.cs" />
+    <Compile Include="Building\SemanticModelWalker.cs" />
+    <Compile Include="Building\DependencyBuilder.cs" />
+    <Compile Include="Building\SemanticTree\Node.cs" />
+    <Compile Include="Building\SemanticTree\NodeExtensions.cs" />
     <Compile Include="Filtering\SiblingReordrer.cs" />
-    <Compile Include="Analysis\SemanticTree\Tree.cs" />
+    <Compile Include="Building\SemanticTree\Tree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

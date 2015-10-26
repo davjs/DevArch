@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
+using Presentation.ViewModels;
+using Colors = Presentation.Coloring.Colors;
 
-namespace Presentation
+namespace Presentation.Views
 {
     /// <summary>
     /// Interaction logic for layerControl.xaml
@@ -20,33 +24,46 @@ namespace Presentation
             InitializeComponent();
         }
 
-        public LayerView(string name, Color backgroundColor, IEnumerable<LayerView> childs, int column, int row,bool visible,int columns,int rows)
+        public LayerView(LayerViewModel layerModel, IReadOnlyList<LayerView> childs, bool visible)
         {
             InitializeComponent();
-            LayerName = name;
-            NameBlock.Text = name;
-            _column = column;
-            _row = row;
-
+            LayerName = layerModel.Name;
+            NameBlock.Text = layerModel.Name;
+            _column = layerModel.Column;
+            _row = layerModel.Row;
+            var childMargin = CalculateChildMargin(layerModel);
             foreach (var child in childs)
             {
+                child.Border.Margin = childMargin;
                 ChildHolder.Children.Add(child);
                 Grid.SetColumn(child, child._column);
                 Grid.SetRow(child, child._row);
             }
 
-            for (var i = 0; i < rows; i++)
-                ChildHolder.RowDefinitions.Add(new RowDefinition() {Height = GridLength.Auto});
+            for (var i = 0; i < layerModel.Rows; i++)
+                ChildHolder.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
 
-            for (var i = 0; i < columns; i++)
+            for (var i = 0; i < layerModel.Columns; i++)
                 ChildHolder.ColumnDefinitions.Add(new ColumnDefinition());
 
             DataContext = this;
 
-
-            Border.Background = new SolidColorBrush(backgroundColor);
-            Border.BorderBrush = new SolidColorBrush(CalculateBorderColor(backgroundColor));
+            var borderColor = CalculateBorderColor(layerModel.Color);
+            Border.Background = new SolidColorBrush(layerModel.Color);
+            Border.BorderBrush = new SolidColorBrush(borderColor);
+            if (!childs.Any())
+            {
+                DockPanel.VerticalAlignment = VerticalAlignment.Center;
+                Border.Background = new LinearGradientBrush(layerModel.Color, borderColor, 30);
+            }
             if (!visible) Hide();
+        }
+
+        private static Thickness CalculateChildMargin(LayerViewModel layerModel)
+        {
+            var height = Math.Min(Math.Max((layerModel.Descendants* layerModel.Descendants) /120, 4),20);
+            var width = 5;
+            return new Thickness(width, height, width,height);
         }
 
         //TODO: Move to model?

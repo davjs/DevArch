@@ -1,6 +1,6 @@
 ﻿// ReSharper disable All
 
-namespace Analysis.Tests.Sample
+namespace Tests.Sample
 {
     namespace Layers
     {

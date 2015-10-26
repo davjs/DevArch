@@ -1,11 +1,8 @@
-﻿using System.IO;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using EnvDTE;
-using Logic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Presentation;
 
-namespace Analysis.Tests.Presentation
+namespace Tests.Presentation
 {
     [TestClass]
     public class PngGenerationTests
