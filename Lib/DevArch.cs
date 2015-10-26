@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using EnvDTE;
 using Logic;
+using Logic.Building;
 using Presentation;
 
 namespace Lib
@@ -11,12 +12,12 @@ namespace Lib
     {
         public static void RenderAllArchDiagramsToFiles(_DTE enivorment)
         {
-            var fullName = GetSolutionName(enivorment);
-            
-            if (fullName == null)
+            var solution = new AdvancedSolution(enivorment);
+            if (solution.FullName == null)
                 throw new NoSolutionOpenException();
-            var solutionDir = Path.GetDirectoryName(fullName);
-            var modelGen = new DiagramFromModelDefinitionGenerator(enivorment);
+            var solutionDir = Path.GetDirectoryName(solution.FullName);
+
+            var modelGen = new DiagramFromModelDefinitionGenerator(solution);
             var modelDefs = modelGen.GetModelDefinitions();
             foreach (var modelDef in modelDefs)
             {
@@ -32,26 +33,11 @@ namespace Lib
 
         public static void RenderCompleteDiagramToView(_DTE enivorment,ref ArchView view)
         {
-            var modelGen = new DiagramFromModelDefinitionGenerator(enivorment);
+            var solution = new AdvancedSolution(enivorment);
+            var modelGen = new DiagramFromModelDefinitionGenerator(solution);
             var tree = modelGen.GenerateDiagram(ModelDefinition.RootDefault);
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
             view.Diagram.RenderModel(viewModel);
-        }
-        private static string GetSolutionName(_DTE dte2)
-        {
-            string name = null;
-            while (name == null)
-            {
-                try
-                {
-                    name = dte2.Solution.FullName;
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
-            return name;
         }
     }
 

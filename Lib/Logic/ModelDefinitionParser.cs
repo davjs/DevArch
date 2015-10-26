@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml;
 using EnvDTE;
@@ -9,7 +8,7 @@ namespace Logic
 {
     public static class ModelDefinitionParser
     {
-        public static List<ModelDefinition> GetModelDefinitionsFromSolution(Projects projects)
+        public static IEnumerable<ModelDefinition> GetModelDefinitionsFromSolution(Projects projects)
         {
             var archProjects = new List<Project>();
             foreach (Project project in projects)

@@ -10,14 +10,10 @@ namespace Logic.Building
 {
     public static class SemanticTreeBuilder
     {
-        public static Tree AnalyseSolution(_DTE dte, Projects projects)
+        public static Tree AnalyseSolution(AdvancedSolution solution)
         {
-            var build = MSBuildWorkspace.Create();
-            var name = GetSolutionName(dte);
-            var solution = GetSolution(build, name);
-
-            var tree = ProjectTreeBuilder.AddSolutionFoldersToTree(projects);
-            AddAllItemsInSolutionToTree(solution, ref tree);
+            var tree = ProjectTreeBuilder.AddSolutionFoldersToTree(solution.DteProjects);
+            AddAllItemsInSolutionToTree(solution.RoslynSolution, ref tree);
             return tree;
         }
 
@@ -29,22 +25,19 @@ namespace Logic.Building
         }
 
 
-        public static Tree AnalyseDocument(_DTE dte, string name)
+        public static Tree AnalyseDocument(AdvancedSolution solution, string name)
         {
-            var build = MSBuildWorkspace.Create();
-            var sname = GetSolutionName(dte);
-            var solution = GetSolution(build, sname);
             var tree = new Tree();
             var pName = GetRootFolder(name);
             var fname = Path.GetFileName(name);
-            ProjectTreeBuilder.AddProjectToTree(solution, ref tree, pName);
-            ClassTreeBuilder.AddClassesToTree(solution, tree, fname);
+            ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, pName);
+            ClassTreeBuilder.AddClassesToTree(solution.RoslynSolution, tree, fname);
             tree = tree.DescendantNodes().First(x => x is ClassNode).Parent;
             tree = DependencyBuilder.BuildDependenciesFromReferences(tree);
             return tree;
         }
 
-        public static Tree AnalyseClass(_DTE dte, string name)
+        public static Tree AnalyseClass(AdvancedSolution solution, string name)
         {
             throw new NotImplementedException();
 
@@ -62,14 +55,33 @@ namespace Logic.Building
             return path;
         }
 
-        private static string GetSolutionName(_DTE dte2)
+        
+
+
+    }
+
+    public class AdvancedSolution
+    {
+        public readonly Solution RoslynSolution;
+        public readonly Projects DteProjects;
+        public readonly string FullName;
+        public AdvancedSolution(_DTE dte)
+        {
+            var build = MSBuildWorkspace.Create();
+            var dteSolution = dte.Solution;
+            FullName = GetSolutionName(dteSolution);
+            RoslynSolution = GetSolution(build, FullName);
+            DteProjects = dteSolution.Projects;
+        }
+
+        private static string GetSolutionName(_Solution solution)
         {
             string name = null;
             while (name == null)
             {
                 try
                 {
-                    name = dte2.Solution.FullName;
+                    name = solution.FullName;
                 }
                 catch (Exception)
                 {
@@ -95,8 +107,6 @@ namespace Logic.Building
             }
             return solution;
         }
-
-
     }
 
     internal class LayerViolationException : Exception

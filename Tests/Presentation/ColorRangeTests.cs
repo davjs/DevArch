@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
-using Presentation.ViewModels;
 
 namespace Tests.Presentation
 {

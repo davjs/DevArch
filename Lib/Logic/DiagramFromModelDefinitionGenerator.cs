@@ -1,99 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using EnvDTE;
-using EnvDTE80;
 using Logic.Building;
 using Logic.Building.SemanticTree;
 using Logic.Filtering;
-using Microsoft.CodeAnalysis.MSBuild;
 
 namespace Logic
 {
     public class DiagramFromModelDefinitionGenerator
     {
-        private readonly _DTE _dte;
-        private readonly Projects _projects;
-        public DiagramFromModelDefinitionGenerator(_DTE dte)
+        private readonly AdvancedSolution _solution;
+        public DiagramFromModelDefinitionGenerator(AdvancedSolution solution)
         {
-            _dte = dte;
-            var solution = GetSolution(dte);
-            _projects = solution.Projects;
+            _solution = solution;
         }
 
         public IEnumerable<ModelDefinition> GetModelDefinitions()
         {
-            return ModelDefinitionParser.GetModelDefinitionsFromSolution(_projects);
+            return ModelDefinitionParser.GetModelDefinitionsFromSolution(_solution.DteProjects);
         }
 
 
         public Tree GenerateDiagram(ModelDefinition modelDef)
         {
-            return GenerateTreeFromModelDefinition(modelDef, _dte, _projects);
+            return GenerateTreeFromModelDefinition(modelDef, _solution);
         }
 
-        public static Tree GenerateTreeFromModelDefinition(ModelDefinition modeldefinition, _DTE dte, Projects projects)
+        public static Tree GenerateTreeFromModelDefinition(ModelDefinition modeldefinition, AdvancedSolution solution)
         {
             Tree tree = null;
             if (modeldefinition.Scope is RootScope)
             {
-                tree = SemanticTreeBuilder.AnalyseSolution(dte, projects);
+                tree = SemanticTreeBuilder.AnalyseSolution(solution);
             }
             if (modeldefinition.Scope is DocumentScope)
             {
-                tree = SemanticTreeBuilder.AnalyseDocument(dte,((DocumentScope) modeldefinition.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseDocument(solution, ((DocumentScope) modeldefinition.Scope).Name);
             }
             if (modeldefinition.Scope is ClassScope)
             {
-                tree = SemanticTreeBuilder.AnalyseClass(dte, ((ClassScope)modeldefinition.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseClass(solution, ((ClassScope)modeldefinition.Scope).Name);
             }
             ModelFilterer.ApplyFilter(ref tree,modeldefinition.Filters);
 
-            if (modeldefinition.DependencyDown)
-                return ReverseTree(tree);
-            return tree;
+            return modeldefinition.DependencyDown ? ReverseTree(tree) : tree;
         }
 
         private static Tree ReverseTree(Tree tree)
         {
             tree.SetChildren(tree.Childs.Select(ReverseTree).Reverse().Cast<Node>());
             return tree;
-        }
-
-
-        private static Solution GetSolution(_DTE dte)
-        {
-            Solution sol = null;
-            while (sol == null)
-            {
-                try
-                {
-                    sol = dte.Solution;
-                }
-                catch (COMException)
-                {
-                    // ignored
-                }
-            }
-            return sol;
-        }
-
-        private static Microsoft.CodeAnalysis.Solution GetSolution(MSBuildWorkspace build, string name)
-        {
-            Microsoft.CodeAnalysis.Solution solution = null;
-            while (solution == null)
-            {
-                try
-                {
-                    solution = build.OpenSolutionAsync(name).Result;
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
-            return solution;
         }
     }
 }
