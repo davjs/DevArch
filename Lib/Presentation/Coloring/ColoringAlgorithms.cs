@@ -132,7 +132,9 @@ namespace Presentation.Coloring
         {
             protected override ColorRange GetSubColorImplementation(ColorRange parentData)
             {
-                throw new NotImplementedException();
+                var sizeLeft = parentData.Top - parentData.Bottom;
+                var newLight = parentData.L * 1.05 + sizeLeft / 12;
+                return new ColorRange(parentData.Top, parentData.Bottom, parentData.S, newLight,parentData.Depth+1);
             }
 
             protected override ColorRange GetStartingColorDataImplementation()
@@ -145,8 +147,6 @@ namespace Presentation.Coloring
                 var sizeLeft = parentData.Top - parentData.Bottom;
                 var sizePerSlice = sizeLeft / slices;
                 var newLight = parentData .L* 1.05 + sizeLeft / 12;
-                //if (sizePerSlice < 0.05)
-                //    return Enumerable.Repeat(new ColorRange(parentData.Top, parentData.Bottom, parentData.S, newLight,parentData.Depth+1), slices);
                 var newBottom = parentData.Bottom;
                 var ranges = new List<ColorRange>();
                 for (var slice = 0; slice < slices; slice++)

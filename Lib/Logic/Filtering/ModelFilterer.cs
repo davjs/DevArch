@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Analysis;
 using Logic.Building.SemanticTree;
 
 namespace Logic.Filtering

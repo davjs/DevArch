@@ -17,18 +17,25 @@
     </UserControl.Resources>
 
     <Border x:Name="Border" Height="Auto" Width="Auto" Style="{StaticResource LayerBorderStyle}" Background="#002B36">
-        <DockPanel Width="Auto" Height="Auto">
+        <DockPanel x:Name="DockPanel" Width="Auto" Height="Auto">
             <TextBlock x:Name="NameBlock" Height="Auto"  
                        HorizontalAlignment="Center" Width="Auto" Padding="5" 
                        
                        Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}">
-                <!--<TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="3" ShadowDepth="2" RenderingBias="Quality"/>
-                </TextBlock.Effect>-->
             </TextBlock>
             <Grid  Height="Auto"  x:Name="ChildHolder">
-                </Grid>
-            </DockPanel>
-        </Border>
+                <!--NESTED ITEM HERE
+                <Border Height="Auto" Width="Auto" Style="{StaticResource LayerBorderStyle}" Background="#002B36">
+                    <DockPanel Width="Auto" Height="Auto">
+                        <TextBlock Height="Auto"  
+                       HorizontalAlignment="Center" Width="Auto" Padding="5" 
+                       
+                       Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}">
+                        </TextBlock>
+                    </DockPanel>
+                </Border>-->
+            </Grid>
+        </DockPanel>
+    </Border>
 
 </UserControl>

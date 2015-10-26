@@ -4,7 +4,7 @@ using System.Linq;
 using Logic.Building;
 using Logic.Building.SemanticTree;
 
-namespace Logic.Analysis
+namespace Logic.Filtering
 {
     public static class SiblingReordrer
     {

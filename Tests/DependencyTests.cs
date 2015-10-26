@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Logic.Analysis;
 using Logic.Building;
 using Logic.Building.SemanticTree;
 using Microsoft.CodeAnalysis;

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
-using Logic.Analysis;
 using Logic.Building;
 using Logic.Building.SemanticTree;
 using Logic.Filtering;

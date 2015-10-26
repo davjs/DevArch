@@ -13,7 +13,7 @@ namespace Presentation.ViewModels
         public int Rows;
         public int Columns;
         public AdvancedColor Color;
-        public bool Horizontal;
+        public int Descendants;
     }
 
     public class ArchViewModel

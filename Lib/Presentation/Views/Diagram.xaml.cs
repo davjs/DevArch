@@ -13,17 +13,11 @@ namespace Presentation.Views
             InitializeComponent();
         }
 
-        private static LayerView RenderNode(LayerViewModel layerModel, int depth)
+        private static LayerView RenderNode(LayerViewModel layerModel)
         {
-            depth -= 1;
-            var childs = new List<LayerView>();
-            foreach (var child in layerModel.Children)
-            {
-                childs.Add(RenderNode(child, depth));
-            }
-
-            var layerView = new LayerView(layerModel, childs, layerModel.Column, layerModel.Row,
-                !layerModel.Anonymous,layerModel.Columns,layerModel.Rows);
+            var childs = layerModel.Children.Select(RenderNode).ToList();
+            var layerView = new LayerView(layerModel, childs,
+                !layerModel.Anonymous);
             return layerView;
         }
 
@@ -31,7 +25,7 @@ namespace Presentation.Views
         {
             foreach (var layer in model.Layers)
             {
-                MasterPanel.Children.Add(RenderNode(layer, 10));
+                MasterPanel.Children.Add(RenderNode(layer));
             }
         }
     }

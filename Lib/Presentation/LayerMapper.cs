@@ -19,7 +19,7 @@ namespace Presentation
             };
         }
 
-        private static IEnumerable<LayerViewModel> PaintAndMapNodes(IReadOnlyCollection<Node> nodes, Hsl color = null)
+        private static IEnumerable<LayerViewModel> PaintAndMapNodes(IEnumerable<Node> nodes)
         {
             var layers = nodes.Select(NodeViewModelToLayerViewModel).ToList();
             return PaintLayers(layers).ToList();
@@ -29,7 +29,7 @@ namespace Presentation
             IColorData parentColorData = null,LayerViewModel parent = null)
         {
             var toPaintDistinct = new List<LayerViewModel>();
-            var toPaintSameColor = new List<LayerViewModel>();
+            List<LayerViewModel> toPaintSameColor;
             if (parent != null && parent.Anonymous)
             {
                 toPaintSameColor = layers;
@@ -50,7 +50,7 @@ namespace Presentation
 
             foreach (var layer in toPaintSameColor)
             {
-                var color = parentColorData;
+                var color = Pallette.GetSubColor(parentColorData);
                 PaintLayer(layer, color);
             }
 
@@ -69,7 +69,7 @@ namespace Presentation
             layer.Children = PaintLayers(layer.Children.ToList(), colorData, layer);
         }
 
-        public static LayerViewModel NodeViewModelToLayerViewModel(Node node)
+        public static LayerViewModel NodeViewModelToLayerViewModel(Node node,int depth = 0)
         {
             var column = 0;
             var row = 0;
@@ -86,12 +86,12 @@ namespace Presentation
             }
             return new LayerViewModel
             {
-                Horizontal = node.Horizontal,
                 Columns = column,
                 Rows = row,
                 Name = node.Name /* + (color.Bottom + color.Top) /2*/,
                 Anonymous = !node.Name.Any(),
-                Children = children
+                Children = children,
+                Descendants = children.Count + children.Sum(model => model.Descendants)
             };
         }
     }
