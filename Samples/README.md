@@ -1,5 +1,8 @@
 #Samples
 
+*The diagrams in this folder are generated from
+[these modeldefinitions](../Architecture)*
+
 ##Ordering
 
 In layered diagrams, dependencies are represented by the vertical order of layers.
