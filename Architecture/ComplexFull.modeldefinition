@@ -3,7 +3,7 @@
   <Scope>
     <Document Name ="Tests\Sample\Complex.cs"/>
   </Scope>
-  <Output Path="Samples\ComplexFull.png" Scale="2"/>
+  <Output Path="Samples\ComplexFull.png" Scale="1"/>
   <Filters>
     <RemoveTests>Off</RemoveTests>
     <RemoveSinglePaths>Off</RemoveSinglePaths>
