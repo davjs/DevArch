@@ -11,6 +11,9 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="complete.modeldefinition" />
+    <None Include="ComplexDepth1.modeldefinition" />
+    <None Include="ComplexDepth2.modeldefinition" />
+    <None Include="ComplexFull.modeldefinition" />
     <None Include="LayerReverseOrder.modeldefinition" />
     <None Include="LayerDefaultOrder.modeldefinition" />
     <None Include="FindsAnononymousLayerSample.modeldefinition" />

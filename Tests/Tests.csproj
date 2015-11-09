@@ -125,6 +125,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\PexAssemblyInfo.cs" />
     <Compile Include="DependencyTests.cs" />
+    <Compile Include="Sample\Complex.cs" />
     <Compile Include="Sample\FindsAnononymousLayer.cs" />
     <Compile Include="Filtering\Ordering\SiblingOrderTests.cs" />
     <Compile Include="Sample\Layers.cs" />
