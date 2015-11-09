@@ -19,10 +19,20 @@ There is currently no way to disable linnear pattern finding, but it will become
 
 ##Filtering
 
+Filters are specified inside the <Filters> tag.
+
+###Depth
+
+
+
+```Default``` |```<MaxDepth>2</MaxDepth>```|```<MaxDepth>1</MaxDepth>```
+:---------------:|:----------------------:|:----------------------
+![](ComplexFull.png)  |  ![](ComplexDepth2.png) | ![](ComplexDepth1.png) 
+
+
 *TODO*
 
-	• Depth
-	• References
+	• Ref count
 	• Ignoretests
 	• Ignore bin
 	• Ignore nodes without classes
