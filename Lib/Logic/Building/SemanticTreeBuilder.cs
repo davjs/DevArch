@@ -21,7 +21,7 @@ namespace Logic.Building
         {
             ProjectTreeBuilder.AddProjectsToTree(solution, ref tree);
             ClassTreeBuilder.AddClassesToTree(solution, tree);
-            tree = DependencyBuilder.BuildDependenciesFromReferences(tree);
+            //tree = DependencyBuilder.BuildDependenciesFromReferences(tree);
         }
 
 
@@ -33,14 +33,13 @@ namespace Logic.Building
             ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, pName);
             ClassTreeBuilder.AddClassesToTree(solution.RoslynSolution, tree, fname);
             tree = tree.DescendantNodes().First(x => x is ClassNode).Parent;
-            tree = DependencyBuilder.BuildDependenciesFromReferences(tree);
+            //tree = DependencyBuilder.BuildDependenciesFromReferences(tree);
             return tree;
         }
 
         public static Tree AnalyseClass(AdvancedSolution solution, string name)
         {
             throw new NotImplementedException();
-
         }
 
         static string GetRootFolder(string path)
@@ -54,10 +53,6 @@ namespace Logic.Building
             }
             return path;
         }
-
-        
-
-
     }
 
     public class AdvancedSolution
@@ -69,43 +64,88 @@ namespace Logic.Building
         {
             var build = MSBuildWorkspace.Create();
             var dteSolution = dte.Solution;
-            FullName = GetSolutionName(dteSolution);
-            RoslynSolution = GetSolution(build, FullName);
-            DteProjects = dteSolution.Projects;
+            FullName = KeepTrying.ToGet(() => dteSolution.FullName);
+            RoslynSolution = KeepTrying.ToGet(() => build.OpenSolutionAsync(FullName).Result);
+            DteProjects = KeepTrying.ToGet(() =>dteSolution.Projects);
         }
+    }
 
-        private static string GetSolutionName(_Solution solution)
+    static class KeepTrying
+    {
+        static int _totalRetries = 0;
+        public delegate void Del();
+        const int Maxtries = 5;
+
+        public static T ToGet<T>(Func<T> function, bool thrw = true) where T : class
         {
-            string name = null;
-            while (name == null)
+            T result = null;
+            var failed = true;
+            var tries = 0;
+            while (failed && result == null)
             {
+                tries++;
                 try
                 {
-                    name = solution.FullName;
+                    result = function();
+                    failed = false;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    // ignored
+                    if (tries < Maxtries) continue;
+                    if (thrw)
+                    {
+                        System.Diagnostics.Debug.WriteLine("EXCEPTION ROOF");
+                        System.Diagnostics.Debug.WriteLine(e);
+                        throw;
+                    }
+                    if (_totalRetries < Maxtries)
+                    {
+                        _totalRetries++;
+                        tries = 0;
+                    }
+                    else
+                    {
+                        thrw = true;
+                    }
                 }
             }
-            return name;
-        }
+            return result;
+        } 
 
-        private static Solution GetSolution(MSBuildWorkspace build, string name)
+        public static void UntilNotFailing(Action function, bool thrw = true)
         {
-            Solution solution = null;
-            while (solution == null)
+            bool failed = true;
+            int tries = 0;
+            while (failed)
             {
+                tries++;
                 try
                 {
-                    solution = build.OpenSolutionAsync(name).Result;
+                    function();
+                    failed = false;
                 }
-                catch (Exception)
+                catch (System.Exception e)
                 {
-                    // ignored
+                    if (tries >= Maxtries)
+                    {
+                        if (thrw)
+                        {
+                            System.Diagnostics.Debug.WriteLine("EXCEPTION ROOF");
+                            System.Diagnostics.Debug.WriteLine(e);
+                            throw;
+                        }
+                        else if (_totalRetries < Maxtries)
+                        {
+                            _totalRetries++;
+                            tries = 0;
+                        }
+                        else
+                        {
+                            thrw = true;
+                        }
+                    }
                 }
             }
-            return solution;
         }
     }
 

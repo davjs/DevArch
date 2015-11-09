@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="AnalyserTests.cs" />
     <Compile Include="Building\SemanticTreeBuilderTests.cs" />
+    <Compile Include="Integration\Integration.cs" />
     <Compile Include="Presentation\ColorRangeTests.cs" />
     <Compile Include="Filtering\FilterTests.cs" />
     <Compile Include="Filtering\Ordering\CircularReferenceTests.cs" />

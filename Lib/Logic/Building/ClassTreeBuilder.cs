@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Logic.Building.SemanticTree;
@@ -9,7 +10,13 @@ namespace Logic.Building
     {
         public static void AddClassesToTree(Solution solution, Tree tree, string documentName = null)
         {
-            foreach (var project in tree.DescendantNodes().OfType<ProjectNode>())
+            var allClassesBySymbol = new Dictionary<ISymbol, ClassNode>();
+
+            var projects = tree.DescendantNodes().OfType<ProjectNode>().ToList();
+            
+            var semantics = new SemanticModelWalker.SemanticModels(projects.SelectMany(p => p.Documents.Select(d => d.GetSemanticModelAsync().Result)).ToList());
+
+            foreach (var project in projects)
             {
                 var documents = project.Documents.ToList();
                 if (!documents.Any()) continue;
@@ -17,13 +24,45 @@ namespace Logic.Building
                 if (documentName != null)
                     documents = documents.Where(d => d.Name == documentName).ToList();
 
-                var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result);
-                var classes = SemanticModelWalker.GetClassesInModels(semanticModels, solution);
+                var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result).ToList();
+                var classes = SemanticModelWalker.GetClassesInModels(semanticModels, solution, semantics);
                 if (!classes.Any())
                     continue;
+
+                foreach (var classNode in classes)
+                {
+                    allClassesBySymbol.Add(classNode.Symbol,classNode);
+                }
+                
                 var classnodes = BuildTreeFromClasses(classes);
                 project.AddChilds(classnodes);
             }
+
+            foreach (var @class in allClassesBySymbol.Values)
+            {
+                foreach (var dependency in @class.SymbolDependencies)
+                {
+                    var contained =  allClassesBySymbol.ContainsKey(dependency);
+                    if (contained)
+                        @class.Dependencies.Add(allClassesBySymbol[dependency]);
+                    else
+                    {
+                        var matchingSymbols = allClassesBySymbol.Keys.Where(x => SymbolsMatch(x,dependency)).ToList();
+                        if(matchingSymbols.Count() == 1)
+                            @class.Dependencies.Add(allClassesBySymbol[matchingSymbols.First()]);
+                        if (matchingSymbols.Count() > 1)
+                            throw new NotImplementedException();
+                    }
+                }
+                
+            }
+        }
+
+        private static bool SymbolsMatch(ISymbol symbol, ISymbol dependency)
+        {
+            return Equals(symbol, dependency) ||
+                symbol.MetadataName == dependency.MetadataName
+                && SymbolsMatch(symbol.ContainingSymbol,dependency.ContainingSymbol);
         }
 
         private static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassNode> classes)

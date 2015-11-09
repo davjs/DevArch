@@ -20,30 +20,24 @@ namespace Logic
             return ModelDefinitionParser.GetModelDefinitionsFromSolution(_solution.DteProjects);
         }
 
-
         public Tree GenerateDiagram(ModelDefinition modelDef)
         {
-            return GenerateTreeFromModelDefinition(modelDef, _solution);
-        }
-
-        public static Tree GenerateTreeFromModelDefinition(ModelDefinition modeldefinition, AdvancedSolution solution)
-        {
             Tree tree = null;
-            if (modeldefinition.Scope is RootScope)
+            if (modelDef.Scope is RootScope)
             {
-                tree = SemanticTreeBuilder.AnalyseSolution(solution);
+                tree = SemanticTreeBuilder.AnalyseSolution(_solution);
             }
-            if (modeldefinition.Scope is DocumentScope)
+            if (modelDef.Scope is DocumentScope)
             {
-                tree = SemanticTreeBuilder.AnalyseDocument(solution, ((DocumentScope) modeldefinition.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseDocument(_solution, ((DocumentScope) modelDef.Scope).Name);
             }
-            if (modeldefinition.Scope is ClassScope)
+            if (modelDef.Scope is ClassScope)
             {
-                tree = SemanticTreeBuilder.AnalyseClass(solution, ((ClassScope)modeldefinition.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseClass(_solution, ((ClassScope)modelDef.Scope).Name);
             }
-            ModelFilterer.ApplyFilter(ref tree,modeldefinition.Filters);
+            ModelFilterer.ApplyFilter(ref tree,modelDef.Filters);
 
-            return modeldefinition.DependencyDown ? ReverseTree(tree) : tree;
+            return modelDef.DependencyDown ? ReverseTree(tree) : tree;
         }
 
         private static Tree ReverseTree(Tree tree)

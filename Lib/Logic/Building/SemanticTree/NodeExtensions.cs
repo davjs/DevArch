@@ -9,11 +9,6 @@ namespace Logic.Building.SemanticTree
         {
             return nodeList.FirstOrDefault(x => x.Name == name);
         }
-
-        public static IEnumerable<Node> Dependencies(this IEnumerable<Node> nodeList)
-        {
-            return nodeList.SelectMany(x => x.Dependencies);
-        }
         
         public static IEnumerable<Node> AllSubDependencies(this Node node)
         {

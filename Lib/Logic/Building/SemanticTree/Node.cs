@@ -24,7 +24,7 @@ namespace Logic.Building.SemanticTree
         public string Name => _name ?? Symbol.Name;
 
         public readonly ISymbol Symbol;
-        public readonly List<Node> Dependencies = new List<Node>();
+        public List<Node> Dependencies = new List<Node>();
         public readonly HashSet<Node> SiblingDependencies = new HashSet<Node>();
         public Tree Parent;
 
@@ -43,10 +43,27 @@ namespace Logic.Building.SemanticTree
     {
         public readonly IEnumerable<ReferencedSymbol> References;
         public readonly IEnumerable<TypeSyntax> BaseClasses;
+        public IEnumerable<INamedTypeSymbol> SymbolDependencies; 
         public ClassNode(ISymbol symbol, IEnumerable<ReferencedSymbol> references,IEnumerable<TypeSyntax> baseClasses) : base(symbol)
         {
             References = references;
             BaseClasses = baseClasses;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ClassNode)
+                return (obj as ClassNode).Symbol.Equals(Symbol);
+
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return Symbol?.GetHashCode() ?? 0;
+            }
         }
     }
     

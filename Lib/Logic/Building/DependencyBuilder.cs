@@ -16,17 +16,25 @@ namespace Logic.Building
         {
             node.SetChildren(node.Childs.Select(x => BuildDependenciesFromReferences(x, root)).ToList());
             if( node is ClassNode)
-            { 
-                foreach (var reference in (node as ClassNode).References)
+            {
+                foreach (var symbol in (node as ClassNode).SymbolDependencies)
+                {
+                    var withSymbol = root.FindNodeWithSymbol(symbol);
+                    if (withSymbol != null)
+                    {
+                        node.Dependencies.Add(withSymbol);
+                    }
+                }
+                /*foreach (var reference in (node as ClassNode).References)
                 {
                     var usedAt = reference.Locations.Where(x => !x.IsImplicit);
-                    var usedBy = usedAt.FindReferencingSymbolsAsync(default(CancellationToken)).Result;
+                    var usedBy = usedAt.FindReferencingSymbolsAsync(default(CancellationToken));
 
                     foreach (var nodeUsingThisNode in usedBy.Select(root.FindNodeWithSymbol))
                     {
                         nodeUsingThisNode?.Dependencies.Add(node);
                     }
-                }
+                }*/
             }
             return node;
         }
