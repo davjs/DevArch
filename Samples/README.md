@@ -6,9 +6,9 @@
 ##Ordering
 
 In layered diagrams, dependencies are represented by the vertical order of layers.
-By default DevArch generates diagrams where layers depend on the upper layer. This can be changed by setting the DependencyDirection attribute to "up" in the model definition.
+By default DevArch generates diagrams where layers depend on the lower layer. This can be changed by setting the DependencyDirection attribute to "up" in the model definition.
 
-```<Model DependencyDirection = "Down">``` |```<Model DependencyDirection = "Up">```
+```<Model DependencyDirection = "Down">(Default)``` |```<Model DependencyDirection = "Up">```
 :---------------:|:----------------------:
 ![](Layers.png)  |  ![](LayersReverse.png)
 
