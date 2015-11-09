@@ -3,10 +3,9 @@
   <Scope>
     <Document Name ="Tests\Sample\Complex.cs"/>
   </Scope>
-  <Output Path="Samples\ComplexDepth2.png" Scale="1"/>
+  <Output Path="Samples\ComplexDepth1.png" Scale="2"/>
   <Filters>
-    <MaxDepth>2</MaxDepth>
+    <MaxDepth>1</MaxDepth>
     <RemoveTests>Off</RemoveTests>
-    <RemoveSinglePaths>Off</RemoveSinglePaths>
   </Filters>
 </Model>

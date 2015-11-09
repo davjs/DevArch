@@ -4,6 +4,7 @@ using System.Linq;
 using EnvDTE;
 using Logic;
 using Logic.Building;
+using Logic.Integration;
 using Presentation;
 
 namespace Lib
@@ -13,11 +14,8 @@ namespace Lib
         public static void RenderAllArchDiagramsToFiles(_DTE enivorment)
         {
             var solution = new AdvancedSolution(enivorment);
-            if (solution.FullName == null)
-                throw new NoSolutionOpenException();
-            var solutionDir = Path.GetDirectoryName(solution.FullName);
-
             var modelGen = new DiagramFromModelDefinitionGenerator(solution);
+            var solutionDir = solution.Directory();
             var modelDefs = modelGen.GetModelDefinitions();
             foreach (var modelDef in modelDefs)
             {
@@ -42,10 +40,6 @@ namespace Lib
     }
 
     public class NoClassesFoundException : Exception
-    {
-    }
-
-    public class NoSolutionOpenException : Exception
     {
     }
 }

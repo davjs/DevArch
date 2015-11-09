@@ -3,7 +3,7 @@ using Logic.Building.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
 
-namespace Tests.Presentation
+namespace Tests.Units.Presentation
 {
     [TestClass]
     public class LayerMapperTests

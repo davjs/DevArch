@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests.Filtering
+namespace Tests.Units.Logic.Filtering
 {
     [TestClass]
     public class FilterTests

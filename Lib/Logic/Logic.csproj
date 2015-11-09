@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building\SemanticTreeBuilder.cs" />
+    <Compile Include="Integration\AdvancedSolution.cs" />
     <Compile Include="ModelDefinition.cs" />
     <Compile Include="Building\ProjectTreeBuilder.cs" />
     <Compile Include="Building\ClassTreeBuilder.cs" />

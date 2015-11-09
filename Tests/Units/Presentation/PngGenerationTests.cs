@@ -2,7 +2,7 @@
 using EnvDTE;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests.Presentation
+namespace Tests.Units.Presentation
 {
     [TestClass]
     public class PngGenerationTests

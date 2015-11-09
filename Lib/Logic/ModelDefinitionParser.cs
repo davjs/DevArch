@@ -3,38 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using EnvDTE;
+using Logic.Integration;
 
 namespace Logic
 {
     public static class ModelDefinitionParser
     {
-        public static IEnumerable<ModelDefinition> GetModelDefinitionsFromSolution(Projects projects)
+        public static IEnumerable<ModelDefinition> GetModelDefinitionsFromSolution(AdvancedSolution solution)
         {
-            var archProjects = new List<Project>();
-            foreach (Project project in projects)
-            {
-                try
-                {
-                    var fullName = project.FullName;
-                    if (fullName.EndsWith(".archproj"))
-                        archProjects.Add(project);
-                }
-                catch (Exception)
-                {
-                    // ignored happens when trying to access the full name of an unloaded project
-                }
-            }
-
+            var archProjects = solution.FindArchProjects();
             if (archProjects.Count != 1) throw new NoArchProjectsFound();
-            var archProject = archProjects.First();
-            var items =
-                archProject.ProjectItems.Cast<ProjectItem>().Where(d => d.Name.EndsWith(".modeldefinition")).ToList();
 
-            List<ModelDefinition> list = new List<ModelDefinition>();
+            var archProject = archProjects.First();
+            var projectItems = archProject.GetAllProjectItems();
+            var items =
+                projectItems.Where(d => d.Name.EndsWith(".modeldefinition")).ToList();
+
+            var list = new List<ModelDefinition>();
             foreach (var item in items)
             {
-                string path = item.FileNames[0];
-                string name = item.Name;
+                var path = item.FileNames[0];
+                var name = item.Name;
                 list.Add(ParseModelDefinition(path, name));
             }
             return
@@ -111,11 +100,14 @@ namespace Logic
                 case "Root":
                     scope = new RootScope();
                     break;
+                case "Project":
+                    scope = new ProjectScope();
+                    break;
                 default:
                     throw new NotImplementedException();
             }
             if (scope is NamedScope)
-                (scope as NamedScope).Name = scopeNode?.Attributes[0].Value;
+                (scope as NamedScope).Name = scopeNode?.Attributes?[0].Value;
             return scope;
         }
     }

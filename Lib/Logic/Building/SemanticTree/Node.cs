@@ -44,9 +44,8 @@ namespace Logic.Building.SemanticTree
         public readonly IEnumerable<ReferencedSymbol> References;
         public readonly IEnumerable<TypeSyntax> BaseClasses;
         public IEnumerable<INamedTypeSymbol> SymbolDependencies; 
-        public ClassNode(ISymbol symbol, IEnumerable<ReferencedSymbol> references,IEnumerable<TypeSyntax> baseClasses) : base(symbol)
+        public ClassNode(ISymbol symbol,IEnumerable<TypeSyntax> baseClasses) : base(symbol)
         {
-            References = references;
             BaseClasses = baseClasses;
         }
 

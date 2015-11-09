@@ -4,7 +4,7 @@ using Logic.Building;
 using Logic.Building.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests
+namespace Tests.Units.Logic
 {
     [TestClass]
     public class SolutionDirectoryTests

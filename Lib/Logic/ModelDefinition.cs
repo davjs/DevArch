@@ -32,7 +32,7 @@
     {
         public bool RemoveTests = true;
         public int MinReferences = 1;
-        public bool RemoveSinglePaths = true;
+        public bool RemoveSinglePaths = false;
         public int MaxDepth = 0;
         public bool RemoveDefaultNamespaces = true;
         public bool RemoveExceptions = true;
@@ -58,5 +58,9 @@
     public class DocumentScope : NamedScope
     {
 
+    }
+    public class ProjectScope : NamedScope
+    {
+        
     }
 }

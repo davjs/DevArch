@@ -5,6 +5,7 @@ using EnvDTE;
 using Logic;
 using Logic.Building;
 using Logic.Building.SemanticTree;
+using Logic.Integration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Integration

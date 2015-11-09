@@ -6,6 +6,5 @@
   <Output Path="Samples\FindsAnononymousLayer.png" Scale="3"/>
   <Filters>
     <RemoveTests>Off</RemoveTests>
-    <RemoveSinglePaths>Off</RemoveSinglePaths>
   </Filters>
 </Model>

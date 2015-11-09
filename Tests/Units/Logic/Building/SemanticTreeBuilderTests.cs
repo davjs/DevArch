@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests.Building
+namespace Tests.Units.Logic.Building
 {
     [TestClass]
     public class SemanticTreeBuilderTests
@@ -23,7 +23,7 @@ namespace Tests.Building
                         "namespace NamespaceA {namespace NamespaceAB {class ClassB {}}}"));
                 var tree = new Tree();
                 ProjectTreeBuilder.AddProjectsToTree(fakeWorkspace.CurrentSolution, ref tree);
-                ClassTreeBuilder.AddClassesToTree(fakeWorkspace.CurrentSolution, tree);
+                ClassTreeBuilder.AddClassesToTree(tree);
                 Assert.AreEqual(1,tree.Childs.First().Childs.Count);
             }
         }

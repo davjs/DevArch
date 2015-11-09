@@ -73,8 +73,8 @@ namespace Logic.Filtering
 
         private static void RemoveNodesReferencedLessThan(Tree tree, int byReference)
         {
-            //tree.SetChildren(tree.Childs.Where(x => !(x is ClassNode) || (x as ClassNode).References.Count() >= byReference));
-            /*foreach (var child in tree.Childs)
+            /*tree.SetChildren(tree.Childs.Where(x => !(x is ClassNode) || (x as ClassNode).References.Count() >= byReference));
+            foreach (var child in tree.Childs)
             {
                 RemoveNodesReferencedLessThan(child, byReference);
             }*/

@@ -8,14 +8,12 @@ namespace Logic.Building
 {
     public static class ClassTreeBuilder
     {
-        public static void AddClassesToTree(Solution solution, Tree tree, string documentName = null)
+        public static void AddClassesToTree(Tree tree, string documentName = null)
         {
             var allClassesBySymbol = new Dictionary<ISymbol, ClassNode>();
 
             var projects = tree.DescendantNodes().OfType<ProjectNode>().ToList();
             
-            var semantics = new SemanticModelWalker.SemanticModels(projects.SelectMany(p => p.Documents.Select(d => d.GetSemanticModelAsync().Result)).ToList());
-
             foreach (var project in projects)
             {
                 var documents = project.Documents.ToList();
@@ -25,7 +23,7 @@ namespace Logic.Building
                     documents = documents.Where(d => d.Name == documentName).ToList();
 
                 var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result).ToList();
-                var classes = SemanticModelWalker.GetClassesInModels(semanticModels, solution, semantics);
+                var classes = SemanticModelWalker.GetClassesInModels(semanticModels);
                 if (!classes.Any())
                     continue;
 
@@ -76,7 +74,7 @@ namespace Logic.Building
             return all.Where(x => x.Parent == null);
         }
 
-        private static Node FindParent(ref List<Node> all, List<ClassNode> classList, ISymbol symbol)
+        private static Node FindParent(ref List<Node> all, IList<ClassNode> classList, ISymbol symbol)
         {
             var node = all.Find(x => Equals(x.Symbol, symbol));
             if (node != null)

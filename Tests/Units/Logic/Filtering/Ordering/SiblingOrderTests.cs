@@ -4,7 +4,7 @@ using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests.Filtering.Ordering
+namespace Tests.Units.Logic.Filtering.Ordering
 {
 
     [TestClass]

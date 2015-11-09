@@ -6,6 +6,5 @@
   <Output Path="Samples\Layers.png" Scale="2"/>
   <Filters>
     <RemoveTests>Off</RemoveTests>
-    <RemoveSinglePaths>Off</RemoveSinglePaths>
   </Filters>
 </Model>

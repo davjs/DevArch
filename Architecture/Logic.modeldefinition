@@ -1,12 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Model DependencyDirection = "Up">
   <Scope>
-    <Root/>
+    <Project Name ="Logic"/>
   </Scope>
-  <Output Path = "Current arch.png" Scale="1"/>
+  <Output Path = "Logic.png" Scale="1"/>
   <Filters>
-    <MaxDepth>3</MaxDepth>
     <RemoveExceptions>On</RemoveExceptions>
-    <MinReferences>2</MinReferences>
   </Filters>
 </Model>

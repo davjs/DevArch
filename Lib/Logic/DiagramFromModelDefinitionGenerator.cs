@@ -4,6 +4,7 @@ using EnvDTE;
 using Logic.Building;
 using Logic.Building.SemanticTree;
 using Logic.Filtering;
+using Logic.Integration;
 
 namespace Logic
 {
@@ -17,7 +18,7 @@ namespace Logic
 
         public IEnumerable<ModelDefinition> GetModelDefinitions()
         {
-            return ModelDefinitionParser.GetModelDefinitionsFromSolution(_solution.DteProjects);
+            return ModelDefinitionParser.GetModelDefinitionsFromSolution(_solution);
         }
 
         public Tree GenerateDiagram(ModelDefinition modelDef)
@@ -34,6 +35,10 @@ namespace Logic
             if (modelDef.Scope is ClassScope)
             {
                 tree = SemanticTreeBuilder.AnalyseClass(_solution, ((ClassScope)modelDef.Scope).Name);
+            }
+            if (modelDef.Scope is ProjectScope)
+            {
+                tree = SemanticTreeBuilder.AnalyseProject(_solution, ((ProjectScope) modelDef.Scope).Name);
             }
             ModelFilterer.ApplyFilter(ref tree,modelDef.Filters);
 
