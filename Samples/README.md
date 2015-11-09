@@ -19,7 +19,7 @@ There is currently no way to disable linnear pattern finding, but it will become
 
 ##Filtering
 
-Filters are specified inside the <Filters> tag.
+Filters are specified inside the ```<Filters>``` tag.
 
 ###Depth
 
