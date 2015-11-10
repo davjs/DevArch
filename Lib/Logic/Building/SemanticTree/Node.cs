@@ -30,7 +30,7 @@ namespace Logic.Building.SemanticTree
 
         public override string ToString()
         {
-            return Childs.Any() ? $"({Name} = {base.ToString()})" : Name;
+            return Childs.Any() ? $"{Name} = ({base.ToString()})" : Name;
         }
         
         public new Node  FindNodeWithSymbol(ISymbol symbol)
@@ -84,6 +84,14 @@ namespace Logic.Building.SemanticTree
         {
             SetChildren(siblingNodes);
             Horizontal = true;
+        }
+    }
+
+    public class VerticalSiblingHolderNode : SiblingHolderNode
+    {
+        public VerticalSiblingHolderNode(IEnumerable<Node> siblingNodes) : base(siblingNodes)
+        {
+            Horizontal = false;
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Logic.Building;
 using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -142,6 +143,51 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var newList = new List<Node>();
             SiblingReordrer.RegroupSiblingNodes(new List<Node>(), new List<Node> { c,b,a},ref newList);
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
+        }
+
+        [TestCategory("SiblingOrder")]
+        [TestMethod]
+        public void Scenario()
+        {
+            Node semanticTreeBuilder = new Node(nameof(semanticTreeBuilder));
+            Node classTreeBuilder = new Node(nameof(classTreeBuilder));
+            Node projectTreeBuilder = new Node(nameof(projectTreeBuilder));
+            Node semanticModelWalker = new Node(nameof(semanticModelWalker));
+
+            classTreeBuilder.SiblingDependencies.Add(semanticModelWalker);
+            semanticTreeBuilder.SiblingDependencies.Add(projectTreeBuilder);
+            semanticTreeBuilder.SiblingDependencies.Add(classTreeBuilder);
+
+            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node>
+            {
+                semanticTreeBuilder,classTreeBuilder,projectTreeBuilder,semanticModelWalker
+            });
+            Assert.AreEqual(newList.Count(),2);
+        }
+
+        [TestCategory("SiblingOrder")]
+        [TestMethod]
+        public void SimpleScenario()
+        {
+            Node A = new Node(nameof(A));
+            Node B = new Node(nameof(B));
+            Node C = new Node(nameof(C));
+            Node D = new Node(nameof(D));
+
+            D.SiblingDependencies.Add(B);
+            D.SiblingDependencies.Add(C);
+            B.SiblingDependencies.Add(A);
+
+            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node>
+            {
+                A,B,C,D
+            });
+
+            // A   
+            // B   C
+            //   D
+
+            Assert.AreEqual(newList.Count(), 2);
         }
     }
 }

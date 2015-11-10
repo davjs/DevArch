@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Logic.Building;
 using Logic.Building.SemanticTree;
@@ -36,6 +37,43 @@ namespace Logic.Filtering
         public static void RegroupSiblingNodes(List<Node> nodesWithoutDependency, List<Node> oldChildList,
             ref List<Node> newChildOrder)
         {
+            var target = oldChildList;
+
+            while (target.Any())
+            {
+                var allDependencies = target.SiblingDependencies().ToList();
+                //D
+                var zeroRef = target.Where(n => !allDependencies.Contains(n)).ToList();
+
+                //B C
+                var allDeps2 = zeroRef.SiblingDependencies().ToList();
+
+                foreach (var dep in allDeps2)
+                {
+                    var dependsOndep = zeroRef.Where(x => x.SiblingDependencies.Contains(dep)).ToList();
+                    if (dependsOndep.Count != zeroRef.Count)
+                    {
+                        foreach (var node in dependsOndep)
+                        {
+                            zeroRef.Remove(node);
+                        }
+                        var newList = new List<Node> { dep };
+                        newList.AddRange(dependsOndep);
+                        zeroRef.Add(new VerticalSiblingHolderNode(newList));
+                    }
+                }
+            
+                newChildOrder.Add(zeroRef.Count == 1 ? zeroRef.First() : new SiblingHolderNode(zeroRef));
+                target = zeroRef.SiblingDependencies().ToList();
+            }
+
+            newChildOrder.Reverse();
+        }
+
+        /*public static void RegroupSiblingNodes(List<Node> nodesWithoutDependency, List<Node> oldChildList,
+            ref List<Node> newChildOrder)
+        {
+            Node prevNode = null;
             while (oldChildList.Any())
             {
                 foreach (var node1 in nodesWithoutDependency)
@@ -46,6 +84,13 @@ namespace Logic.Filtering
                     }
                 }
                 nodesWithoutDependency = oldChildList.Where(x => !x.SiblingDependencies.Any()).ToList();
+                if (prevNode is SiblingHolderNode)
+                {
+                    //Check if the next layer has anything from the previous that its not dependant on
+                    var UnusedDependency = prevNode.Childs.Where(c => !nodesWithoutDependency.Any(n => n.SiblingDependencies.Contains(c)));
+                    var notDependantOnAllInPrevious = nodesWithoutDependency.Where(
+                        n => !prevNode.Childs.ToImmutableHashSet().IsSubsetOf(n.SiblingDependencies));
+                }
                 if (!nodesWithoutDependency.Any())
                 {
                     if (oldChildList.Count == 2)
@@ -53,15 +98,18 @@ namespace Logic.Filtering
                     else
                         throw new LayerViolationException();
                 }
-                newChildOrder.Add(nodesWithoutDependency.Count == 1
+
+                var newNode = nodesWithoutDependency.Count == 1
                     ? nodesWithoutDependency.First()
-                    : new SiblingHolderNode(nodesWithoutDependency));
+                    : new SiblingHolderNode(nodesWithoutDependency);
+                prevNode = newNode;
+                newChildOrder.Add(newNode);
                 foreach (var node in nodesWithoutDependency)
                 {
                     oldChildList.Remove(node);
                 }
             }
-        }
+        }*/
 
         public static void FindCircularReferences(ref List<Node> childList)
         {

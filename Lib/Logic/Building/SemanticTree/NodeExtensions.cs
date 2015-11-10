@@ -20,7 +20,7 @@ namespace Logic.Building.SemanticTree
         }
         public static IEnumerable<Node> SiblingDependencies(this IEnumerable<Node> nodeList)
         {
-            return nodeList.SelectMany(x => x.SiblingDependencies);
+            return nodeList.SelectMany(x => x.SiblingDependencies).Distinct();
         }
         public static IEnumerable<Node> DependantOfNode(this IEnumerable<Node> nodeList ,Node node)
         {
