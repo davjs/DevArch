@@ -4,6 +4,7 @@ using Logic.Building;
 using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Logic.Building.SemanticTree.OrientationKind;
 
 namespace Tests.Units.Logic.Filtering.Ordering
 {
@@ -11,6 +12,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
     [TestClass]
     public class SiblingOrderTests
     {
+        private readonly VerticalLayersTests _verticalLayersTests = new VerticalLayersTests();
+
         [TestCategory("SiblingOrder")]
         [TestMethod]
         public void TwoSiblingsAreOrderedByDependency()
@@ -123,7 +126,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
             var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> {a});
             var newRoot = newSiblings.First();
-            Assert.IsTrue(newRoot.Horizontal);
+            Assert.AreEqual(Horizontal,newRoot.Orientation);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), b);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), c);
         }
@@ -141,7 +144,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             b.SiblingDependencies.Add(a);
 
             var newList = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node>(), new List<Node> { c,b,a},ref newList);
+            SiblingReordrer.RegroupSiblingNodes(new List<Node> { c,b,a},ref newList);
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
         }
 
@@ -163,31 +166,6 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 semanticTreeBuilder,classTreeBuilder,projectTreeBuilder,semanticModelWalker
             });
             Assert.AreEqual(newList.Count(),2);
-        }
-
-        [TestCategory("SiblingOrder")]
-        [TestMethod]
-        public void SimpleScenario()
-        {
-            Node A = new Node(nameof(A));
-            Node B = new Node(nameof(B));
-            Node C = new Node(nameof(C));
-            Node D = new Node(nameof(D));
-
-            D.SiblingDependencies.Add(B);
-            D.SiblingDependencies.Add(C);
-            B.SiblingDependencies.Add(A);
-
-            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node>
-            {
-                A,B,C,D
-            });
-
-            // A   
-            // B   C
-            //   D
-
-            Assert.AreEqual(newList.Count(), 2);
         }
     }
 }

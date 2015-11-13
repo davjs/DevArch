@@ -22,9 +22,9 @@ namespace Logic.Building.SemanticTree
         {
             return nodeList.SelectMany(x => x.SiblingDependencies).Distinct();
         }
-        public static IEnumerable<Node> DependantOfNode(this IEnumerable<Node> nodeList ,Node node)
+        public static bool DependsOn(this Node node,Node dependency)
         {
-            return nodeList.Where(x => x.SiblingDependencies.Contains(node)).ToList();
+            return node.SiblingDependencies.Contains(dependency);
         }
 
         /*public static int TotalReferences(this IEnumerable<Node> nodes)

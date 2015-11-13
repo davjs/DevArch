@@ -4,6 +4,7 @@ using Logic.Building.SemanticTree;
 using Presentation.Coloring;
 using Presentation.Coloring.ColoringAlgorithms;
 using Presentation.ViewModels;
+using static Logic.Building.SemanticTree.OrientationKind;
 
 namespace Presentation
 {
@@ -79,7 +80,7 @@ namespace Presentation
             {
                 childLayer.Column = column;
                 childLayer.Row = row;
-                if (node.Horizontal)
+                if (node.Orientation == Horizontal)
                     column++;
                 else
                     row++;

@@ -10,7 +10,8 @@ namespace Logic.Building.SemanticTree
     {
         private List<Node> ChildsList { get; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;
-        public bool Horizontal { get; set; }
+        public OrientationKind Orientation = OrientationKind.Vertical;
+
         public override string ToString()
         {
             return string.Join(",", ChildsList);
@@ -55,4 +56,9 @@ namespace Logic.Building.SemanticTree
         }
     }
 
+    public enum OrientationKind
+    {
+        Horizontal,
+        Vertical
+    }
 }

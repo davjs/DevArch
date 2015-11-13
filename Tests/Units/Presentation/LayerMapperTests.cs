@@ -12,21 +12,21 @@ namespace Tests.Units.Presentation
         public void NodeViewModelToLayerViewModelTest()
         {
             var root = new Node("Root");
-            { 
-                var top = new Node("Top") {Horizontal = true};
-                var bottom = new Node("Bottom") { Horizontal = true };
+             
+            var top = new Node("Top") {Orientation = OrientationKind.Horizontal};
+            var bottom = new Node("Bottom") { Orientation = OrientationKind.Horizontal };
 
-                var left = new Node("Left");
-                var right = new Node("Right");
+            var left = new Node("Left");
+            var right = new Node("Right");
                 
-                root.AddChild(top);
-                root.AddChild(bottom);
+            root.AddChild(top);
+            root.AddChild(bottom);
 
-                top.AddChild(left);
-                top.AddChild(right);
-                bottom.AddChild(left);
-                bottom.AddChild(right);
-            }
+            top.AddChild(left);
+            top.AddChild(right);
+            bottom.AddChild(left);
+            bottom.AddChild(right);
+            
 
             var viewModel = LayerMapper.NodeViewModelToLayerViewModel(root);
 

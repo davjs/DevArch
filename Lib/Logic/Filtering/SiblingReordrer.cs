@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Logic.Building;
 using Logic.Building.SemanticTree;
+using static Logic.Building.SemanticTree.OrientationKind;
 
 namespace Logic.Filtering
 {
@@ -20,7 +21,7 @@ namespace Logic.Filtering
             if (!childs.SiblingDependencies().Any())
             {
                 if (childs.Any() && childs.First().Parent != null)
-                    childs.First().Parent.Horizontal = true;
+                    childs.First().Parent.Orientation = Horizontal;
                 return childs;
             }
 
@@ -30,44 +31,134 @@ namespace Logic.Filtering
             var newChildOrder = new List<Node>();
             if (nodesWithoutDependency.Count == 0)
                 throw new LayerViolationException();
-            RegroupSiblingNodes(new List<Node>(), oldChildList, ref newChildOrder);
+            RegroupSiblingNodes(oldChildList, ref newChildOrder);
             return newChildOrder;
         }
 
-        public static void RegroupSiblingNodes(List<Node> nodesWithoutDependency, List<Node> oldChildList,
+        public static List<Node> GetFacadeNodes(List<Node> targets)
+        {
+            var allDependencies = targets.SiblingDependencies().ToList();
+            return targets.Where(n => !allDependencies.Contains(n)).ToList();
+        }
+        
+        public static void RegroupSiblingNodes(List<Node> oldChildList,
             ref List<Node> newChildOrder)
         {
             var target = oldChildList;
 
             while (target.Any())
             {
-                var allDependencies = target.SiblingDependencies().ToList();
-                //D
-                var zeroRef = target.Where(n => !allDependencies.Contains(n)).ToList();
-
-                //B C
-                var allDeps2 = zeroRef.SiblingDependencies().ToList();
-
-                foreach (var dep in allDeps2)
+                var firstLayer = GetFacadeNodes(target);
+                var nextLayer = firstLayer.SiblingDependencies().ToList();
+                nextLayer = GetFacadeNodes(nextLayer);
+                //Get nodes that are not dependencies to all in the previous layer
+                var uniqueDependencies = nextLayer.Where(x => !firstLayer.All(n => n.SiblingDependencies.Contains(x))).ToImmutableHashSet();
+                
+                //A X B
+                if (uniqueDependencies.Any())
                 {
-                    var dependsOndep = zeroRef.Where(x => x.SiblingDependencies.Contains(dep)).ToList();
-                    if (dependsOndep.Count != zeroRef.Count)
+                    //C D E
+                    var uniqueReferencers = firstLayer.Where(x => uniqueDependencies.Any(d => x.SiblingDependencies.Contains(d))).ToList();
+
+                    var refs = uniqueReferencers.ToDictionary(referencer => referencer.SiblingDependencies.Intersect(uniqueDependencies).ToImmutableHashSet());
+                    var commonUniqueDependencies = new Dictionary<ISet<Node>, List<Node>>();
+
+                    foreach (var key in refs.Keys)
                     {
-                        foreach (var node in dependsOndep)
-                        {
-                            zeroRef.Remove(node);
+                        var x = (from prevKey in commonUniqueDependencies.Keys where prevKey.SetEquals(key) select commonUniqueDependencies[prevKey]).FirstOrDefault();
+                        if (x == null) { 
+                            x = new List<Node>();
+                            commonUniqueDependencies.Add(key,x);
                         }
-                        var newList = new List<Node> { dep };
-                        newList.AddRange(dependsOndep);
-                        zeroRef.Add(new VerticalSiblingHolderNode(newList));
+                        x.Add(refs[key]);
+                    }
+
+                    foreach (var key in commonUniqueDependencies.Keys.ToList())
+                    {
+                        foreach (var key2 in commonUniqueDependencies.Keys.ToList())
+                        {
+                            if (key.IsProperSubsetOf(key2))
+                            {
+                                commonUniqueDependencies.Remove(key2);
+                            }
+                        }
+                    }
+
+                    foreach (var dependencyGroup in commonUniqueDependencies)
+                    {
+                        var referencers = dependencyGroup.Value;
+                        foreach (var referencer in referencers)
+                        {
+                            firstLayer.Remove(referencer);
+                        }
+                        var referenceNode = CreateHorizontalLayer(referencers);
+                        var depNode = CreateHorizontalLayer(dependencyGroup.Key);
+
+                        var newList = new List<Node> {depNode, referenceNode};
+                        firstLayer.Add(new VerticalSiblingHolderNode(newList));
                     }
                 }
-            
-                newChildOrder.Add(zeroRef.Count == 1 ? zeroRef.First() : new SiblingHolderNode(zeroRef));
-                target = zeroRef.SiblingDependencies().ToList();
+
+                newChildOrder.Add(CreateHorizontalLayer(firstLayer));
+                target = firstLayer.SiblingDependencies().ToList();
             }
 
             newChildOrder.Reverse();
+        }
+
+        public class DependencyGroup
+        {
+            public ISet<Node> _referencers;
+            public ISet<Node> _dependants;
+
+            public DependencyGroup(ISet<Node> referencers, ISet<Node> dependants)
+            {
+                _referencers = referencers;
+                _dependants = dependants;
+            }
+        }
+
+        public class Dependency
+        {
+            public Node _dependant;
+            public Node _referencer;
+
+            public Dependency(Node dependant, Node referencer)
+            {
+                _dependant = dependant;
+                _referencer = referencer;
+            }
+        }
+
+        public static IEnumerable<Dependency> FindDependencies(List<Node> firstLayer, List<Node> nextLayer)
+        {
+            //Get nodes that are not dependencies to all in the previous layer
+            var uniqueDependencies = nextLayer.Where(x => !firstLayer.All(n => n.SiblingDependencies.Contains(x))).ToImmutableHashSet();
+            //var referencers = firstLayer.Where(x => uniqueDependencies.Any(x.DependsOn));
+            var dependencies = new List<Dependency>();
+            foreach (var dependency in uniqueDependencies)
+            {
+                var referencers = firstLayer.Where(x => x.DependsOn(dependency));
+                dependencies.AddRange(referencers.Select(x => new Dependency(dependency,x)));
+            }
+            return dependencies;
+        }
+
+        public static IEnumerable<DependencyGroup> FindDependencyGroups(List<Node> firstLayer, List<Node> nextLayer)
+        {
+            var dependencies = FindDependencies(firstLayer, nextLayer);
+
+            var groups = new List<DependencyGroup>();
+            foreach (var dependency in dependencies)
+            {
+                groups.Where(g => g._dependants.Contains(dependency._dependant));
+            }
+
+        }
+
+        private static Node CreateHorizontalLayer(ICollection<Node> uniqueReferencers)
+        {
+            return uniqueReferencers.Count == 1 ? uniqueReferencers.First() : new HorizontalSiblingHolderNode(uniqueReferencers);
         }
 
         /*public static void RegroupSiblingNodes(List<Node> nodesWithoutDependency, List<Node> oldChildList,

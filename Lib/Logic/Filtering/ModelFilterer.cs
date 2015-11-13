@@ -50,7 +50,7 @@ namespace Logic.Filtering
             foreach (var projectNode in withDefaultNamespaces)
             {
                 var childNode = projectNode.Childs.First();
-                projectNode.Horizontal = childNode.Horizontal;
+                projectNode.Orientation = childNode.Orientation;
                 projectNode.SetChildren(childNode.Childs);
             }
         }

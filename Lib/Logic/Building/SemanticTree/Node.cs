@@ -80,27 +80,29 @@ namespace Logic.Building.SemanticTree
 
     public class SiblingHolderNode : Node
     {
-        public SiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
+        public SiblingHolderNode(IEnumerable<Node> siblingNodes, OrientationKind orientation) : base("")
         {
             SetChildren(siblingNodes);
-            Horizontal = true;
+            Orientation = orientation;
         }
+    }
+
+    public class HorizontalSiblingHolderNode : SiblingHolderNode
+    {
+        public HorizontalSiblingHolderNode(IEnumerable<Node> siblingNodes) 
+            : base(siblingNodes,OrientationKind.Horizontal) {}
     }
 
     public class VerticalSiblingHolderNode : SiblingHolderNode
     {
-        public VerticalSiblingHolderNode(IEnumerable<Node> siblingNodes) : base(siblingNodes)
-        {
-            Horizontal = false;
-        }
+        public VerticalSiblingHolderNode(IEnumerable<Node> siblingNodes) 
+            : base(siblingNodes,OrientationKind.Vertical){}
     }
-
 
     public class CircularDependencyHolderNode : SiblingHolderNode
     {
-        public CircularDependencyHolderNode(IEnumerable<Node> siblingNodes) : base(siblingNodes)
-        {
-        }
+        public CircularDependencyHolderNode(IEnumerable<Node> siblingNodes) 
+            : base(siblingNodes,OrientationKind.Horizontal){}
     }
 }
  
