@@ -9,8 +9,6 @@ namespace Tests.Units.Logic.Filtering.Ordering
     [TestClass]
     public class VerticalLayersTests
     {
-        private readonly DependencyPatternTests _dependencyPatternTests = new DependencyPatternTests();
-
         [TestCategory("SiblingOrder.VerticalLayers")]
         [TestMethod]
         public void FindsVerticalLayers()
@@ -33,8 +31,10 @@ namespace Tests.Units.Logic.Filtering.Ordering
             // B   C
             //   D
 
-            Assert.AreEqual(newList.Count(), 2);
+            Assert.AreEqual(newList.Count, 2);
             Assert.AreEqual(newList.Last(), D);
+            var hor = newList.First();
+            Assert.AreEqual(C,hor.Childs.First());
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -195,8 +195,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var hor = newChildOrder.First();
             Assert.AreEqual(OrientationKind.Horizontal, hor.Orientation);
             Assert.AreEqual(2, hor.Childs.Count);
-            var left = hor.Childs.First();
-            var right = hor.Childs.Last();
+            var right = hor.Childs.First();
+            var left = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
             Assert.AreEqual(A, left.Childs.First());
             Assert.AreEqual(C, left.Childs.Last());
@@ -204,8 +204,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.AreEqual(B, right.Childs.First());
             var rightBot = right.Childs.Last();
             Assert.AreEqual(OrientationKind.Horizontal, rightBot.Orientation);
-            Assert.AreEqual(D, rightBot.Childs.First() );
-            Assert.AreEqual(E, rightBot.Childs.Last());
+            CollectionAssert.Contains(rightBot.Childs.ToArray(), D);
+            CollectionAssert.Contains(rightBot.Childs.ToArray(), E);
             //1
             Assert.AreEqual(F, newChildOrder.Last());
         }
@@ -245,7 +245,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             }, ref newChildOrder);
 
             //0.  A     B C 
-            //0.  D     E-F
+            //0.  D     F-E
             //1.     G
 
             Assert.AreEqual(2, newChildOrder.Count);
@@ -259,15 +259,14 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.AreEqual(A, left.Childs.First());
             Assert.AreEqual(D, left.Childs.Last());
             Assert.IsTrue(right is VerticalSiblingHolderNode);
-            Assert.AreEqual(B, right.Childs.First());
             var rightTop = right.Childs.First();
             var rightBot = right.Childs.Last();
             Assert.IsTrue(rightTop is HorizontalSiblingHolderNode);
             Assert.IsTrue(rightBot is HorizontalSiblingHolderNode);
             Assert.AreEqual(2, rightTop.Childs.Count);
             Assert.AreEqual(2, rightBot.Childs.Count);
-            Assert.AreEqual(E, rightBot.Childs.First());
-            Assert.AreEqual(F, rightBot.Childs.Last());
+            Assert.AreEqual(F, rightBot.Childs.First());
+            Assert.AreEqual(E, rightBot.Childs.Last());
             //1
             Assert.AreEqual(G, newChildOrder.Last());
         }
@@ -304,18 +303,19 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 F
             }, ref newChildOrder);
 
-            //       0      
+            //             
             //1.  A  X   B
             //1.  C     D E
             //2.     F
 
             Assert.AreEqual(3, newChildOrder.Count);
             //0
-            var hor = newChildOrder.First();
+            Assert.AreEqual(X, newChildOrder.First());
+            var hor = newChildOrder.ElementAt(1);
             Assert.AreEqual(OrientationKind.Horizontal, hor.Orientation);
             Assert.AreEqual(2, hor.Childs.Count);
-            var left = hor.Childs.First();
-            var right = hor.Childs.Last();
+            var right = hor.Childs.First();
+            var left = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
             Assert.AreEqual(A, left.Childs.First());
             Assert.AreEqual(C, left.Childs.Last());
@@ -323,8 +323,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.AreEqual(B, right.Childs.First());
             var rightBot = right.Childs.Last();
             Assert.AreEqual(OrientationKind.Horizontal, rightBot.Orientation);
-            Assert.AreEqual(D, rightBot.Childs.First());
-            Assert.AreEqual(E, rightBot.Childs.Last());
+            CollectionAssert.Contains(rightBot.Childs.ToArray(), D);
+            CollectionAssert.Contains(rightBot.Childs.ToArray(), E);
             //1
             Assert.AreEqual(F, newChildOrder.Last());
         }
