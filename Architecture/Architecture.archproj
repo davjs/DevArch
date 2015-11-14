@@ -16,6 +16,8 @@
     <None Include="Samples\ComplexDepth2.modeldefinition" />
     <None Include="Samples\ComplexFull.modeldefinition" />
     <None Include="Samples\FindsAnononymousLayerSample.modeldefinition" />
+    <None Include="Samples\NoPatterns.modeldefinition" />
+    <None Include="Samples\Patterns.modeldefinition" />
     <None Include="Samples\LayerDefaultOrder.modeldefinition" />
     <None Include="Samples\LayerReverseOrder.modeldefinition" />
   </ItemGroup>

@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Logic.Filtering;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Units.Logic
 {
-    [TestClass()]
+    [TestClass]
     public class PatternFinderTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void FindPatternTest()
         {
-            Assert.AreEqual("Service",PatternFinder.FindNamingPattern(new List<string>() {"CalculatorService","ParserService"}));
+            Assert.AreEqual("Service",PatternFinder.FindNamingPatterns(new List<string>() {"CalculatorService","ParserService"}).First());
         }
     }
 }
