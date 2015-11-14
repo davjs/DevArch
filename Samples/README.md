@@ -29,6 +29,16 @@ Filters are specified inside the ```<Filters>``` tag.
 :---------------:|:----------------------:|:----------------------
 ![](ComplexFull.png)  |  ![](ComplexDepth2.png) | ![](ComplexDepth1.png) 
 
+###Naming patterns
+
+Showing name patterns can be usefull for creating very high level diagrams depicting how code is organized.
+
+|```<FindNamingPatterns>Off</FindNamingPatterns>```|```<FindNamingPatterns>On</FindNamingPatterns>```
+:----------------------:|:----------------------:
+![](NoPatterns.png)     | ![](Patterns.png) 
+(Default)               |
+
+
 
 *TODO*
 
