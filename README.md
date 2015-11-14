@@ -14,3 +14,7 @@ ___
 **DevArch makes diagram generation faster, easier and more formal.**
 
 
+
+###Samples
+You can find samples [here](Samples), they are all generated from [these](Architecture/Samples) model definitions
+
