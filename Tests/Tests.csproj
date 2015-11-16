@@ -113,6 +113,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sample\Patterns.cs" />
     <Compile Include="Units\Logic\AnalyserTests.cs" />
     <Compile Include="Units\Logic\Building\SemanticTreeBuilderTests.cs" />
     <Compile Include="Units\Logic\Building\UnitTest1.cs" />

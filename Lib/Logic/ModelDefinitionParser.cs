@@ -66,6 +66,7 @@ namespace Logic
             if (fname == "RemoveTests") filters.RemoveTests = on;
             if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = on;
             if (fname == "RemoveExceptions") filters.RemoveExceptions = on;
+            if (fname == "FindNamingPatterns") filters.FindNamingPatterns = on;
             if (fname == "MaxDepth") filters.MaxDepth = number;
             if (fname == "MinReferences") filters.MinReferences = number;
         }

@@ -19,8 +19,11 @@ namespace Logic.Building
                 var documents = project.Documents.ToList();
                 if (!documents.Any()) continue;
 
-                if (documentName != null)
+                if (documentName != null) { 
                     documents = documents.Where(d => d.Name == documentName).ToList();
+                    if(!documents.Any())
+                        throw new Exception("Unable to find document: " + documentName);
+                }
 
                 var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result).ToList();
                 var classes = SemanticModelWalker.GetClassesInModels(semanticModels);

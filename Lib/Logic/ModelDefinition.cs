@@ -36,6 +36,7 @@
         public int MaxDepth = 0;
         public bool RemoveDefaultNamespaces = true;
         public bool RemoveExceptions = true;
+        public bool FindNamingPatterns = false;
     }
 
     public interface IScope

@@ -52,15 +52,14 @@ namespace Tests.Units.Logic.Filtering.Ordering
             B.SiblingDependencies.Add(A);
             A.SiblingDependencies.Add(X);
             C.SiblingDependencies.Add(X);
-            var newChildOrder = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
                 C,
                 D,
                 X
-            },ref newChildOrder);
+            });
             //   X
             // A   
             // B   C
@@ -85,15 +84,14 @@ namespace Tests.Units.Logic.Filtering.Ordering
             C.SiblingDependencies.Add(A);
             C.SiblingDependencies.Add(B);
 
-            var newChildOrder = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
                 C,
                 D,
                 E
-            }, ref newChildOrder);
+            });
 
             //0.     A B  
             //0.  D   C
@@ -127,15 +125,14 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             D.SiblingDependencies.Add(X);
 
-            var newChildOrder = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
                 C,
                 D,
                 E
-            }, ref newChildOrder);
+            });
 
             //0.  A    B X
             //0.  C     D 
@@ -150,6 +147,53 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(left is VerticalSiblingHolderNode);
             Assert.IsTrue(right is VerticalSiblingHolderNode);
             Assert.AreEqual(A,left.Childs.First());
+            Assert.AreEqual(C, left.Childs.Last());
+            var topRight = right.Childs.First();
+            Assert.IsTrue(topRight is SiblingHolderNode);
+            Assert.AreEqual(D, right.Childs.Last());
+            Assert.AreEqual(E, newChildOrder.Last());
+        }
+
+        [TestCategory("SiblingOrder.VerticalLayers")]
+        [TestMethod]
+        public void FindsTwoSeparateLongVerticalLayers()
+        {
+            Node A = new Node("A");
+            Node B = new Node("B");
+            Node C = new Node("C");
+            Node D = new Node("D");
+            Node E = new Node("E");
+            Node F = new Node("F");
+            Node G = new Node("G");
+
+            C.SiblingDependencies.Add(A);
+            E.SiblingDependencies.Add(C);
+
+            D.SiblingDependencies.Add(B);
+            F.SiblingDependencies.Add(D);
+
+            G.SiblingDependencies.Add(E);
+            G.SiblingDependencies.Add(F);
+
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            {
+                A,B,C,D,E,F,G
+            });
+
+            //0.  A     B 
+            //0.  C     D 
+            //0.  E     F 
+            //0.     G
+
+            Assert.AreEqual(2, newChildOrder.Count);
+            var hor = newChildOrder.First();
+            Assert.IsTrue(hor is SiblingHolderNode && !(hor is VerticalSiblingHolderNode));
+            Assert.AreEqual(2, hor.Childs.Count);
+            var left = hor.Childs.First();
+            var right = hor.Childs.Last();
+            Assert.IsTrue(left is VerticalSiblingHolderNode);
+            Assert.IsTrue(right is VerticalSiblingHolderNode);
+            Assert.AreEqual(A, left.Childs.First());
             Assert.AreEqual(C, left.Childs.Last());
             var topRight = right.Childs.First();
             Assert.IsTrue(topRight is SiblingHolderNode);
@@ -175,8 +219,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             E.SiblingDependencies.Add(B);
 
-            var newChildOrder = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -184,7 +227,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 D,
                 E,
                 F
-            }, ref newChildOrder);
+            });
 
             //0.  A      B 
             //0.  C     D-E
@@ -232,8 +275,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(B);
             F.SiblingDependencies.Add(C);
 
-            var newChildOrder = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -242,7 +284,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 E,
                 F,
                 G
-            }, ref newChildOrder);
+            });
 
             //0.  A     B C 
             //0.  D     F-E
@@ -292,8 +334,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             E.SiblingDependencies.Add(B);
 
-            var newChildOrder = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -301,7 +342,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 D,
                 E,
                 F
-            }, ref newChildOrder);
+            });
 
             //             
             //1.  A  X   B

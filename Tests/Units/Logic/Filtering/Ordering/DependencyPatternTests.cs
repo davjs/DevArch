@@ -60,7 +60,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             //1.  C     D E
             var firstLayer = new List<Node> { C, D, E };
             var nextLayer = new List<Node> { A, X, B };
-            var groups = SiblingReordrer.FindPotentialDependencyGroups(firstLayer, nextLayer);
+            var dependencies = SiblingReordrer.FindDependencies(firstLayer, nextLayer).ToList();
+            var groups = SiblingReordrer.FindPotentialDependencyGroups(dependencies);
             Assert.AreEqual(9, groups.Count());
             Assert.IsTrue(groups.Any(x => x.Referencers.SetEquals(new []{D , E})));
             //1 {C -> A , X} 
@@ -121,7 +122,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             //1.    A
             var firstLayer = new List<Node> { A, B, C };
             var nextLayer = new List<Node> { A, B, C };
-            var groups = SiblingReordrer.FindPotentialDependencyGroups(firstLayer, nextLayer);
+            var dependencies = SiblingReordrer.FindDependencies(firstLayer, nextLayer).ToList();
+            var groups = SiblingReordrer.FindPotentialDependencyGroups(dependencies);
             Assert.AreEqual(3, groups.Count());
             Assert.IsTrue(groups.Last().Dependants.SetEquals(new List<Node>{B,C}));
             //1 {A -> B , C} 

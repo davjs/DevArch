@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Model>
+  <Scope>
+    <Document Name ="Tests\Sample\Patterns.cs"/>
+  </Scope>
+  <Output Path="Samples\NoPatterns.png" Scale="1"/>
+  <Filters>
+    <RemoveTests>Off</RemoveTests>
+  </Filters>
+</Model>

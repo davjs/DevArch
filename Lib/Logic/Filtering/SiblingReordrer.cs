@@ -29,10 +29,9 @@ namespace Logic.Filtering
             var oldChildList = childs.ToList();
             FindCircularReferences(ref oldChildList);
             var nodesWithoutDependency = oldChildList.Where(c => !c.SiblingDependencies.Any()).ToList();
-            var newChildOrder = new List<Node>();
             if (nodesWithoutDependency.Count == 0)
                 throw new LayerViolationException();
-            RegroupSiblingNodes(oldChildList, ref newChildOrder);
+            var newChildOrder = RegroupSiblingNodes(oldChildList);
             return newChildOrder;
         }
 
@@ -42,9 +41,9 @@ namespace Logic.Filtering
             return targets.Where(n => !allDependencies.Contains(n)).ToList();
         }
 
-        public static void RegroupSiblingNodes(List<Node> oldChildList,
-            ref List<Node> newChildOrder)
+        public static List<Node> RegroupSiblingNodes(List<Node> oldChildList)
         {
+            var newChildOrder = new List<Node>();
             var target = oldChildList;
             var unreferenced = oldChildList.Where(x => !x.SiblingDependencies.Any()
             && !oldChildList.SiblingDependencies().Contains(x)).ToList();
@@ -77,13 +76,13 @@ namespace Logic.Filtering
                         firstLayer.Add(new VerticalSiblingHolderNode(newList));
                     }
                 }
-
                 newChildOrder.Add(CreateHorizontalLayer(firstLayer));
             }
             if(unreferenced.Any())
                 newChildOrder.Add(CreateHorizontalLayer(unreferenced));
 
             newChildOrder.Reverse();
+            return newChildOrder;
         }
 
         public static IEnumerable<Dependency> FindDependencies(List<Node> firstLayer, List<Node> nextLayer)
@@ -91,7 +90,6 @@ namespace Logic.Filtering
             //Get nodes that are not dependencies to all in the previous layer
             var uniqueDependencies =
                 nextLayer.Where(x => !firstLayer.All(n => n.SiblingDependencies.Contains(x))).ToImmutableHashSet();
-            //var referencers = firstLayer.Where(x => uniqueDependencies.Any(x.DependsOn));
             var dependencies = new List<Dependency>();
             foreach (var dependency in uniqueDependencies)
             {
@@ -101,10 +99,8 @@ namespace Logic.Filtering
             return dependencies;
         }
 
-        public static IEnumerable<DependencyGroup> FindPotentialDependencyGroups(List<Node> firstLayer,
-            List<Node> nextLayer)
+        public static IEnumerable<DependencyGroup> FindPotentialDependencyGroups(List<Dependency> dependencies)
         {
-            var dependencies = FindDependencies(firstLayer, nextLayer).ToList();
             var groups = dependencies.Select(x => x.ToDependencyGroup()).ToList();
             var referencers = dependencies.Select(d => d.Referencer).Distinct();
 
@@ -145,7 +141,8 @@ namespace Logic.Filtering
         public static IEnumerable<DependencyGroup> FindDependencyGroups(List<Node> firstLayer,
             List<Node> nextLayer)
         {
-            var potentialGroups = FindPotentialDependencyGroups(firstLayer, nextLayer).ToList();
+            var dependencies = FindDependencies(firstLayer, nextLayer).ToList();
+            var potentialGroups = FindPotentialDependencyGroups(dependencies).ToList();
             foreach (var _group in potentialGroups.ToList())
             {
                 var referencers = _group.Referencers;
@@ -166,8 +163,6 @@ namespace Logic.Filtering
             while (potentialGroups.Any())
             {
                 var biggest = potentialGroups.OrderByDescending(x => x.Score).First();
-
-                //var biggest = potentialGroups.OrderByDescending(x => x.Referencers.Count + x.Dependants.Count).First();
                 var madeInvalid = potentialGroups.Where(g => g != biggest && g.Referencers.ContainsAnyFrom(biggest.Referencers));
                 patternsToUse.Add(biggest);
                 potentialGroups.RemoveRange(madeInvalid.ToList());

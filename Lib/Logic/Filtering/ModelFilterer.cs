@@ -25,7 +25,9 @@ namespace Logic.Filtering
             if (filters.RemoveSinglePaths)
                 tree = RemoveSinglePaths(tree);
             tree = RemoveSingleChildAnonymous(tree);
-            //tree = FindSiblingPatterns(tree);
+            if (filters.FindNamingPatterns) { 
+                tree = FindSiblingPatterns(tree);
+            }
             //tree = RemoveSinglePaths(tree); change to remove projects/namespaces containing zero classes
         }
 
@@ -128,7 +130,7 @@ namespace Logic.Filtering
         {
             if (!tree.Childs.Any())
                 return tree;
-            if(!tree.Childs.Select(x => x.HasChildren()).Any()) { 
+            if(!tree.Childs.Any(x => x.HasChildren())) { 
                 var baseClassPattern = PatternFinder.FindBaseClassPattern(tree.Childs);
                 if (baseClassPattern != null)
                 {
@@ -137,11 +139,18 @@ namespace Logic.Filtering
                 }
                 else
                 {
-                    var namingPattern = PatternFinder.FindNamingPattern(tree.Childs.Select(x => x.Name));
-                    if (namingPattern != null)
+                    var namingPatterns = PatternFinder.FindNamingPatterns(tree.Childs.Select(x => x.Name)).ToList();
+                    if (namingPatterns.Any())
                     {
-                        tree.SetChildren(new List<Node>());
-                        tree.AddChild(new Node(namingPattern + "s"));
+                        foreach (var pattern in namingPatterns.ToList())
+                        {
+                            var followspattern = tree.Childs.Where(x => PatternFinder.FollowsPattern(x.Name,pattern)).ToList();
+                            foreach (var node in followspattern)
+                            {
+                                tree.RemoveChild(node);
+                            }
+                            tree.AddChild(new Node(pattern + "s"));
+                        }
                     }
                 }
             }

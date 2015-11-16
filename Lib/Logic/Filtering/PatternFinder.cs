@@ -7,7 +7,7 @@ namespace Logic.Filtering
 {
     public static class PatternFinder
     {
-        public static string FindNamingPattern(IEnumerable<string> names)
+        public static IEnumerable<string> FindNamingPatterns(IEnumerable<string> names)
         {
             var splitNames = names.Select(SplitCamelCase).Where(x => x.Any()).ToList();
             var patterns = (from name in splitNames
@@ -16,7 +16,12 @@ namespace Logic.Filtering
                 where name.Last().Equals(name2.Last())
                 select name.Last()).ToList();
 
-            return patterns.Any() ? patterns.First() : null;
+            return patterns.Distinct();
+        }
+
+        public static bool FollowsPattern(string name,string pattern)
+        {
+            return (SplitCamelCase(name).Last().Equals(pattern));
         }
 
         public static IEnumerable<string> SplitCamelCase(string input)

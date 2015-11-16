@@ -143,8 +143,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             c.SiblingDependencies.Add(a);
             b.SiblingDependencies.Add(a);
 
-            var newList = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node> { c,b,a},ref newList);
+            var newList = SiblingReordrer.RegroupSiblingNodes(new List<Node> { c,b,a});
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
         }
 
