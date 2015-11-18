@@ -150,6 +150,52 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
         [TestCategory("SiblingOrder.VerticalLayers")]
         [TestMethod]
+        public void FindsCommonDependorAfterTwoLongVerticalLayers()
+        {
+            var A = new Node("A");
+            var B = new Node("B");
+            var C = new Node("C");
+            var D = new Node("D");
+            var E = new Node("E");
+            var F = new Node("F");
+            var X = new Node("X");
+
+            A.SiblingDependencies.Add(X);
+            B.SiblingDependencies.Add(X);
+
+            C.SiblingDependencies.Add(A);
+            E.SiblingDependencies.Add(C);
+
+            D.SiblingDependencies.Add(B);
+            F.SiblingDependencies.Add(D);
+            
+
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            {
+                A,B,C,D,E,F,X
+            });
+
+            //0.     X
+            //0.  A     B 
+            //0.  C     D 
+            //0.  E     F 
+
+            Assert.AreEqual(2, newChildOrder.Count);
+            var hor = newChildOrder.Last();
+            Assert.IsTrue(hor is SiblingHolderNode && !(hor is VerticalSiblingHolderNode));
+            Assert.AreEqual(2, hor.Childs.Count);
+            var left = hor.Childs.First();
+            var right = hor.Childs.Last();
+            Assert.IsTrue(left is VerticalSiblingHolderNode);
+            Assert.IsTrue(right is VerticalSiblingHolderNode);
+            Assert.IsFalse(left.Childs.Contains(X));
+            Assert.IsFalse(right.Childs.Contains(X));
+            Assert.AreEqual(3, left.Childs.Count);
+            Assert.AreEqual(3, right.Childs.Count);
+        }
+
+        [TestCategory("SiblingOrder.VerticalLayers")]
+        [TestMethod]
         public void FindsTwoSeparateVerticalLayers()
         {
             Node A = new Node(nameof(A));

@@ -20,6 +20,7 @@ namespace Tests.Integration
             var modelGen = new DiagramFromModelDefinitionGenerator(solution);
             var tree = modelGen.GenerateDiagram(ModelDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
+            Assert.AreEqual(1,lib.DescendantNodes().Count(x => x.Name == "Node"));
             var clients = tree.Childs.WithName("Clients");
             var makeAllArchDiagramsInSolution = clients.DescendantNodes().WithName("MakeAllArchDiagramsInSolution");
             var deps = makeAllArchDiagramsInSolution.Dependencies.ToList();

@@ -13,10 +13,9 @@ namespace Logic.Filtering
     {
         public static IEnumerable<Node> OrderChildsBySiblingsDependencies(IReadOnlyList<Node> childs)
         {
-            foreach (var child in childs)
+            foreach (var child in childs.Where(child => child.Childs.Any()))
             {
-                if (child.Childs.Any())
-                    child.SetChildren(OrderChildsBySiblingsDependencies(child.Childs));
+                child.SetChildren(OrderChildsBySiblingsDependencies(child.Childs));
             }
 
             if (!childs.SiblingDependencies().Any())
@@ -45,39 +44,56 @@ namespace Logic.Filtering
             var unreferenced = oldChildList.Where(x => !x.SiblingDependencies.Any()
             && !oldChildList.SiblingDependencies().Contains(x)).ToList();
             target.RemoveRange(unreferenced);
-
-            while (target.Any())
+            while (oldChildList.Any())
             {
-                var firstLayer = GetFacadeNodes(target);
-                var nextLayer = firstLayer.SiblingDependencies().ToList();
-                nextLayer = GetFacadeNodes(nextLayer);
-                //Get nodes that are not dependencies to all in the previous layer
-                var uniqueDependencies =
-                    nextLayer.Where(x => !firstLayer.All(n => n.SiblingDependencies.Contains(x))).ToImmutableHashSet();
-
-
-                target = firstLayer.SiblingDependencies().ToList();
-                
-                if (uniqueDependencies.Any())
-                {
-                    var dependencyGroups = FindDependencyGroups(firstLayer, nextLayer);
-                    foreach (var dependencyGroup in dependencyGroups)
-                    {
-                        firstLayer.RemoveRange(dependencyGroup.Referencers.ToList());
-                        target.RemoveRange(dependencyGroup.Dependants.ToList());
-                        var referenceNode = CreateHorizontalLayer(dependencyGroup.Referencers);
-                        var depNode = CreateHorizontalLayer(dependencyGroup.Dependants);
-                        var newList = new List<Node> { depNode, referenceNode };
-                        var depNodeDependencies = dependencyGroup.Dependants.SiblingDependencies().ToList();
-                        depNodeDependencies = OrderChildsBySiblingsDependencies(depNodeDependencies).Reverse().ToList();
-                        newList.InsertRange(0,depNodeDependencies);
-                        firstLayer.Add(new VerticalSiblingHolderNode(newList));
-                    }
+                if (!target.Any()) { 
+                    target = oldChildList;
                 }
-                newChildOrder.Add(CreateHorizontalLayer(firstLayer));
+                while (target.Any())
+                {
+                    var firstLayer = GetFacadeNodes(target);
+                    var nextLayer = firstLayer.SiblingDependencies().ToList();
+                    nextLayer = GetFacadeNodes(nextLayer);
+                    //Get nodes that are not dependencies to all in the previous layer
+                    var uniqueDependencies =
+                        nextLayer.Where(x => !firstLayer.All(n => n.SiblingDependencies.Contains(x))).ToImmutableHashSet();
+
+
+                    target = firstLayer.SiblingDependencies().ToList();
+                
+                    if (uniqueDependencies.Any())
+                    {
+                        var dependencyGroups = FindDependencyGroups(firstLayer, nextLayer);
+                        oldChildList.RemoveRange(firstLayer);
+                        foreach (var dependencyGroup in dependencyGroups)
+                        {
+                            firstLayer.RemoveRange(dependencyGroup.Referencers.ToList());
+                            target.RemoveRange(dependencyGroup.Dependants.ToList());
+                            oldChildList.RemoveRange(dependencyGroup.Dependants.ToList());
+                            var referenceNode = CreateHorizontalLayer(dependencyGroup.Referencers);
+                            var depNode = CreateHorizontalLayer(dependencyGroup.Dependants);
+                            var newList = new List<Node> { depNode, referenceNode };
+                            var depNodeDependencies = dependencyGroup.Dependants.SiblingDependencies().ToList();
+                            foreach (var depNodeDependency in depNodeDependencies)
+                            {
+                                depNodeDependency.SiblingDependencies.RemoveWhere(x => !depNodeDependencies.Contains(x));
+                            }
+                            oldChildList.RemoveRange(depNodeDependencies);
+                            depNodeDependencies = OrderChildsBySiblingsDependencies(depNodeDependencies).Reverse().ToList();
+                            newList.InsertRange(0,depNodeDependencies);
+                            firstLayer.Add(new VerticalSiblingHolderNode(newList));
+                        }
+                    }
+                    else
+                    {
+                        oldChildList.RemoveRange(firstLayer);
+                    }
+                    newChildOrder.Add(CreateHorizontalLayer(firstLayer));
+                }
             }
-            if(unreferenced.Any())
+            if (unreferenced.Any())
                 newChildOrder.Add(CreateHorizontalLayer(unreferenced));
+            
 
             newChildOrder.Reverse();
             return newChildOrder;
@@ -167,7 +183,6 @@ namespace Logic.Filtering
                 potentialGroups.Remove(biggest);
             }
 
-
             return patternsToUse;
         }
 
@@ -226,31 +241,37 @@ namespace Logic.Filtering
 
         public static void FindCircularReferences(ref List<Node> childList)
         {
+            FindCircularReferences(childList, childList);
+        }
+
+        private static void FindCircularReferences(List<Node> childList1, List<Node> childList2)
+        {
             var circularRefs = new List<Tuple<Node, Node>>();
-            foreach (var node in childList)
+            foreach (var node in childList1)
             {
-                foreach (var node2 in from node2 in childList.Where(n => n != node)
-                    where node.SiblingDependencies.Contains(node2)
-                    where node2.SiblingDependencies.Contains(node)
-                    where circularRefs.All(x => x.Item1 != node2 && x.Item2 != node)
-                    select node2)
+                foreach (var node2 in from node2 in childList2.Where(n => n != node)
+                                      where node.SiblingDependencies.Contains(node2)
+                                      where node2.SiblingDependencies.Contains(node)
+                                      where circularRefs.All(x => x.Item1 != node2 && x.Item2 != node)
+                                      select node2)
                 {
                     circularRefs.Add(new Tuple<Node, Node>(node, node2));
                 }
             }
-
+            var circularDependencyHolders = new List<Node>();
+            //NEEED TO CHECK FOR CIRULARREFERENCES WITH THE NEWLY CREATED CIRULARDEPENDENCYHOLDERS
             foreach (var circularRef in circularRefs)
             {
                 var circularDependencyHolderNode =
-                    new CircularDependencyHolderNode(new List<Node> {circularRef.Item1, circularRef.Item2});
+                    new CircularDependencyHolderNode(new List<Node> { circularRef.Item1, circularRef.Item2 });
                 circularDependencyHolderNode.SiblingDependencies.UnionWith(
                     circularRef.Item1.SiblingDependencies.Union(circularRef.Item2.SiblingDependencies));
-                childList.Add(circularDependencyHolderNode);
+                childList2.Add(circularDependencyHolderNode);
                 circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item1);
                 circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item2);
-                childList.Remove(circularRef.Item1);
-                childList.Remove(circularRef.Item2);
-                foreach (var node3 in childList.Where(n => n != circularDependencyHolderNode))
+                childList2.Remove(circularRef.Item1);
+                childList2.Remove(circularRef.Item2);
+                foreach (var node3 in childList2.Where(n => n != circularDependencyHolderNode))
                 {
                     var containedNode1 = node3.SiblingDependencies.Contains(circularRef.Item1);
                     var containedNode2 = node3.SiblingDependencies.Contains(circularRef.Item2);
@@ -261,7 +282,10 @@ namespace Logic.Filtering
                     if (containedNode2)
                         node3.SiblingDependencies.Remove(circularRef.Item2);
                 }
+                circularDependencyHolders.Add(circularDependencyHolderNode);
             }
+            if(circularDependencyHolders.Any() && circularDependencyHolders != childList2)
+                FindCircularReferences(circularDependencyHolders,childList2);
         }
 
         public class DependencyGroup
