@@ -28,9 +28,6 @@ namespace Logic.Filtering
 
             var oldChildList = childs.ToList();
             FindCircularReferences(ref oldChildList);
-            var nodesWithoutDependency = oldChildList.Where(c => !c.SiblingDependencies.Any()).ToList();
-            if (nodesWithoutDependency.Count == 0)
-                throw new LayerViolationException();
             var newChildOrder = RegroupSiblingNodes(oldChildList);
             return newChildOrder;
         }
@@ -60,8 +57,7 @@ namespace Logic.Filtering
 
 
                 target = firstLayer.SiblingDependencies().ToList();
-
-                //A X B
+                
                 if (uniqueDependencies.Any())
                 {
                     var dependencyGroups = FindDependencyGroups(firstLayer, nextLayer);
@@ -71,8 +67,10 @@ namespace Logic.Filtering
                         target.RemoveRange(dependencyGroup.Dependants.ToList());
                         var referenceNode = CreateHorizontalLayer(dependencyGroup.Referencers);
                         var depNode = CreateHorizontalLayer(dependencyGroup.Dependants);
-
                         var newList = new List<Node> { depNode, referenceNode };
+                        var depNodeDependencies = dependencyGroup.Dependants.SiblingDependencies().ToList();
+                        depNodeDependencies = OrderChildsBySiblingsDependencies(depNodeDependencies).Reverse().ToList();
+                        newList.InsertRange(0,depNodeDependencies);
                         firstLayer.Add(new VerticalSiblingHolderNode(newList));
                     }
                 }
@@ -108,7 +106,7 @@ namespace Logic.Filtering
             foreach (var referencer in referencers)
             {
                 //Get all groups for this referencer
-                var relevantGroups = dependencies.Where(dep => dep.Referencer == referencer);
+                var relevantGroups = dependencies.Where(dep => dep.Referencer == referencer).ToList();
                 if (relevantGroups.Count() > 1)
                 {
                     //Combine all its dependencies
@@ -127,7 +125,7 @@ namespace Logic.Filtering
                 if (uniqueDependantGroups.Any(x => x.SetEquals(dependants)))
                     continue;
                 uniqueDependantGroups.Add(dependants);
-                var relevantGroups = groups.Where(group => group.Dependants.SetEquals(dependants));
+                var relevantGroups = groups.Where(group => group.Dependants.SetEquals(dependants)).ToList();
                 if (relevantGroups.Count() > 1)
                 {
                     groups.Add(new DependencyGroup(dependants,
@@ -143,16 +141,16 @@ namespace Logic.Filtering
         {
             var dependencies = FindDependencies(firstLayer, nextLayer).ToList();
             var potentialGroups = FindPotentialDependencyGroups(dependencies).ToList();
-            foreach (var _group in potentialGroups.ToList())
+            foreach (var group in potentialGroups.ToList())
             {
-                var referencers = _group.Referencers;
-                var dependants = _group.Dependants;
+                var referencers = group.Referencers;
+                var dependants = group.Dependants;
                 //If dependency exists for any other referencer not contained in referencers, its invalid
                 if (potentialGroups.Any(group2 => dependants.Intersect(group2.Dependants).Any()
                                                   &&
                                                   group2.Referencers.Any(x => !referencers.Contains(x))))
                 {
-                    potentialGroups.Remove(_group);
+                    potentialGroups.Remove(group);
                 }
             }
 

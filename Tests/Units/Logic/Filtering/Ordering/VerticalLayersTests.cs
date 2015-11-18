@@ -110,6 +110,46 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
         [TestCategory("SiblingOrder.VerticalLayers")]
         [TestMethod]
+        public void FindsTwoLongSeparateVerticalLayers()
+        {
+            Node A = new Node(nameof(A));
+            Node B = new Node(nameof(B));
+            Node C = new Node(nameof(C));
+            Node D = new Node(nameof(D));
+            Node E = new Node(nameof(E));
+            Node F = new Node(nameof(F));
+            Node G = new Node(nameof(G));
+            Node X = new Node(nameof(X));
+
+            C.SiblingDependencies.Add(A);
+            E.SiblingDependencies.Add(C);
+
+            D.SiblingDependencies.Add(B);
+            F.SiblingDependencies.Add(D);
+            
+            G.SiblingDependencies.Add(E);
+            G.SiblingDependencies.Add(F);
+
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            {
+                A,B,C,D,E,F,G
+            });
+
+            //0.  A     B
+            //0.  C     D 
+            //0.  E     F
+            //1.     G
+
+            Assert.AreEqual(2, newChildOrder.Count);
+            var hor = newChildOrder.First();
+            Assert.IsTrue(hor is HorizontalSiblingHolderNode);
+            var left = hor.Childs.First();
+            Assert.AreEqual(3,left.Childs.Count);
+            CollectionAssert.AreEqual(left.Childs.ToArray(),new List<Node>{A,C,E});
+        }
+
+        [TestCategory("SiblingOrder.VerticalLayers")]
+        [TestMethod]
         public void FindsTwoSeparateVerticalLayers()
         {
             Node A = new Node(nameof(A));
@@ -147,53 +187,6 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(left is VerticalSiblingHolderNode);
             Assert.IsTrue(right is VerticalSiblingHolderNode);
             Assert.AreEqual(A,left.Childs.First());
-            Assert.AreEqual(C, left.Childs.Last());
-            var topRight = right.Childs.First();
-            Assert.IsTrue(topRight is SiblingHolderNode);
-            Assert.AreEqual(D, right.Childs.Last());
-            Assert.AreEqual(E, newChildOrder.Last());
-        }
-
-        [TestCategory("SiblingOrder.VerticalLayers")]
-        [TestMethod]
-        public void FindsTwoSeparateLongVerticalLayers()
-        {
-            Node A = new Node("A");
-            Node B = new Node("B");
-            Node C = new Node("C");
-            Node D = new Node("D");
-            Node E = new Node("E");
-            Node F = new Node("F");
-            Node G = new Node("G");
-
-            C.SiblingDependencies.Add(A);
-            E.SiblingDependencies.Add(C);
-
-            D.SiblingDependencies.Add(B);
-            F.SiblingDependencies.Add(D);
-
-            G.SiblingDependencies.Add(E);
-            G.SiblingDependencies.Add(F);
-
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
-            {
-                A,B,C,D,E,F,G
-            });
-
-            //0.  A     B 
-            //0.  C     D 
-            //0.  E     F 
-            //0.     G
-
-            Assert.AreEqual(2, newChildOrder.Count);
-            var hor = newChildOrder.First();
-            Assert.IsTrue(hor is SiblingHolderNode && !(hor is VerticalSiblingHolderNode));
-            Assert.AreEqual(2, hor.Childs.Count);
-            var left = hor.Childs.First();
-            var right = hor.Childs.Last();
-            Assert.IsTrue(left is VerticalSiblingHolderNode);
-            Assert.IsTrue(right is VerticalSiblingHolderNode);
-            Assert.AreEqual(A, left.Childs.First());
             Assert.AreEqual(C, left.Childs.Last());
             var topRight = right.Childs.First();
             Assert.IsTrue(topRight is SiblingHolderNode);
@@ -307,8 +300,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(rightBot is HorizontalSiblingHolderNode);
             Assert.AreEqual(2, rightTop.Childs.Count);
             Assert.AreEqual(2, rightBot.Childs.Count);
-            Assert.AreEqual(F, rightBot.Childs.First());
-            Assert.AreEqual(E, rightBot.Childs.Last());
+            CollectionAssert.Contains(rightBot.Childs.ToArray(),E);
+            CollectionAssert.Contains(rightBot.Childs.ToArray(), F);
             //1
             Assert.AreEqual(G, newChildOrder.Last());
         }
