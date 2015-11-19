@@ -68,16 +68,20 @@ namespace Logic.Filtering
                         foreach (var dependencyGroup in dependencyGroups)
                         {
                             firstLayer.RemoveRange(dependencyGroup.Referencers.ToList());
-                            target.RemoveRange(dependencyGroup.Dependants.ToList());
-                            oldChildList.RemoveRange(dependencyGroup.Dependants.ToList());
+                            var dependants = dependencyGroup.Dependants.ToList();
+                            target.RemoveRange(dependants);
+                            oldChildList.RemoveRange(dependants);
                             var referenceNode = CreateHorizontalLayer(dependencyGroup.Referencers);
-                            var depNode = CreateHorizontalLayer(dependencyGroup.Dependants);
+                            var depNode = CreateHorizontalLayer(dependants);
                             var newList = new List<Node> { depNode, referenceNode };
-                            var depNodeDependencies = dependencyGroup.Dependants.SiblingDependencies().ToList();
+                            //Needs to be only those that are unique dependencies
+                            var depNodeDependencies = dependants.SiblingDependencies().ToList();
                             foreach (var depNodeDependency in depNodeDependencies)
                             {
                                 depNodeDependency.SiblingDependencies.RemoveWhere(x => !depNodeDependencies.Contains(x));
                             }
+                            //Should be any of the verticals
+                            depNodeDependencies.RemoveRange(depNodeDependencies.Where(x => oldChildList.Any(y => y.DependsOn(x))).ToList());
                             oldChildList.RemoveRange(depNodeDependencies);
                             depNodeDependencies = OrderChildsBySiblingsDependencies(depNodeDependencies).Reverse().ToList();
                             newList.InsertRange(0,depNodeDependencies);

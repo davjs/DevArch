@@ -354,6 +354,39 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
         [TestCategory("SiblingOrder.VerticalLayers")]
         [TestMethod]
+        public void DoesNotProduceDuplicateNodes()
+        {
+            var Node = new Node("Node");
+            //var Tree = new Node("Tree");
+
+            var SiblingHolderNode = new Node("SiblingHolderNode");
+            var CircularDependencyHolderNode = new Node("CircularDependencyHolderNode");
+            var NodeExtensions = new Node("NodeExtensions");
+            //var ClassNode = new Node("ClassNode");
+            //var ProjectNode = new Node("ProjectNode");
+
+            //Node.SiblingDependencies.Add(Tree);
+            SiblingHolderNode.SiblingDependencies.Add(Node);
+            CircularDependencyHolderNode.SiblingDependencies.Add(SiblingHolderNode);
+            CircularDependencyHolderNode.SiblingDependencies.Add(Node);
+            NodeExtensions.SiblingDependencies.Add(Node);
+            //NodeExtensions.SiblingDependencies.Add(Tree);
+
+            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            {
+                Node,SiblingHolderNode,CircularDependencyHolderNode,NodeExtensions
+            });
+            //         Node
+            //      Sib   NodeExt
+            //      Circ
+            Assert.AreEqual(1,
+                newChildOrder.Count(x => x.Name == "Node") +
+                newChildOrder.Count(x => x.DescendantNodes().WithName("Node") != null));
+        }
+
+
+        [TestCategory("SiblingOrder.VerticalLayers")]
+        [TestMethod]
         public void PutsPartlyCommonDependencyOnNextLayer()
         {
             Node A = new Node(nameof(A));
