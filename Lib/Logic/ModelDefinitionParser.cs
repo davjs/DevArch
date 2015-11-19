@@ -104,6 +104,9 @@ namespace Logic
                 case "Project":
                     scope = new ProjectScope();
                     break;
+                case "Namespace":
+                    scope = new NamespaceScope();
+                    break;
                 default:
                     throw new NotImplementedException();
             }

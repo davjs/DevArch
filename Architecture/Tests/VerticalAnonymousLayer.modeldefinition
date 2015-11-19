@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Model DependencyDirection = "Up">
+  <Scope>
+    <Namespace Name ="Logic\Building\SemanticTree"/>
+  </Scope>
+  <Output Path="IntegrationTests\VerticalAnonymousLayer.png" Scale="2"/>
+  <Filters>
+    <RemoveTests>Off</RemoveTests>
+  </Filters>
+</Model>

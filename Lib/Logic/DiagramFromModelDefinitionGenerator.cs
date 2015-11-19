@@ -36,6 +36,10 @@ namespace Logic
             {
                 tree = SemanticTreeBuilder.AnalyseClass(_solution, ((ClassScope)modelDef.Scope).Name);
             }
+            if (modelDef.Scope is NamespaceScope)
+            {
+                tree = SemanticTreeBuilder.AnalyseNamespace(_solution, ((NamespaceScope) modelDef.Scope).Name);
+            }
             if (modelDef.Scope is ProjectScope)
             {
                 tree = SemanticTreeBuilder.AnalyseProject(_solution, ((ProjectScope) modelDef.Scope).Name);

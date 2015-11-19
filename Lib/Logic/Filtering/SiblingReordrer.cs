@@ -188,7 +188,6 @@ namespace Logic.Filtering
 
         public static void CalculatePatternScore(ref  List<DependencyGroup> dependencyGroups)
         {
-            var scores = new List<IGrouping<int,DependencyGroup>>();
             foreach (var group in dependencyGroups)
             {
                 var collidingPatterns = dependencyGroups.Count(group2 => group2 != group

@@ -54,7 +54,11 @@
 
     public class ClassScope : NamedScope
     {
-        
+
+    }
+    public class NamespaceScope : NamedScope
+    {
+
     }
     public class DocumentScope : NamedScope
     {
