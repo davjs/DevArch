@@ -13,6 +13,12 @@ namespace Logic.Common
             return set.Intersect(set2).Any();
         }
 
+
+        public static IEnumerable<T> Except<T>(this IEnumerable<T> set, T t)
+        {
+            return set.Where(x => !Equals(x, t));
+        }
+
         public static void RemoveRange<T>(this List<T> list, IReadOnlyList<T> enumerable)
         {
             foreach (var toRemove in enumerable)

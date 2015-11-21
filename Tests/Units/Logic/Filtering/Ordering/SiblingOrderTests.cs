@@ -24,7 +24,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> { a, b }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { b, a }));
             a.SiblingDependencies.Add(b);
-            siblings = SiblingReordrer.OrderChildsBySiblingsDependencies(siblings).ToList();
+            siblings = SiblingReorderer.OrderChildsBySiblingsDependencies(siblings).ToList();
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> { b, a }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b }));
         }
@@ -41,7 +41,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { c, b, a }));
             a.SiblingDependencies.Add(b);
             b.SiblingDependencies.Add(c);
-            siblings = SiblingReordrer.OrderChildsBySiblingsDependencies(siblings).ToList();
+            siblings = SiblingReorderer.OrderChildsBySiblingsDependencies(siblings).ToList();
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> {c, b, a }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b ,c}));
         }
@@ -58,7 +58,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             b.SiblingDependencies.Add(a);
             c.SiblingDependencies.Add(a);
 
-            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> {a, b, c});
+            var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> {a, b, c});
 
             var anonymousLayer = newSiblings.OfType<SiblingHolderNode>().LastOrDefault();
             Assert.IsNotNull(anonymousLayer);
@@ -80,7 +80,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             
             two.SiblingDependencies.Add(one);
             
-            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b,one,two});
+            var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> { a, b,one,two});
 
             var anonymousHorizontalLayer = newSiblings.FirstOrDefault();
             Assert.IsNotNull(anonymousHorizontalLayer);
@@ -104,7 +104,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             one.SiblingDependencies.Add(a);
             two.SiblingDependencies.Add(b);
 
-            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b, one, two });
+            var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> { a, b, one, two });
 
             var anonymousHorizontalLayer = newSiblings.FirstOrDefault();
             Assert.IsNotNull(anonymousHorizontalLayer);
@@ -124,7 +124,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             a.AddChild(b);
             a.AddChild(c);
 
-            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> {a});
+            var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> {a});
             var newRoot = newSiblings.First();
             Assert.AreEqual(Horizontal,newRoot.Orientation);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), b);
@@ -143,7 +143,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             c.SiblingDependencies.Add(a);
             b.SiblingDependencies.Add(a);
 
-            var newList = SiblingReordrer.RegroupSiblingNodes(new List<Node> { c,b,a});
+            var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node> { c,b,a});
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
         }
 
@@ -160,7 +160,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             semanticTreeBuilder.SiblingDependencies.Add(projectTreeBuilder);
             semanticTreeBuilder.SiblingDependencies.Add(classTreeBuilder);
 
-            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node>
+            var newList = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node>
             {
                 semanticTreeBuilder,classTreeBuilder,projectTreeBuilder,semanticModelWalker
             });

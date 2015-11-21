@@ -22,7 +22,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(C);
             B.SiblingDependencies.Add(A);
 
-            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node>
+            var newList = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node>
             {
                 A,B,C,D
             }).ToList();
@@ -52,7 +52,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             B.SiblingDependencies.Add(A);
             A.SiblingDependencies.Add(X);
             C.SiblingDependencies.Add(X);
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -84,7 +84,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             C.SiblingDependencies.Add(A);
             C.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -130,7 +130,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             G.SiblingDependencies.Add(E);
             G.SiblingDependencies.Add(F);
 
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 A,B,C,D,E,F,G
             });
@@ -145,7 +145,11 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(hor is HorizontalSiblingHolderNode);
             var left = hor.Childs.First();
             Assert.AreEqual(3,left.Childs.Count);
-            CollectionAssert.AreEqual(left.Childs.ToArray(),new List<Node>{A,C,E});
+
+            var ACE = new List<Node>{A,C,E};
+            var BDF = new List<Node> { B,D,F};
+            Assert.IsTrue(left.Childs.SequenceEqual(ACE) ||
+                left.Childs.SequenceEqual(BDF));
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -170,7 +174,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(D);
             
 
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 A,B,C,D,E,F,X
             });
@@ -211,7 +215,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             D.SiblingDependencies.Add(X);
 
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -258,7 +262,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             E.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -314,7 +318,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(B);
             F.SiblingDependencies.Add(C);
 
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -357,24 +361,25 @@ namespace Tests.Units.Logic.Filtering.Ordering
         public void DoesNotProduceDuplicateNodes()
         {
             var Node = new Node("Node");
-            //var Tree = new Node("Tree");
+            var Tree = new Node("Tree");
 
             var SiblingHolderNode = new Node("SiblingHolderNode");
             var CircularDependencyHolderNode = new Node("CircularDependencyHolderNode");
             var NodeExtensions = new Node("NodeExtensions");
-            //var ClassNode = new Node("ClassNode");
-            //var ProjectNode = new Node("ProjectNode");
+            var ClassNode = new Node("ClassNode");
+            var ProjectNode = new Node("ProjectNode");
 
-            //Node.SiblingDependencies.Add(Tree);
+            Node.SiblingDependencies.Add(Tree);
             SiblingHolderNode.SiblingDependencies.Add(Node);
             CircularDependencyHolderNode.SiblingDependencies.Add(SiblingHolderNode);
             CircularDependencyHolderNode.SiblingDependencies.Add(Node);
             NodeExtensions.SiblingDependencies.Add(Node);
-            //NodeExtensions.SiblingDependencies.Add(Tree);
+            NodeExtensions.SiblingDependencies.Add(Tree);
 
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
-                Node,SiblingHolderNode,CircularDependencyHolderNode,NodeExtensions
+                Node,SiblingHolderNode,CircularDependencyHolderNode,NodeExtensions,
+                Tree,ClassNode,ProjectNode
             });
             //         Node
             //      Sib   NodeExt
@@ -382,6 +387,37 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.AreEqual(1,
                 newChildOrder.Count(x => x.Name == "Node") +
                 newChildOrder.Count(x => x.DescendantNodes().WithName("Node") != null));
+        }
+
+
+        [TestCategory("SiblingOrder.VerticalLayers")]
+        [TestMethod]
+        public void DoesNotProduceDuplicateRootScopes()
+        {
+            var modelDefinition = new Node("ModelDefinition");
+            var modelDefinitionParser = new Node("ModelDefinitionParser");
+            var rootScope = new Node("RootScope");
+            var filters = new Node("Filters");
+            var modelFilterer = new Node("ModelFilterer");
+            
+            modelDefinition.SiblingDependencies.Add(rootScope);
+            modelDefinitionParser.SiblingDependencies.Add(rootScope);
+            modelDefinitionParser.SiblingDependencies.Add(modelDefinition);
+            modelFilterer.SiblingDependencies.Add(filters);
+
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            {
+                modelDefinition,modelDefinitionParser,rootScope,filters,modelFilterer
+            });
+
+
+            //     RootScope
+            //    ModelDefinition        Filters
+            //  ModelDefinitionParser ModelFilterer
+
+            Assert.AreEqual(1,
+                newChildOrder.Count(x => x.Name == "RootScope") +
+                newChildOrder.Count(x => x.DescendantNodes().WithName("RootScope") != null));
         }
 
 
@@ -406,7 +442,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             E.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReordrer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 A,
                 B,

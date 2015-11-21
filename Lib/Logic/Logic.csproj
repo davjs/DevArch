@@ -120,7 +120,7 @@
     <Compile Include="Building\SemanticModelWalker.cs" />
     <Compile Include="Building\SemanticTree\Node.cs" />
     <Compile Include="Building\SemanticTree\NodeExtensions.cs" />
-    <Compile Include="Filtering\SiblingReordrer.cs" />
+    <Compile Include="Filtering\SiblingReorderer.cs" />
     <Compile Include="Building\SemanticTree\Tree.cs" />
   </ItemGroup>
   <ItemGroup>

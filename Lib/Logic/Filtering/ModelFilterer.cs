@@ -10,8 +10,8 @@ namespace Logic.Filtering
         public static void ApplyFilter(ref Tree tree, Filters filters)
         {
             tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
-            tree.SetChildren(SiblingReordrer.OrderChildsBySiblingsDependencies(tree.Childs));
-
+            tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
+            
             if (filters.RemoveTests)
                 tree = RemoveTests(tree);
             if (filters.RemoveDefaultNamespaces)

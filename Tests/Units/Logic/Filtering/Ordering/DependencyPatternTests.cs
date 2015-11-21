@@ -30,7 +30,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             //1.  C     D E
             var firstLayer = new List<Node> {C,D,E};
             var nextLayer = new List<Node> { A,X,B };
-            var groups = SiblingReordrer.FindDependencies(firstLayer, nextLayer);
+            var groups = SiblingReorderer.FindDependencies(firstLayer, nextLayer);
             Assert.AreEqual(5,groups.Count());
             // {C -> A}
             // {C -> X}
@@ -60,8 +60,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             //1.  C     D E
             var firstLayer = new List<Node> { C, D, E };
             var nextLayer = new List<Node> { A, X, B };
-            var dependencies = SiblingReordrer.FindDependencies(firstLayer, nextLayer).ToList();
-            var groups = SiblingReordrer.FindPotentialDependencyGroups(dependencies);
+            var dependencies = SiblingReorderer.FindDependencies(firstLayer, nextLayer).ToList();
+            var groups = SiblingReorderer.FindPotentialDependencyGroups(dependencies);
             Assert.AreEqual(9, groups.Count());
             Assert.IsTrue(groups.Any(x => x.Referencers.SetEquals(new []{D , E})));
             //1 {C -> A , X} 
@@ -95,7 +95,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             //1.  C     D E
             var firstLayer = new List<Node> { C, D, E };
             var nextLayer = new List<Node> { A, X, B };
-            var groups = SiblingReordrer.FindDependencyGroups(firstLayer, nextLayer);
+            var groups = SiblingReorderer.FindDependencyGroups(firstLayer, nextLayer);
             Assert.AreEqual(2, groups.Count());
             //1 {C -> A , X} Cant choose, would hide D -> X dependency
             //2 {C -> A}
@@ -122,8 +122,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             //1.    A
             var firstLayer = new List<Node> { A, B, C };
             var nextLayer = new List<Node> { A, B, C };
-            var dependencies = SiblingReordrer.FindDependencies(firstLayer, nextLayer).ToList();
-            var groups = SiblingReordrer.FindPotentialDependencyGroups(dependencies);
+            var dependencies = SiblingReorderer.FindDependencies(firstLayer, nextLayer).ToList();
+            var groups = SiblingReorderer.FindPotentialDependencyGroups(dependencies);
             Assert.AreEqual(3, groups.Count());
             Assert.IsTrue(groups.Last().Dependants.SetEquals(new List<Node>{B,C}));
             //1 {A -> B , C} 
