@@ -8,17 +8,28 @@ namespace Tests.Integration.Samples
 {
     namespace VerticalAnonymousLayer
     {
-        class SemanticTree
-        { 
-            class Node
+            class TopLeft
             {
-                private Tree t;
+
             }
-            class Tree
+            class BottomLeft
             {
-                private Node n;
+                private TopLeft top;
             }
-        }
-        
+
+            class TopRight
+            {
+
+            }
+            class MidRight
+            {
+                private TopRight _topRight;
+            }
+            class BottomRight
+            {
+                private MidRight _midRight;
+            }
+
+
     }
 }

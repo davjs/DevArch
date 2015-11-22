@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Model DependencyDirection = "Up">
   <Scope>
-    <Namespace Name ="Logic\Building\SemanticTree"/>
+    <Namespace Name ="Tests\Integration\Samples"/>
   </Scope>
   <Output Path="IntegrationTests\VerticalAnonymousLayer.png" Scale="2"/>
   <Filters>

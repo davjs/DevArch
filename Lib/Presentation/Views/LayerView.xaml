@@ -24,7 +24,7 @@
                        Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}">
             </TextBlock>
             <Grid  Height="Auto"  x:Name="ChildHolder">
-                <!--NESTED ITEM HERE
+                <!--
                 <Border Height="Auto" Width="Auto" Style="{StaticResource LayerBorderStyle}" Background="#002B36">
                     <DockPanel Width="Auto" Height="Auto">
                         <TextBlock Height="Auto"  

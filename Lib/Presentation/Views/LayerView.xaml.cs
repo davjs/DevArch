@@ -24,7 +24,7 @@ namespace Presentation.Views
             InitializeComponent();
         }
 
-        public LayerView(LayerViewModel layerModel, IReadOnlyList<LayerView> childs, bool visible)
+        public LayerView(LayerViewModel layerModel)
         {
             InitializeComponent();
             LayerName = layerModel.Name;
@@ -32,6 +32,8 @@ namespace Presentation.Views
             _column = layerModel.Column;
             _row = layerModel.Row;
             var childMargin = CalculateChildMargin(layerModel);
+            bool visible = !layerModel.Anonymous;
+            var childs = layerModel.Children.Select(x => new LayerView(x)).ToList();
             foreach (var child in childs)
             {
                 child.Border.Margin = childMargin;
