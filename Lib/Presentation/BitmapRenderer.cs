@@ -15,12 +15,17 @@ namespace Presentation
     public static class BitmapRenderer
     {
 
-        public static void RenderTreeToBitmap(Tree tree, [NotNull] string path, OutputSettings outputSettings)
+        public static void RenderTreeToBitmap(Tree tree, OutputSettings outputSettings,bool overWrite = true)
         {
-            Debug.Assert(path != null);
+            if (overWrite)
+            {
+                if (File.Exists(outputSettings.Path))
+                    File.Delete(outputSettings.Path);
+            }
+
             var thread = new Thread(() =>
             {
-                _RenderTreeToBitmap(tree, path, outputSettings.Size);
+                _RenderTreeToBitmap(tree, outputSettings.Path, outputSettings.Size);
             });
             thread.SetApartmentState(ApartmentState.STA); //Make the thread a ui thread
             thread.Start();

@@ -14,7 +14,7 @@ namespace Presentation.Views
     /// Interaction logic for layerControl.xaml
     /// </summary>
     [ContentProperty("Children")]
-    public partial class LayerView : UserControl
+    public partial class LayerView
     {
         private readonly int _column;
         private readonly int _row;
@@ -43,8 +43,8 @@ namespace Presentation.Views
             }
 
             for (var i = 0; i < layerModel.Rows; i++)
-                ChildHolder.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
-
+                ChildHolder.RowDefinitions.Add(new RowDefinition());
+            
             for (var i = 0; i < layerModel.Columns; i++)
                 ChildHolder.ColumnDefinitions.Add(new ColumnDefinition());
 
@@ -63,8 +63,15 @@ namespace Presentation.Views
 
         private static Thickness CalculateChildMargin(LayerViewModel layerModel)
         {
-            var height = Math.Min(Math.Max((layerModel.Descendants* layerModel.Descendants) /120, 4),20);
-            var width = 5;
+            int height;
+            int width;
+            //var maxHeight = 10;
+            //var minHeight = 1;
+            //var height = Math.Min(Math.Max((layerModel.Descendants* layerModel.Descendants) /120, minHeight), maxHeight);
+
+            height = 5;
+            width = 5;
+
             return new Thickness(width, height, width,height);
         }
 

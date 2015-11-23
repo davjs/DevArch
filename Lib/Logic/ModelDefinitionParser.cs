@@ -24,10 +24,12 @@ namespace Logic
             {
                 var path = item.FileNames[0];
                 var name = item.Name;
-                list.Add(ParseModelDefinition(path, name));
+                var definition = ParseModelDefinition(path, name);
+                //Insert directory before output path
+                definition.Output.Path =solution.Directory() + "\\" + definition.Output.Path;
+                list.Add(definition);
             }
-            return
-                list;
+            return list;
         }
 
         private static ModelDefinition ParseModelDefinition(string path, string name)

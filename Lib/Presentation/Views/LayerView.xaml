@@ -20,7 +20,6 @@
         <DockPanel x:Name="DockPanel" Width="Auto" Height="Auto">
             <TextBlock x:Name="NameBlock" Height="Auto"  
                        HorizontalAlignment="Center" Width="Auto" Padding="5" 
-                       
                        Foreground="#839496" DockPanel.Dock="Top" Text="{Binding LayerName}">
             </TextBlock>
             <Grid  Height="Auto"  x:Name="ChildHolder">

@@ -6,7 +6,5 @@
              xmlns:views="clr-namespace:Presentation.Views"
              mc:Ignorable="d">
     <StackPanel Orientation="Vertical" Height="Auto"  Name="MasterPanel" Margin="10,0" >
-        <views:LayerView>
-        </views:LayerView>
     </StackPanel>
 </UserControl>

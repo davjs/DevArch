@@ -44,6 +44,7 @@ namespace Tests.Units.Presentation
                 );
             var tree =modelGen.GenerateDiagram(modelDef);
             var model = LayerMapper.TreeModelToArchViewModel(tree);
+            BitmapRenderer.RenderTreeToBitmap(tree, modelDef.Output);
         }
     }
 }
