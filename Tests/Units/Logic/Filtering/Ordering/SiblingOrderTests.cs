@@ -89,30 +89,6 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(anonymousHorizontalLayer.Childs.Last() is VerticalSiblingHolderNode);
         }*/
 
-
-        [TestCategory("SiblingOrder")]
-        [TestMethod]
-        public void PutsIndependentNodesOnTop()
-        {
-            var a = new Node("A");
-            var b = new Node("B");
-            
-            var one = new Node("1");
-            var two = new Node("2");
-
-
-            one.SiblingDependencies.Add(a);
-            two.SiblingDependencies.Add(b);
-
-            var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> { a, b, one, two });
-
-            var anonymousHorizontalLayer = newSiblings.FirstOrDefault();
-            Assert.IsNotNull(anonymousHorizontalLayer);
-            Assert.AreEqual(typeof(SiblingHolderNode), anonymousHorizontalLayer.GetType());
-            Assert.AreEqual(anonymousHorizontalLayer.Childs.First(),a);
-            Assert.AreEqual(anonymousHorizontalLayer.Childs.Last(), b);
-        }
-
         [TestCategory("SiblingOrder")]
         [TestMethod]
         public void PutsIndependentSiblingsIntoHorizontalLayer()

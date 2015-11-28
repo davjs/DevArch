@@ -62,7 +62,6 @@
   <ItemGroup>
     <Compile Include="Coloring\ColoringAlgorithms.cs" />
     <Compile Include="Coloring\PalletteAlgorithm.cs" />
-    <Compile Include="Palette.cs" />
     <Compile Include="Views\Diagram.xaml.cs">
       <DependentUpon>Diagram.xaml</DependentUpon>
     </Compile>
@@ -92,6 +91,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Strongname.snk" />
   </ItemGroup>

@@ -15,7 +15,6 @@ namespace Lib
         {
             var solution = new AdvancedSolution(enivorment);
             var modelGen = new DiagramFromModelDefinitionGenerator(solution);
-            var solutionDir = solution.Directory();
             var modelDefs = modelGen.GetModelDefinitions();
             foreach (var modelDef in modelDefs)
             {

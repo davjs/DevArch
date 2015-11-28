@@ -12,7 +12,7 @@ namespace Tests.Units.Logic
     [TestClass]
     public class DependencyTests
     {
-       [TestMethod]
+        [TestMethod]
         public void ContainsReferences()
         {
             using (var fakeWorkspace = new AdhocWorkspace())

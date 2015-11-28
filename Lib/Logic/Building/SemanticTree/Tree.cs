@@ -50,9 +50,9 @@ namespace Logic.Building.SemanticTree
             ChildsList.Remove(n);
         }
 
-        public Node FindNodeWithSymbol(ISymbol symbol)
+        public int Height()
         {
-            return ChildsList.Select(x => x.FindNodeWithSymbol(symbol)).FirstOrDefault(x => x != null);
+            return Childs.Max(x => x.Height()) + 1;
         }
     }
 
