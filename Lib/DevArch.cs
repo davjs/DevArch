@@ -15,17 +15,13 @@ namespace Lib
         {
             var solution = new AdvancedSolution(enivorment);
             var modelGen = new DiagramFromModelDefinitionGenerator(solution);
-            var solutionDir = solution.Directory();
             var modelDefs = modelGen.GetModelDefinitions();
             foreach (var modelDef in modelDefs)
             {
                 var tree = modelGen.GenerateDiagram(modelDef);
                 if (!tree.Childs.Any())
                     throw new NoClassesFoundException();
-                var outputPath = solutionDir + "\\" + modelDef.Output.Path;
-                if (File.Exists(outputPath))
-                    File.Delete(outputPath);
-                BitmapRenderer.RenderTreeToBitmap(tree, outputPath, modelDef.Output);
+                BitmapRenderer.RenderTreeToBitmap(tree, modelDef.Output);
             }
         }
 

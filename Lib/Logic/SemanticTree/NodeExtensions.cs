@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Logic.Building.SemanticTree
+namespace Logic.SemanticTree
 {
     public static class NodeExtensions
     {
@@ -20,11 +20,11 @@ namespace Logic.Building.SemanticTree
         }
         public static IEnumerable<Node> SiblingDependencies(this IEnumerable<Node> nodeList)
         {
-            return nodeList.SelectMany(x => x.SiblingDependencies);
+            return nodeList.SelectMany(x => x.SiblingDependencies).Distinct();
         }
-        public static IEnumerable<Node> DependantOfNode(this IEnumerable<Node> nodeList ,Node node)
+        public static bool DependsOn(this Node node,Node dependency)
         {
-            return nodeList.Where(x => x.SiblingDependencies.Contains(node)).ToList();
+            return node.SiblingDependencies.Contains(dependency);
         }
 
         /*public static int TotalReferences(this IEnumerable<Node> nodes)

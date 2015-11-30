@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 
 namespace Logic.Filtering
 {
@@ -35,9 +35,7 @@ namespace Logic.Filtering
             var lists = classes.Select(x => (x as ClassNode)?.BaseClasses.Select(y => y.ToString())).ToList();
 
             var common = lists.Aggregate((a, b) => a.Intersect(b)).ToList();
-            if (common.Any())
-                return common.First();
-            return null;
+            return common.Any() ? common.First() : null;
         }
     }
 }

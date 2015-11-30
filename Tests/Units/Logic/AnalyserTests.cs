@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Logic.Building;
-using Logic.Building.SemanticTree;
 using Logic.Filtering;
+using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,6 +26,7 @@ namespace Tests.Units.Logic
             }
         }
 
+        /*
         [TestMethod]
         [TestCategory("ModelBuilder")]
         public void IgnoresSinglePaths()
@@ -36,7 +37,7 @@ namespace Tests.Units.Logic
                 fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {class ClassA {}}"));
                 var tree = new Tree();
                 ProjectTreeBuilder.AddProjectsToTree(fakeWorkspace.CurrentSolution, ref tree);
-                tree = ModelFilterer.RemoveSinglePaths(tree);
+                ModelFilterer.RemoveSinglePaths(tree);
                 Assert.IsFalse(tree.Childs.Any());
             }
         }
@@ -52,11 +53,11 @@ namespace Tests.Units.Logic
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace NamespaceAB {namespace NamespaceABB {class ClassB {}}}}"));
                 var tree = new Tree();
                 SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
-                tree = ModelFilterer.RemoveSinglePaths(tree);
+                ModelFilterer.RemoveSinglePaths(tree);
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "ClassA"));
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "ClassB"));
             }
-        }
+        }*/
 
 
         [TestMethod]

@@ -1,7 +1,7 @@
 using System.Linq;
 using EnvDTE;
 using EnvDTE80;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Logic.Building

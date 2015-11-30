@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Building.SemanticTree;
 using Logic.Filtering;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Units.Logic.Filtering.Ordering
@@ -19,7 +19,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             a.SiblingDependencies.Add(b);
             b.SiblingDependencies.Add(a);
             
-            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a , b });
+            var newList = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> { a , b });
             Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
         }
 
@@ -35,7 +35,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             b.SiblingDependencies.Add(a);
             c.SiblingDependencies.Add(b);
 
-            var newList = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b ,c });
+            var newList = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> { a, b ,c });
             Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
         }
 
@@ -53,7 +53,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             a.SiblingDependencies.Add(c);
 
             var childList = new List<Node> { a, b, c };
-            SiblingReordrer.FindCircularReferences(ref childList);
+            SiblingReorderer.FindCircularReferences(ref childList);
             Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.Last().GetType());
         }
 
@@ -74,7 +74,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             top.SiblingDependencies.Add(right);
             
             var childList = new List<Node> { top, left, right };
-            SiblingReordrer.FindCircularReferences(ref childList);
+            SiblingReorderer.FindCircularReferences(ref childList);
             Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.First().GetType());
             //TODO: Define wanted behaviour
         }*/

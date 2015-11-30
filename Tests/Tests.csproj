@@ -113,9 +113,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\Samples\VerticalAnonymousLayer.cs" />
     <Compile Include="Sample\Patterns.cs" />
+    <Compile Include="TestExtesions.cs" />
     <Compile Include="Units\Logic\AnalyserTests.cs" />
     <Compile Include="Units\Logic\Building\SemanticTreeBuilderTests.cs" />
+    <Compile Include="Units\Logic\Building\UnitTest1.cs" />
+    <Compile Include="Units\Logic\Filtering\Ordering\DependencyPatternTests.cs" />
+    <Compile Include="Units\Logic\Filtering\Ordering\VerticalLayersTests.cs" />
     <Compile Include="Units\Logic\Integration\AdvancedSolutionTests.cs" />
     <Compile Include="Integration\Integration.cs" />
     <Compile Include="Units\Presentation\ColorRangeTests.cs" />

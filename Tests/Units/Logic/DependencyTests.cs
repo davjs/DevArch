@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Logic.Building;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
@@ -12,7 +12,7 @@ namespace Tests.Units.Logic
     [TestClass]
     public class DependencyTests
     {
-       [TestMethod]
+        [TestMethod]
         public void ContainsReferences()
         {
             using (var fakeWorkspace = new AdhocWorkspace())

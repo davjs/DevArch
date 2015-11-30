@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.FindSymbols;
 using Document = Microsoft.CodeAnalysis.Document;
 using Project = Microsoft.CodeAnalysis.Project;
 
-namespace Logic.Building.SemanticTree
+namespace Logic.SemanticTree
 {
     public class Node : Tree
     {
@@ -30,12 +30,7 @@ namespace Logic.Building.SemanticTree
 
         public override string ToString()
         {
-            return Childs.Any() ? $"({Name} = {base.ToString()})" : Name;
-        }
-        
-        public new Node  FindNodeWithSymbol(ISymbol symbol)
-        {
-            return Equals(Symbol, symbol) ? this : Childs.Select(x => x.FindNodeWithSymbol(symbol)).FirstOrDefault(x => x != null);
+            return Childs.Any() ? $"{Name} = ({base.ToString()})" : Name;
         }
     }
 
@@ -43,10 +38,12 @@ namespace Logic.Building.SemanticTree
     {
         public readonly IEnumerable<ReferencedSymbol> References;
         public readonly IEnumerable<TypeSyntax> BaseClasses;
-        public IEnumerable<INamedTypeSymbol> SymbolDependencies; 
-        public ClassNode(ISymbol symbol,IEnumerable<TypeSyntax> baseClasses) : base(symbol)
+        public readonly int NrOfMethods;
+        public IEnumerable<INamedTypeSymbol> SymbolDependencies;
+        public ClassNode(ISymbol symbol, IEnumerable<TypeSyntax> baseClasses, int nrOfMethods) : base(symbol)
         {
             BaseClasses = baseClasses;
+            NrOfMethods = nrOfMethods;
         }
 
         public override bool Equals(object obj)
@@ -80,19 +77,29 @@ namespace Logic.Building.SemanticTree
 
     public class SiblingHolderNode : Node
     {
-        public SiblingHolderNode(IEnumerable<Node> siblingNodes) : base("")
+        public SiblingHolderNode(IEnumerable<Node> siblingNodes, OrientationKind orientation) : base("")
         {
             SetChildren(siblingNodes);
-            Horizontal = true;
+            Orientation = orientation;
         }
     }
 
+    public class HorizontalSiblingHolderNode : SiblingHolderNode
+    {
+        public HorizontalSiblingHolderNode(IEnumerable<Node> siblingNodes) 
+            : base(siblingNodes,OrientationKind.Horizontal) {}
+    }
+
+    public class VerticalSiblingHolderNode : SiblingHolderNode
+    {
+        public VerticalSiblingHolderNode(IEnumerable<Node> siblingNodes) 
+            : base(siblingNodes,OrientationKind.Vertical){}
+    }
 
     public class CircularDependencyHolderNode : SiblingHolderNode
     {
-        public CircularDependencyHolderNode(IEnumerable<Node> siblingNodes) : base(siblingNodes)
-        {
-        }
+        public CircularDependencyHolderNode(IEnumerable<Node> siblingNodes) 
+            : base(siblingNodes,OrientationKind.Horizontal){}
     }
 }
  

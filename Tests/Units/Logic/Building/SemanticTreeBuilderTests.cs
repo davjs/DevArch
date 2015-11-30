@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Logic.Building;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

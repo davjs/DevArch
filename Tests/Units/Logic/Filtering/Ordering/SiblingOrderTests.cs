@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Building.SemanticTree;
+using Logic.Building;
 using Logic.Filtering;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Logic.SemanticTree.OrientationKind;
 
 namespace Tests.Units.Logic.Filtering.Ordering
 {
@@ -10,6 +12,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
     [TestClass]
     public class SiblingOrderTests
     {
+        private readonly VerticalLayersTests _verticalLayersTests = new VerticalLayersTests();
+
         [TestCategory("SiblingOrder")]
         [TestMethod]
         public void TwoSiblingsAreOrderedByDependency()
@@ -20,7 +24,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> { a, b }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { b, a }));
             a.SiblingDependencies.Add(b);
-            siblings = SiblingReordrer.OrderChildsBySiblingsDependencies(siblings).ToList();
+            siblings = SiblingReorderer.OrderChildsBySiblingsDependencies(siblings).ToList();
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> { b, a }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b }));
         }
@@ -37,7 +41,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { c, b, a }));
             a.SiblingDependencies.Add(b);
             b.SiblingDependencies.Add(c);
-            siblings = SiblingReordrer.OrderChildsBySiblingsDependencies(siblings).ToList();
+            siblings = SiblingReorderer.OrderChildsBySiblingsDependencies(siblings).ToList();
             Assert.IsTrue(siblings.SequenceEqual(new List<Node> {c, b, a }));
             Assert.IsFalse(siblings.SequenceEqual(new List<Node> { a, b ,c}));
         }
@@ -54,7 +58,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             b.SiblingDependencies.Add(a);
             c.SiblingDependencies.Add(a);
 
-            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> {a, b, c});
+            var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> {a, b, c});
 
             var anonymousLayer = newSiblings.OfType<SiblingHolderNode>().LastOrDefault();
             Assert.IsNotNull(anonymousLayer);
@@ -76,7 +80,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             
             two.SiblingDependencies.Add(one);
             
-            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b,one,two});
+            var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> { a, b,one,two});
 
             var anonymousHorizontalLayer = newSiblings.FirstOrDefault();
             Assert.IsNotNull(anonymousHorizontalLayer);
@@ -84,30 +88,6 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(anonymousHorizontalLayer.Childs.First() is VerticalSiblingHolderNode);
             Assert.IsTrue(anonymousHorizontalLayer.Childs.Last() is VerticalSiblingHolderNode);
         }*/
-
-
-        [TestCategory("SiblingOrder")]
-        [TestMethod]
-        public void PutsIndependentNodesOnTop()
-        {
-            var a = new Node("A");
-            var b = new Node("B");
-            
-            var one = new Node("1");
-            var two = new Node("2");
-
-
-            one.SiblingDependencies.Add(a);
-            two.SiblingDependencies.Add(b);
-
-            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> { a, b, one, two });
-
-            var anonymousHorizontalLayer = newSiblings.FirstOrDefault();
-            Assert.IsNotNull(anonymousHorizontalLayer);
-            Assert.AreEqual(typeof(SiblingHolderNode), anonymousHorizontalLayer.GetType());
-            Assert.AreEqual(anonymousHorizontalLayer.Childs.First(),a);
-            Assert.AreEqual(anonymousHorizontalLayer.Childs.Last(), b);
-        }
 
         [TestCategory("SiblingOrder")]
         [TestMethod]
@@ -120,9 +100,9 @@ namespace Tests.Units.Logic.Filtering.Ordering
             a.AddChild(b);
             a.AddChild(c);
 
-            var newSiblings = SiblingReordrer.OrderChildsBySiblingsDependencies(new List<Node> {a});
+            var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> {a});
             var newRoot = newSiblings.First();
-            Assert.IsTrue(newRoot.Horizontal);
+            Assert.AreEqual(Horizontal,newRoot.Orientation);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), b);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), c);
         }
@@ -139,9 +119,28 @@ namespace Tests.Units.Logic.Filtering.Ordering
             c.SiblingDependencies.Add(a);
             b.SiblingDependencies.Add(a);
 
-            var newList = new List<Node>();
-            SiblingReordrer.RegroupSiblingNodes(new List<Node>(), new List<Node> { c,b,a},ref newList);
+            var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node> { c,b,a});
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
+        }
+
+        [TestCategory("SiblingOrder")]
+        [TestMethod]
+        public void Scenario()
+        {
+            Node semanticTreeBuilder = new Node(nameof(semanticTreeBuilder));
+            Node classTreeBuilder = new Node(nameof(classTreeBuilder));
+            Node projectTreeBuilder = new Node(nameof(projectTreeBuilder));
+            Node semanticModelWalker = new Node(nameof(semanticModelWalker));
+
+            classTreeBuilder.SiblingDependencies.Add(semanticModelWalker);
+            semanticTreeBuilder.SiblingDependencies.Add(projectTreeBuilder);
+            semanticTreeBuilder.SiblingDependencies.Add(classTreeBuilder);
+
+            var newList = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node>
+            {
+                semanticTreeBuilder,classTreeBuilder,projectTreeBuilder,semanticModelWalker
+            });
+            Assert.AreEqual(newList.Count(),2);
         }
     }
 }

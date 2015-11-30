@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 
 namespace Logic.Building

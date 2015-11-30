@@ -2,9 +2,9 @@
 using System.Linq;
 using EnvDTE;
 using Logic.Building;
-using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Logic.Integration;
+using Logic.SemanticTree;
 
 namespace Logic
 {
@@ -35,6 +35,10 @@ namespace Logic
             if (modelDef.Scope is ClassScope)
             {
                 tree = SemanticTreeBuilder.AnalyseClass(_solution, ((ClassScope)modelDef.Scope).Name);
+            }
+            if (modelDef.Scope is NamespaceScope)
+            {
+                tree = SemanticTreeBuilder.AnalyseNamespace(_solution, ((NamespaceScope) modelDef.Scope).Name);
             }
             if (modelDef.Scope is ProjectScope)
             {

@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
-namespace Logic.Building.SemanticTree
+namespace Logic.SemanticTree
 {
     public class Tree
     {
         private List<Node> ChildsList { get; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;
-        public bool Horizontal { get; set; }
+        public OrientationKind Orientation = OrientationKind.Vertical;
+
         public override string ToString()
         {
             return string.Join(",", ChildsList);
@@ -46,13 +44,24 @@ namespace Logic.Building.SemanticTree
 
         public void RemoveChild(Node n)
         {
+            n.Parent = null;
             ChildsList.Remove(n);
         }
-
-        public Node FindNodeWithSymbol(ISymbol symbol)
+        public void ReplaceChild(Node remove, Node insert)
         {
-            return ChildsList.Select(x => x.FindNodeWithSymbol(symbol)).FirstOrDefault(x => x != null);
+            var index = ChildsList.IndexOf(remove);
+            ChildsList[index] = insert;
+        }
+
+        public int Height()
+        {
+            return Childs.Max(x => x.Height()) + 1;
         }
     }
 
+    public enum OrientationKind
+    {
+        Horizontal,
+        Vertical
+    }
 }

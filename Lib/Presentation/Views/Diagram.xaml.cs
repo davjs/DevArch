@@ -12,19 +12,20 @@ namespace Presentation.Views
             InitializeComponent();
         }
 
-        private static LayerView RenderNode(LayerViewModel layerModel)
+        public Diagram(ArchViewModel model)
         {
-            var childs = layerModel.Children.Select(RenderNode).ToList();
-            var layerView = new LayerView(layerModel, childs,
-                !layerModel.Anonymous);
-            return layerView;
+            InitializeComponent();
+            foreach (var layer in model.Layers)
+            {
+                MasterPanel.Children.Add(new LayerView(layer));
+            }
         }
 
         public void RenderModel(ArchViewModel model)
         {
             foreach (var layer in model.Layers)
             {
-                MasterPanel.Children.Add(RenderNode(layer));
+                MasterPanel.Children.Add(new LayerView(layer));
             }
         }
     }

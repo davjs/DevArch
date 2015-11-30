@@ -37,6 +37,7 @@
         public bool RemoveDefaultNamespaces = true;
         public bool RemoveExceptions = true;
         public bool FindNamingPatterns = false;
+        public int MinMethods = 0;
     }
 
     public interface IScope
@@ -54,7 +55,11 @@
 
     public class ClassScope : NamedScope
     {
-        
+
+    }
+    public class NamespaceScope : NamedScope
+    {
+
     }
     public class DocumentScope : NamedScope
     {

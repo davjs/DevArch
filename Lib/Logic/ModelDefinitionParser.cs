@@ -24,10 +24,12 @@ namespace Logic
             {
                 var path = item.FileNames[0];
                 var name = item.Name;
-                list.Add(ParseModelDefinition(path, name));
+                var definition = ParseModelDefinition(path, name);
+                //Insert directory before output path
+                definition.Output.Path =solution.Directory() + "\\" + definition.Output.Path;
+                list.Add(definition);
             }
-            return
-                list;
+            return list;
         }
 
         private static ModelDefinition ParseModelDefinition(string path, string name)
@@ -68,6 +70,7 @@ namespace Logic
             if (fname == "RemoveExceptions") filters.RemoveExceptions = on;
             if (fname == "FindNamingPatterns") filters.FindNamingPatterns = on;
             if (fname == "MaxDepth") filters.MaxDepth = number;
+            if (fname == "MinMethods") filters.MinMethods = number;
             if (fname == "MinReferences") filters.MinReferences = number;
         }
 
@@ -103,6 +106,9 @@ namespace Logic
                     break;
                 case "Project":
                     scope = new ProjectScope();
+                    break;
+                case "Namespace":
+                    scope = new NamespaceScope();
                     break;
                 default:
                     throw new NotImplementedException();

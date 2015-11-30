@@ -5,10 +5,13 @@ namespace Presentation.Coloring
 {
     namespace ColoringAlgorithms
     {
-        public class Hsl : IColorData
+        public abstract class ColorDataWithDepth
+        {
+            public int Depth;
+        }
+        public class Hsl : ColorDataWithDepth, IColorData
         {
             private readonly AdvancedColor _color;
-            public int Depth;
 
             public Hsl(double h, double s, double l, int depth)
             {
@@ -19,6 +22,29 @@ namespace Presentation.Coloring
             }
 
             public double H => _color.H;
+            public double S => _color.S;
+            public double L => _color.L;
+
+            public AdvancedColor GetColor()
+            {
+                return _color;
+            }
+        }
+
+        public class ColorRange : ColorDataWithDepth, IColorData
+        {
+            private readonly AdvancedColor _color;
+            public readonly double Bottom;
+            public readonly double Top;
+
+            public ColorRange(double top, double bottom, double s, double l, int depth)
+            {
+                Depth = depth;
+                _color = new AdvancedColor((bottom + top) / 2, s, l);
+                Top = top;
+                Bottom = bottom;
+            }
+
             public double S => _color.S;
             public double L => _color.L;
 
@@ -103,29 +129,6 @@ namespace Presentation.Coloring
         }
 
 
-        public class ColorRange : IColorData
-        {
-            private readonly AdvancedColor _color;
-            public readonly double Bottom;
-            public readonly double Top;
-            public int Depth;
-
-            public ColorRange(double top, double bottom, double s, double l, int depth)
-            {
-                Depth = depth;
-                _color = new AdvancedColor(bottom + top/2, s, l);
-                Top = top;
-                Bottom = bottom;
-            }
-
-            public double S => _color.S;
-            public double L => _color.L;
-
-            public AdvancedColor GetColor()
-            {
-                return _color;
-            }
-        }
 
         public class HueRangeDivisor : PalletteAlgorithm<ColorRange>
         {
