@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 using Presentation.Coloring;
 using Presentation.Coloring.ColoringAlgorithms;
 using Presentation.ViewModels;
-using static Logic.Building.SemanticTree.OrientationKind;
+using static Logic.SemanticTree.OrientationKind;
 
 namespace Presentation
 {

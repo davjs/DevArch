@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -22,15 +22,15 @@ namespace Logic.Building
 
             var subnodes = c.DescendantNodes();
             var symbols = subnodes.Select(node => model.GetSymbolInfo(node).Symbol).ToList();
-            
-            var dependencies =
-                symbols.Where(symbol => symbol is INamedTypeSymbol)
-                    .Cast<INamedTypeSymbol>()
-                    .Select(x => x);
+
+            var dependencies = symbols.OfType<INamedTypeSymbol>();
+
+            var nrOfMethods = subnodes.OfType<MethodDeclarationSyntax>().Count();
+
             IEnumerable<TypeSyntax> basetypes = new List<TypeSyntax>();
             if (c.BaseList != null && c.BaseList.Types.Any())
                 basetypes = c.BaseList.Types.Select(x => x.Type);
-            return new ClassNode(declaredSymbol, basetypes) {SymbolDependencies = dependencies};
+            return new ClassNode(declaredSymbol, basetypes, nrOfMethods) {SymbolDependencies = dependencies};
         }
 
         public static IReadOnlyList<ClassNode> GetClassesInModels(IEnumerable<SemanticModel> semanticModels)

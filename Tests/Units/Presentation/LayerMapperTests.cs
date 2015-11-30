@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
 

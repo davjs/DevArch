@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
-namespace Logic.Building.SemanticTree
+namespace Logic.SemanticTree
 {
     public class Tree
     {
@@ -47,7 +44,13 @@ namespace Logic.Building.SemanticTree
 
         public void RemoveChild(Node n)
         {
+            n.Parent = null;
             ChildsList.Remove(n);
+        }
+        public void ReplaceChild(Node remove, Node insert)
+        {
+            var index = ChildsList.IndexOf(remove);
+            ChildsList[index] = insert;
         }
 
         public int Height()

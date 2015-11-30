@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Logic.Building;
-using Logic.Building.SemanticTree;
 using Logic.Common;
-using static Logic.Building.SemanticTree.OrientationKind;
+using Logic.SemanticTree;
+using static Logic.SemanticTree.OrientationKind;
 
 namespace Logic.Filtering
 {
@@ -349,5 +349,9 @@ namespace Logic.Filtering
                         new List<Node> {Referencer});
             }
         }
+    }
+    
+    internal class LayerViolationException : Exception
+    {
     }
 }

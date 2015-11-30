@@ -1,50 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
+using MoreLinq;
 
 namespace Logic.Filtering
 {
-    public static class ModelFilterer
+
+    public interface ITreeFilter
     {
+        Tree Execute(Tree t);
+    }
+
+    public abstract class ChildrenFilter
+    {
+        protected Func<ClassNode, bool> Predicate;
+
+        public static implicit operator Func<ClassNode, bool>(ChildrenFilter c)
+        {
+            return c.Predicate;
+        }
+    }
+
+    public class SmallClassFilter : ChildrenFilter
+    {
+        public SmallClassFilter(int nrOfMethodsMin)
+        {
+            Predicate = node => node.NrOfMethods < nrOfMethodsMin;
+        }
+    }
+
+    public static class ClassFilters
+    {
+        public static Func<ClassNode, bool> Exceptions = x => x.BaseClasses.Any(y => y.ToString() == "Exception");
+    }
+
+    public static class NodeFilters
+    {
+        public static Func<Node, bool> Tests = x =>
+            x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)
+            || x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase);
+
+    }
+
+    public class ModelFilterer
+    {
+        public static void ApplyNodeFilter(Tree t, Func<Node, bool> filter)
+        {
+            var toRemove = t.Childs.Where(filter).ToList();
+            toRemove.ForEach(t.RemoveChild);
+            t.Childs.ForEach(x => ApplyNodeFilter(x, filter));
+        }
+        public static void ApplyClassFilter(Tree t, Func<ClassNode, bool> filter)
+        {
+            var classes = t.Childs.OfType<ClassNode>();
+            var toRemove = classes.Where(filter).ToList();
+            toRemove.ForEach(t.RemoveChild);
+            t.Childs.ForEach(x => ApplyClassFilter(x, filter));
+        }
+
         public static void ApplyFilter(ref Tree tree, Filters filters)
         {
             tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
             tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
             
             if (filters.RemoveTests)
-                tree = RemoveTests(tree);
+                ApplyNodeFilter(tree,NodeFilters.Tests);
             if (filters.RemoveDefaultNamespaces)
                 RemoveDefaultNamespaces(tree);
             if (filters.MaxDepth > 0)
                 RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
             if (filters.RemoveExceptions)
-                RemoveExceptions(tree);
+                ApplyClassFilter(tree, ClassFilters.Exceptions);
+            if(filters.MinMethods > 0)
+                ApplyClassFilter(tree, new SmallClassFilter(filters.MinMethods));
             if (filters.MinReferences > 0)
                 RemoveNodesReferencedLessThan(tree, filters.MinReferences);
             if (filters.RemoveSinglePaths)
-                tree = RemoveSinglePaths(tree);
-            tree = RemoveSingleChildAnonymous(tree);
+                RemoveSinglePaths(tree);
+            RemoveSingleChildAnonymous(tree);
             if (filters.FindNamingPatterns) { 
                 tree = FindSiblingPatterns(tree);
             }
             //tree = RemoveSinglePaths(tree); change to remove projects/namespaces containing zero classes
         }
 
-        private static void RemoveExceptions(Tree tree)
-        {
-            foreach (var child in tree.Childs.ToList())
-            {
-                if (child is ClassNode)
-                {
-                    var cls = child as ClassNode;
-                    if(cls.BaseClasses.Any(x => x.ToString() == "Exception"))
-                        tree.RemoveChild(cls);
-                }
-                RemoveExceptions(child);
-            }
-        }
-
+        
         private static void RemoveDefaultNamespaces(Tree tree)
         {
             var projects = tree.Projects();
@@ -83,47 +124,47 @@ namespace Logic.Filtering
         }
 
 
-        public static Tree RemoveSinglePaths(Tree tree)
+        public static void RemoveSinglePaths(Tree tree)
         {
-            tree.SetChildren(tree.Childs.Select(RemoveSinglePaths).Cast<Node>().ToList());
-            if (tree.Childs.Count == 1)
+            tree.Childs.ForEach(RemoveSinglePaths);
+
+            foreach (var oldChild in tree.Childs.ToList())
             {
-                var node = tree as Node;
-                var newTree = tree.Childs.First();
-                if (node != null)
+                if (tree.Childs.Count == 1)
                 {
-                    newTree.SiblingDependencies.UnionWith(node.SiblingDependencies);
-                    var dependsOnNode = node.Parent.Childs.Where(x => x.SiblingDependencies.Contains(tree));
-                    foreach (var dependant in dependsOnNode)
+                    var node = tree as Node;
+                    var newChild = tree.Childs.First();
+                    if (node != null)
                     {
-                        dependant.SiblingDependencies.Remove(node);
-                        dependant.SiblingDependencies.Add(newTree);
+                        newChild.SiblingDependencies.UnionWith(node.SiblingDependencies);
+                        var dependsOnNode = node.Parent.Childs.Where(x => x.SiblingDependencies.Contains(tree));
+                        foreach (var dependant in dependsOnNode)
+                        {
+                            dependant.SiblingDependencies.Remove(node);
+                            dependant.SiblingDependencies.Add(newChild);
+                        }
+                    }
+                    tree.ReplaceChild(oldChild,newChild);
+                }
+            }
+        }
+
+        public static void RemoveSingleChildAnonymous(Tree tree)
+        {
+            foreach (var oldChild in tree.Childs.ToList())
+            {
+                RemoveSingleChildAnonymous(oldChild);
+                if (oldChild is SiblingHolderNode)
+                {
+                    if(!oldChild.Childs.Any())
+                        tree.RemoveChild(oldChild);
+                    if(oldChild.Childs.Count == 1)
+                    { 
+                        var newChild = oldChild.Childs?.First();
+                        tree.ReplaceChild(oldChild, newChild);
                     }
                 }
-                return newTree;
             }
-            return tree;
-        }
-
-        public static Tree RemoveSingleChildAnonymous(Tree tree)
-        {
-            tree.SetChildren(tree.Childs.Select(RemoveSingleChildAnonymous).Cast<Node>().ToList());
-            if (tree is SiblingHolderNode && tree.Childs.Count == 1)
-            {
-                var newTree = tree.Childs.First();
-                return newTree;
-            }
-            return tree;
-        }
-
-        private static Tree RemoveTests(Tree tree)
-        {
-            tree.SetChildren(tree.Childs.Select(RemoveTests).Cast<Node>());
-            tree.SetChildren(
-                tree.Childs.Where(x => !x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)).ToList());
-            tree.SetChildren(
-                tree.Childs.Where(x => !x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase)).ToList());
-            return tree;
         }
 
         private static Tree FindSiblingPatterns(Tree tree)

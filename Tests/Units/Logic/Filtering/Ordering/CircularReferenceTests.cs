@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Building.SemanticTree;
 using Logic.Filtering;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Units.Logic.Filtering.Ordering

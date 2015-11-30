@@ -2,9 +2,9 @@
 using System.Linq;
 using EnvDTE;
 using Logic.Building;
-using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Logic.Integration;
+using Logic.SemanticTree;
 
 namespace Logic
 {

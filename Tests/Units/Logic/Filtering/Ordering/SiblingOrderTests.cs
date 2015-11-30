@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Logic.Building;
-using Logic.Building.SemanticTree;
 using Logic.Filtering;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Logic.Building.SemanticTree.OrientationKind;
+using static Logic.SemanticTree.OrientationKind;
 
 namespace Tests.Units.Logic.Filtering.Ordering
 {

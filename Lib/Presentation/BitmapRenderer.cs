@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using JetBrains.Annotations;
 using Logic;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 using Thread = System.Threading.Thread;
 
 namespace Presentation

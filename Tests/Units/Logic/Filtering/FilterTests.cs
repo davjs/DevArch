@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Logic.Building;
-using Logic.Building.SemanticTree;
 using Logic.Filtering;
+using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,7 +27,7 @@ namespace Tests.Units.Logic.Filtering
             ModelFilterer.RemoveNodesWithMoreDepthThan(t,2);
             Assert.IsTrue(!B.Childs.Any());
         }
-
+        /*
         [TestMethod]
         [TestCategory("ModelBuilder")]
         public void FindsClassesOnDifferentLevels()
@@ -39,7 +39,7 @@ namespace Tests.Units.Logic.Filtering
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace GUI {namespace Buttons {class Button {}}}}"));
                 var tree = new Tree();
                 SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution,ref tree);
-                tree = ModelFilterer.RemoveSinglePaths(tree);
+                ModelFilterer.RemoveSinglePaths(tree);
                 Assert.IsNotNull(tree.Childs.WithName("GuiFacade"));
                 Assert.IsNotNull(tree.Childs.WithName("Button"));
             }
@@ -56,11 +56,11 @@ namespace Tests.Units.Logic.Filtering
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace GUI {namespace Buttons { namespace Purple {class Button {}}}}}"));
                 var tree = new Tree();
                 SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
-                tree = ModelFilterer.RemoveSinglePaths(tree);
+                ModelFilterer.RemoveSinglePaths(tree);
                 Assert.IsNotNull(tree.Childs.WithName("GuiFacade"));
                 Assert.IsNotNull(tree.Childs.WithName("Button"));
 
             }
-        }
+        }*/
     }
 }

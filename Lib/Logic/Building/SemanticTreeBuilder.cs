@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Logic.Building.SemanticTree;
 using Logic.Integration;
+using Logic.SemanticTree;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Logic.Building
@@ -78,10 +78,5 @@ namespace Logic.Building
             }
             return path;
         }
-    }
-
-
-    internal class LayerViolationException : Exception
-    {
     }
 }

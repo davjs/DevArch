@@ -6,5 +6,6 @@
   <Output Path = "Logic.png" Scale="1"/>
   <Filters>
     <RemoveExceptions>On</RemoveExceptions>
+    <MinMethods>1</MinMethods>
   </Filters>
 </Model>

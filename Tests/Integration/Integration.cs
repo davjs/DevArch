@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using Logic;
 using Logic.Building;
-using Logic.Building.SemanticTree;
 using Logic.Filtering;
 using Logic.Integration;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Integration
@@ -34,15 +34,7 @@ namespace Tests.Integration
         {
             var solution = new AdvancedSolution(GetDte());
             var modelGen = new DiagramFromModelDefinitionGenerator(solution);
-            var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic\\Building\\SemanticTree");
-            tree.RemoveChild(tree.Childs.WithName("ReferenceLocationExtensions"));
-            tree.RemoveChild(tree.Childs.WithName("ClassNode"));
-            tree.RemoveChild(tree.Childs.WithName("ProjectNode"));
-            tree.RemoveChild(tree.Childs.WithName("HorizontalSiblingHolderNode"));
-            tree.RemoveChild(tree.Childs.WithName("VerticalSiblingHolderNode"));
-            //tree.RemoveChild(tree.Childs.WithName("SiblingHolderNode"));
-            //tree.RemoveChild(tree.Childs.WithName("CircularDependencyHolderNode"));
-            //tree.RemoveChild(tree.Childs.WithName("NodeExtensions"));
+            var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic\\SemanticTree");
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Tree"));
             ModelFilterer.ApplyFilter(ref tree, new Filters());
@@ -104,7 +96,6 @@ namespace Tests.Integration
             tree.AddChild(building.Childs.First());
             */
             tree.RemoveChild(tree.Childs.WithName("Common"));
-            tree.RemoveChild(tree.Childs.WithName("Integration"));
             tree.RemoveChild(tree.Childs.WithName("OutputSettings"));
             tree.RemoveChild(tree.Childs.WithName("NamedScope"));
             tree.RemoveChild(tree.Childs.WithName("DocumentScope"));

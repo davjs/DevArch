@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Logic.Building.SemanticTree;
+using Logic.SemanticTree;
 
 namespace Logic.Filtering
 {

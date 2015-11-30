@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Logic.Building.SemanticTree
+namespace Logic.SemanticTree
 {
     public static class NodeExtensions
     {

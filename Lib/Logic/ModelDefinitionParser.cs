@@ -70,6 +70,7 @@ namespace Logic
             if (fname == "RemoveExceptions") filters.RemoveExceptions = on;
             if (fname == "FindNamingPatterns") filters.FindNamingPatterns = on;
             if (fname == "MaxDepth") filters.MaxDepth = number;
+            if (fname == "MinMethods") filters.MinMethods = number;
             if (fname == "MinReferences") filters.MinReferences = number;
         }
 
