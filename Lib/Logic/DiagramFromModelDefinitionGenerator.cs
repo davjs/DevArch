@@ -21,9 +21,9 @@ namespace Logic
             return ModelDefinitionParser.GetModelDefinitionsFromSolution(_solution);
         }
 
-        public Tree GenerateDiagram(ModelDefinition modelDef)
+        public Node GenerateDiagram(ModelDefinition modelDef)
         {
-            Tree tree = null;
+            Node tree = null;
             if (modelDef.Scope is RootScope)
             {
                 tree = SemanticTreeBuilder.AnalyseSolution(_solution);
@@ -49,9 +49,9 @@ namespace Logic
             return modelDef.DependencyDown ? ReverseTree(tree) : tree;
         }
 
-        private static Tree ReverseTree(Tree tree)
+        private static Node ReverseTree(Node tree)
         {
-            tree.SetChildren(tree.Childs.Select(ReverseTree).Reverse().Cast<Node>());
+            tree.SetChildren(tree.Childs.Select(ReverseTree).Reverse());
             return tree;
         }
     }

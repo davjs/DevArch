@@ -6,12 +6,6 @@ using MoreLinq;
 
 namespace Logic.Filtering
 {
-
-    public interface ITreeFilter
-    {
-        Tree Execute(Tree t);
-    }
-
     public abstract class ChildrenFilter
     {
         protected Func<ClassNode, bool> Predicate;
@@ -45,13 +39,13 @@ namespace Logic.Filtering
 
     public class ModelFilterer
     {
-        public static void ApplyNodeFilter(Tree t, Func<Node, bool> filter)
+        public static void ApplyNodeFilter(Node t, Func<Node, bool> filter)
         {
             var toRemove = t.Childs.Where(filter).ToList();
             toRemove.ForEach(t.RemoveChild);
             t.Childs.ForEach(x => ApplyNodeFilter(x, filter));
         }
-        public static void ApplyClassFilter(Tree t, Func<ClassNode, bool> filter)
+        public static void ApplyClassFilter(Node t, Func<ClassNode, bool> filter)
         {
             var classes = t.Childs.OfType<ClassNode>();
             var toRemove = classes.Where(filter).ToList();
@@ -59,7 +53,7 @@ namespace Logic.Filtering
             t.Childs.ForEach(x => ApplyClassFilter(x, filter));
         }
 
-        public static void ApplyFilter(ref Tree tree, Filters filters)
+        public static void ApplyFilter(ref Node tree, Filters filters)
         {
             tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
             tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
@@ -86,7 +80,7 @@ namespace Logic.Filtering
         }
 
         
-        private static void RemoveDefaultNamespaces(Tree tree)
+        private static void RemoveDefaultNamespaces(Node tree)
         {
             var projects = tree.Projects();
             var withDefaultNamespaces = projects.Where(p => p.Childs.Count() == 1 && p.Childs.First().Name == p.Name);
@@ -98,7 +92,7 @@ namespace Logic.Filtering
             }
         }
 
-        public static void RemoveNodesWithMoreDepthThan(Tree tree, int maxDepth, int currDepth = -1)
+        public static void RemoveNodesWithMoreDepthThan(Node tree, int maxDepth, int currDepth = -1)
         {
             if (!(tree is SiblingHolderNode))
                 currDepth += 1;
@@ -114,7 +108,7 @@ namespace Logic.Filtering
             }
         }
 
-        private static void RemoveNodesReferencedLessThan(Tree tree, int byReference)
+        private static void RemoveNodesReferencedLessThan(Node tree, int byReference)
         {
             /*tree.SetChildren(tree.Childs.Where(x => !(x is ClassNode) || (x as ClassNode).References.Count() >= byReference));
             foreach (var child in tree.Childs)
@@ -124,7 +118,7 @@ namespace Logic.Filtering
         }
 
 
-        public static void RemoveSinglePaths(Tree tree)
+        public static void RemoveSinglePaths(Node tree)
         {
             tree.Childs.ForEach(RemoveSinglePaths);
 
@@ -149,7 +143,7 @@ namespace Logic.Filtering
             }
         }
 
-        public static void RemoveSingleChildAnonymous(Tree tree)
+        public static void RemoveSingleChildAnonymous(Node tree)
         {
             foreach (var oldChild in tree.Childs.ToList())
             {
@@ -167,7 +161,7 @@ namespace Logic.Filtering
             }
         }
 
-        private static Tree FindSiblingPatterns(Tree tree)
+        private static Node FindSiblingPatterns(Node tree)
         {
             if (!tree.Childs.Any())
                 return tree;
@@ -217,11 +211,11 @@ namespace Logic.Filtering
             return node;
         }
 
-        public static Node AncestorIsSibling(Tree parent, Node dependency)
+        public static Node AncestorIsSibling(Node parent, Node dependency)
         {
-            for (var p = dependency; p != null; p = p.Parent as Node)
+            for (var p = dependency; p != null; p = p.Parent)
             {
-                if (p.Parent.Id == parent.Id)
+                if (p.Parent?.Id == parent.Id)
                     return p;
             }
             return null;

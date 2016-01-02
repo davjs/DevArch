@@ -15,7 +15,7 @@ namespace Presentation
     public static class BitmapRenderer
     {
 
-        public static void RenderTreeToBitmap(Tree tree, OutputSettings outputSettings,bool overWrite = true)
+        public static void RenderTreeToBitmap(Node tree, OutputSettings outputSettings,bool overWrite = true)
         {
             if (overWrite)
             {
@@ -32,7 +32,7 @@ namespace Presentation
             thread.Join();
         }
 
-        private static void _RenderTreeToBitmap(Tree tree,[NotNull] string path, int scale = 1, double maxWidth = double.PositiveInfinity, double maxheight = double.PositiveInfinity)
+        private static void _RenderTreeToBitmap(Node tree,[NotNull] string path, int scale = 1, double maxWidth = double.PositiveInfinity, double maxheight = double.PositiveInfinity)
         {
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
             var control = new Views.Diagram(viewModel);

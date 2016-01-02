@@ -5,6 +5,7 @@ using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
 
 namespace Tests.Units.Logic
 {
@@ -19,7 +20,7 @@ namespace Tests.Units.Logic
             {
                 fakeWorkspace.AddProject("A", LanguageNames.CSharp);
                 fakeWorkspace.AddProject("B", LanguageNames.CSharp);
-                var tree = new Tree();
+                var tree = new SolutionNode();
                 ProjectTreeBuilder.AddProjectsToTree(fakeWorkspace.CurrentSolution,ref tree);
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "A"));
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "B"));
@@ -69,7 +70,7 @@ namespace Tests.Units.Logic
                 var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA { class ClassA { class ClassB {}}}" +
                                                                                       "namespace NamespaceA { class classC {} }"));
-                var tree = new Tree();
+                var tree = new SolutionNode();
                 SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 Assert.IsTrue(tree.DescendantNodes().WithName("ClassA").Childs.First().Name == "ClassB");
             }
@@ -78,7 +79,7 @@ namespace Tests.Units.Logic
         [TestMethod]
         public void DependenciesAreConvertedToSiblingsIfAvailible()
         {
-            var root = new Node("R");
+            var root = new Node("ROOT");
             var a = new Node("A");
             var b = new Node("B");
             var childOfB = new Node("C");

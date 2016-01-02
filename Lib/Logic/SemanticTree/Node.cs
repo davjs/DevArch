@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EnvDTE;
+using Logic.Integration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
@@ -9,7 +10,13 @@ using Project = Microsoft.CodeAnalysis.Project;
 
 namespace Logic.SemanticTree
 {
-    public class Node : Tree
+    public enum OrientationKind
+    {
+        Horizontal,
+        Vertical
+    }
+
+    public class Node : UniqueEntity
     {
         public Node(ISymbol symbol)
         {
@@ -26,11 +33,50 @@ namespace Logic.SemanticTree
         public readonly ISymbol Symbol;
         public List<Node> Dependencies = new List<Node>();
         public readonly HashSet<Node> SiblingDependencies = new HashSet<Node>();
-        public Tree Parent;
+        public Node Parent;
+        public OrientationKind Orientation = OrientationKind.Vertical;
+
+        private List<Node> ChildsList { get; } = new List<Node>();
+        public IReadOnlyList<Node> Childs => ChildsList;
 
         public override string ToString()
         {
-            return Childs.Any() ? $"{Name} = ({base.ToString()})" : Name;
+            return Childs.Any() ? $"{Name} = ({string.Join(",",Childs)})" : Name;
+        }
+
+        public void AddChild(Node childNode)
+        {
+            childNode.Parent = this;
+            ChildsList.Add(childNode);
+        }
+
+        public void AddChilds(IEnumerable<Node> nodes)
+        {
+            foreach (var node in nodes)
+                AddChild(node);
+        }
+
+        public void SetChildren(IEnumerable<Node> children)
+        {
+            var newList = children.ToList();
+            ChildsList.Clear();
+            AddChilds(newList);
+        }
+
+        public void RemoveChild(Node n)
+        {
+            n.Parent = null;
+            ChildsList.Remove(n);
+        }
+        public void ReplaceChild(Node remove, Node insert)
+        {
+            var index = ChildsList.IndexOf(remove);
+            ChildsList[index] = insert;
+        }
+
+        public int Height()
+        {
+            return Childs.Max(x => x.Height()) + 1;
         }
     }
 
@@ -62,7 +108,17 @@ namespace Logic.SemanticTree
             }
         }
     }
-    
+
+
+    public class SolutionNode : Node
+    {
+        public SolutionNode(AdvancedSolution solution)
+            : base(solution.Name) { }
+        public SolutionNode()
+            : base("Unknown solution name")
+        { }
+    }
+
     public class ProjectNode : Node
     {
         public ProjectNode(ProjectItem p) : base(p.Name)

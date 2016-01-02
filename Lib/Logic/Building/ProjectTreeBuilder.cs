@@ -8,7 +8,7 @@ namespace Logic.Building
 {
     public static class ProjectTreeBuilder
     {
-        public static void AddProjectsToTree(Solution solution, ref Tree tree)
+        public static void AddProjectsToTree(Solution solution, ref SolutionNode tree)
         {
             var projects = solution.Projects.ToList();
             var allreadyAddedProjects = tree.DescendantNodes().OfType<ProjectNode>().ToList();
@@ -28,17 +28,16 @@ namespace Logic.Building
             }
         }
 
-        public static void AddProjectToTree(Solution solution, ref Tree tree, string name)
+        public static void AddProjectToTree(Solution solution, ref SolutionNode tree, string name)
         {
             var project = solution.Projects.First(p => p.Name == name);
             tree.AddChild(new ProjectNode(project));
         }
 
         public static
-            Tree AddSolutionFoldersToTree(Projects projects)
+            void AddSolutionFoldersToTree(Projects projects, ref SolutionNode tree)
         {
-            var tree = new Tree();
-            if (projects == null) return tree;
+            if (projects == null) return;
             foreach (
                 var folder in projects.Cast<Project>()
                 .Where(x => x.Kind == ProjectKinds.vsProjectKindSolutionFolder))
@@ -46,7 +45,6 @@ namespace Logic.Building
                 var node = GetSolutionFolderNode(folder);
                 tree.AddChild(node);
             }
-            return tree;
         }
 
         private static Node GetSolutionFolderNode(Project folder)

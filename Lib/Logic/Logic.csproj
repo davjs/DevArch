@@ -121,7 +121,7 @@
     <Compile Include="SemanticTree\Node.cs" />
     <Compile Include="SemanticTree\NodeExtensions.cs" />
     <Compile Include="Filtering\SiblingReorderer.cs" />
-    <Compile Include="SemanticTree\Tree.cs" />
+    <Compile Include="SemanticTree\UniqueEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

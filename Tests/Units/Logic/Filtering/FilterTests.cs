@@ -14,7 +14,7 @@ namespace Tests.Units.Logic.Filtering
         [TestMethod()]
         public void RemoveNodesWithMoreDepthThanTest()
         {
-            var t = new Tree();
+            var t = new Node("ROOT");
             var A = new Node("A");
             var B = new Node("B");
             var C = new Node("C");

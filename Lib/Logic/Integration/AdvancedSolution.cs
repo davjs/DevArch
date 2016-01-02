@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EnvDTE;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
+using MoreLinq;
+using Project = EnvDTE.Project;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Logic.Integration
@@ -13,6 +16,7 @@ namespace Logic.Integration
         public readonly Solution RoslynSolution;
         public readonly Projects DteProjects;
         private readonly string _fullName;
+        public readonly string Name;
 
         public AdvancedSolution(_DTE dte)
         {
@@ -21,6 +25,7 @@ namespace Logic.Integration
             _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
             RoslynSolution = KeepTrying.ToGet(() => build.OpenSolutionAsync(_fullName).Result);
             DteProjects = KeepTrying.ToGet(() =>dteSolution.Projects);
+            Name = Path.GetFileName(_fullName);
         }
 
         public IList<Project> FindArchProjects()
@@ -78,7 +83,6 @@ namespace Logic.Integration
     static class KeepTrying
     {
         static int _totalRetries = 0;
-        public delegate void Del();
         const int Maxtries = 5;
 
         public static T ToGet<T>(Func<T> function, bool thrw = true) where T : class

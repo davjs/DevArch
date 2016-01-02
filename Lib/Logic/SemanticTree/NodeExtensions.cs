@@ -32,7 +32,7 @@ namespace Logic.SemanticTree
             return nodes.Select(n => n.References).Distinct().Count();
         }*/
 
-        public static IEnumerable<ProjectNode> Projects(this Tree tree)
+        public static IEnumerable<ProjectNode> Projects(this Node tree)
         {
             var projects = new List<ProjectNode>();
             foreach (var child in tree.Childs)
@@ -62,7 +62,7 @@ namespace Logic.SemanticTree
         } */
 
             public static
-            IEnumerable<Node> DescendantNodes(this Tree tree)
+            IEnumerable<Node> DescendantNodes(this Node tree)
         {
             foreach (var child in tree.Childs)
             {

@@ -12,7 +12,7 @@ namespace Presentation
     {
         static readonly IPalletteAlgorithm Pallette = new HueRangeDivisor();
 
-        public static ArchViewModel TreeModelToArchViewModel(Tree model)
+        public static ArchViewModel TreeModelToArchViewModel(Node model)
         {
             return new ArchViewModel
             {

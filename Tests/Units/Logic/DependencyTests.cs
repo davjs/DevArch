@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
 
 namespace Tests.Units.Logic
 {
@@ -27,7 +28,7 @@ namespace Tests.Units.Logic
                     ));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs",
                     SourceText.From("class Button {public void Bar(){}}"));
-                var tree = new Tree();
+                var tree = Substitute.For<SolutionNode>();
                 SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 var compile = project.GetCompilationAsync().Result;
                 var diagnostics = compile.GetParseDiagnostics();
@@ -54,7 +55,7 @@ namespace Tests.Units.Logic
                     ));
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs",
                     SourceText.From("class Button {public void Bar(){}}"));
-                var tree = new Tree();
+                var tree = Substitute.For<SolutionNode>();
                 SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 var projectA = tree.Childs.First();
                 var button = projectA.Childs.WithName("Button") as ClassNode;
@@ -99,7 +100,7 @@ namespace Tests.Units.Logic
             .AddDocument(didB, "B.cs", docB)
             .AddProjectReference(pidB, new ProjectReference(pidA));
 
-            var tree = new Tree();
+            var tree = Substitute.For<SolutionNode>();
             SemanticTreeBuilder.AddAllItemsInSolutionToTree(solution, ref tree);
             var button = tree.DescendantNodes().WithName("Button") as ClassNode;
             var guiFacade = tree.DescendantNodes().WithName("GuiFacade");

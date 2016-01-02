@@ -4,6 +4,7 @@ using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
 
 namespace Tests.Units.Logic.Building
 {
@@ -21,7 +22,7 @@ namespace Tests.Units.Logic.Building
                         "namespace NamespaceA {class ClassOuter {}}" +
                         "namespace NamespaceA {namespace NamespaceAA {class ClassA {}}}" +
                         "namespace NamespaceA {namespace NamespaceAB {class ClassB {}}}"));
-                var tree = new Tree();
+                var tree = Substitute.For<SolutionNode>();
                 ProjectTreeBuilder.AddProjectsToTree(fakeWorkspace.CurrentSolution, ref tree);
                 ClassTreeBuilder.AddClassesToTree(tree);
                 Assert.AreEqual(1,tree.Childs.First().Childs.Count);

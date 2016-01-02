@@ -8,7 +8,7 @@ namespace Logic.Building
 {
     public static class ClassTreeBuilder
     {
-        public static void AddClassesToTree(Tree tree, string documentName = null)
+        public static void AddClassesToTree(Node tree, string documentName = null)
         {
             var allClassesBySymbol = new Dictionary<ISymbol, ClassNode>();
 
