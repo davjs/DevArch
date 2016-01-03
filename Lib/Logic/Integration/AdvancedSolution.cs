@@ -83,9 +83,9 @@ namespace Logic.Integration
     static class KeepTrying
     {
         static int _totalRetries = 0;
-        const int Maxtries = 5;
+        const int Maxtries = 4;
 
-        public static T ToGet<T>(Func<T> function, bool thrw = true) where T : class
+        public static T ToGet<T>(Func<T> function) where T : class
         {
             T result = null;
             var failed = true;
@@ -101,21 +101,14 @@ namespace Logic.Integration
                 catch (Exception e)
                 {
                     if (tries < Maxtries) continue;
-                    if (thrw)
+
+                    if (_totalRetries > Maxtries)
                     {
-                        System.Diagnostics.Debug.WriteLine("EXCEPTION ROOF");
-                        System.Diagnostics.Debug.WriteLine(e);
-                        throw;
+                        throw e;
                     }
-                    if (_totalRetries < Maxtries)
-                    {
-                        _totalRetries++;
-                        tries = 0;
-                    }
-                    else
-                    {
-                        thrw = true;
-                    }
+
+                    _totalRetries++;
+                    tries = 0;
                 }
             }
             return result;

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="VSIXProject1.David Jensen.6a6cc892-0841-43f3-854e-8ae0ee694ca9" Version="1.1" Language="en-US" Publisher="David Jensen" />
-    <DisplayName>VSIXProject1</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <Identity Id="Devarch.ToolsMenu.66fc4a30-5b22-465e-b2d1-a40e69b41d2a" Version="0.1" Language="en-US" Publisher="David Jensen" />
+    <DisplayName>Devarch.ToolsMenu</DisplayName>
+    <Description xml:space="preserve">Puts DevArch commands under the tools menuPuts devarch commands under the tools menu</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
@@ -13,6 +13,10 @@
     <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
   </Dependencies>
   <Assets>
+    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="File" Path="ItemTemplates" d:TargetPath="ItemTemplates\Model Definition.zip" />
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="DevArchProject.ProjectType" Path="|DevArchProject.ProjectType|" />
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="DevArchProject.ProjectType" Path="|DevArchProject.ProjectType;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="DevArchProject.ProjectTemplate" d:TargetPath="|DevArchProject.ProjectTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
   </Assets>
 </PackageManifest>
