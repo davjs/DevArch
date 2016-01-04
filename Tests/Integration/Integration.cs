@@ -23,8 +23,6 @@ namespace Tests.Integration
             var lib = tree.Childs.WithName("Lib");
             Assert.AreEqual(1,lib.DescendantNodes().Count(x => x.Name == "Node"));
             var clients = tree.Childs.WithName("Clients");
-            var makeAllArchDiagramsInSolution = clients.DescendantNodes().WithName("MakeAllArchDiagramsInSolution");
-            var deps = makeAllArchDiagramsInSolution.Dependencies.ToList();
             var dependency = clients.AllSubDependencies().Any(x => x.Name == "DevArch");
             Assert.IsNotNull(dependency);
         }
@@ -33,12 +31,9 @@ namespace Tests.Integration
         public void SemanticTreeDoesNotContainDoubles()
         {
             var solution = new AdvancedSolution(GetDte());
-            var modelGen = new DiagramFromModelDefinitionGenerator(solution);
             var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic\\SemanticTree");
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
-            Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Tree"));
             ModelFilterer.ApplyFilter(ref tree, new Filters());
-            Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Tree"));
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
         }
 
@@ -53,8 +48,6 @@ namespace Tests.Integration
             tree.RemoveChild("Building");
             tree.RemoveChild("Common");
             tree.RemoveChild("Integration");
-            //tree.RemoveChild(tree.Childs.WithName("ModelDefinition"));
-            //tree.RemoveChild(tree.Childs.WithName("Filters"));
             tree.RemoveChild("OutputSettings");
             tree.RemoveChild("NamedScope");
             tree.RemoveChild("DocumentScope");
@@ -62,14 +55,12 @@ namespace Tests.Integration
             tree.RemoveChild("NamespaceScope");
             tree.RemoveChild("ClassScope");
             tree.RemoveChild("DiagramFromModelDefinitionGenerator");
-            //tree.RemoveChild(tree.Childs.WithName("ModelDefinitionParser"));
             tree.RemoveChild("NoArchProjectsFound");
             var filtering = tree.DescendantNodes().WithName("Filtering");
             filtering.RemoveChild("SiblingReorderer");
             filtering.RemoveChild("PatternFinder");
             tree.RemoveChild(filtering);
             tree.AddChild(filtering.Childs.First());
-            //tree.RemoveChild(tree.Childs.WithName("Filtering"));
             foreach (var child in tree.Childs)
             {
                 //Remove those not in childs
@@ -91,10 +82,6 @@ namespace Tests.Integration
             tree.RemoveChild(tree.Childs.WithName("Filters"));
             tree.RemoveChild(tree.Childs.WithName("DiagramFromModelDefinitionGenerator"));
             tree.RemoveChild(tree.Childs.WithName("ModelDefinitionParser"));
-            /*var building = tree.Childs.WithName("Building");
-            tree.RemoveChild(building);
-            tree.AddChild(building.Childs.First());
-            */
             tree.RemoveChild(tree.Childs.WithName("Common"));
             tree.RemoveChild(tree.Childs.WithName("OutputSettings"));
             tree.RemoveChild(tree.Childs.WithName("NamedScope"));
@@ -104,11 +91,6 @@ namespace Tests.Integration
             tree.RemoveChild(tree.Childs.WithName("ClassScope"));
             tree.RemoveChild(tree.Childs.WithName("NoArchProjectsFound"));
             
-
-            /*var filtering = tree.DescendantNodes().WithName("Filtering");
-            tree.RemoveChild(filtering);
-            tree.AddChild(filtering.Childs.WithName("ModelFilterer"));
-            */
             foreach (var child in tree.Childs)
             {
                 //Remove those not in childs
