@@ -229,6 +229,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="BuildSystem\Rules\modeldefinition.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\..\packages\Microsoft.VisualStudio.ProjectSystem.Analyzers.14.0.50721-pre\tools\Microsoft.VisualStudio.ProjectSystem.Analyzers.dll" />
