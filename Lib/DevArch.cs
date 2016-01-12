@@ -21,7 +21,7 @@ namespace Lib
                 var tree = modelGen.GenerateDiagram(modelDef);
                 if (!tree.Childs.Any())
                     throw new NoClassesFoundException();
-                BitmapRenderer.RenderTreeToBitmap(tree, modelDef.Output);
+                BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);
             }
         }
 

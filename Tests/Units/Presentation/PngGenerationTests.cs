@@ -43,7 +43,7 @@ namespace Tests.Units.Presentation
                 new Filters {RemoveTests = false}
                 );
             var tree =modelGen.GenerateDiagram(modelDef);
-            BitmapRenderer.RenderTreeToBitmap(tree, modelDef.Output);
+            BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);
         }
     }
 }

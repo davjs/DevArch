@@ -5,6 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:views="clr-namespace:Presentation.Views"
              mc:Ignorable="d">
-    <StackPanel Orientation="Vertical" Height="Auto"  Name="MasterPanel" Margin="10,0" >
-    </StackPanel>
+        <StackPanel Orientation="Vertical" Height="Auto"  Name="MasterPanel" Margin="10,0" >
+        </StackPanel>
 </UserControl>

@@ -4,10 +4,15 @@ using Presentation.Coloring;
 
 namespace Presentation.ViewModels
 {
-    public class LayerViewModel
+    public interface IDiagramSymbolViewModel
+    {
+
+    }
+
+    public class LayerViewModel : IDiagramSymbolViewModel
     {
         public string Name;
-        public IEnumerable<LayerViewModel> Children = new List<LayerViewModel>();
+        public IEnumerable<IDiagramSymbolViewModel> Children = new List<IDiagramSymbolViewModel>();
         public int Column;
         public int Row;
         public bool Anonymous;
@@ -24,9 +29,19 @@ namespace Presentation.ViewModels
         }
     }
 
+
+    public class ArrowViewModel : IDiagramSymbolViewModel
+    {
+        enum Direction
+        {
+            Left,Right,Up,Down
+        }
+        private Direction direction;
+    }
+
     public class ArchViewModel
     {
-        public IEnumerable<LayerViewModel> Layers;
+        public IEnumerable<IDiagramSymbolViewModel> Layers;
 
         public override string ToString()
         {

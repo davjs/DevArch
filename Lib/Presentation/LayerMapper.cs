@@ -12,21 +12,30 @@ namespace Presentation
     {
         static readonly IPalletteAlgorithm Pallette = new HueRangeDivisor();
 
-        public static ArchViewModel TreeModelToArchViewModel(Node model)
+        public static ArchViewModel TreeModelToArchViewModel(Node model,bool dependencyDown)
         {
             return new ArchViewModel
             {
-                Layers = PaintAndMapNodes(model.Childs).ToList()
+                Layers = PaintAndMapNodes(model.Childs,dependencyDown)
             };
         }
 
-        private static IEnumerable<LayerViewModel> PaintAndMapNodes(IEnumerable<Node> nodes)
+        private static List<LayerViewModel> PaintAndMapNodes(IEnumerable<Node> nodes, bool dependencyDown)
         {
             var layers = nodes.Select(NodeViewModelToLayerViewModel).ToList();
-            return PaintLayers(layers).ToList();
+            layers = PaintLayers(layers);
+            return AddArrows(layers, dependencyDown);
         }
 
-        public static IEnumerable<LayerViewModel> PaintLayers(List<LayerViewModel> layers,
+        private static List<LayerViewModel> AddArrows(List<LayerViewModel> layers, bool dependencyDown)
+        {
+            var count = layers.Count;
+
+            //layers.Select(x => x.Children)
+
+        }
+
+        public static List<LayerViewModel> PaintLayers(List<LayerViewModel> layers,
             IColorData parentColorData = null,LayerViewModel parent = null,int depth = 0)
         {
             var toPaintDistinct = new List<LayerViewModel>();

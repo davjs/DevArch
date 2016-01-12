@@ -15,10 +15,7 @@ namespace Presentation.Views
         public Diagram(ArchViewModel model)
         {
             InitializeComponent();
-            foreach (var layer in model.Layers)
-            {
-                MasterPanel.Children.Add(new LayerView(layer));
-            }
+            RenderModel(model);
         }
 
         public void RenderModel(ArchViewModel model)
