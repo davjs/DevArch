@@ -10,14 +10,20 @@ using Colors = Presentation.Coloring.Colors;
 
 namespace Presentation.Views
 {
+    public interface IDiagramControl
+    {
+        int Column { get; set; }
+        int Row { get; set; }
+
+        UIElement UiElement { get; }
+    }
+
     /// <summary>
     /// Interaction logic for layerControl.xaml
     /// </summary>
     [ContentProperty("Children")]
-    public partial class LayerView
+    public partial class LayerView : IDiagramControl
     {
-        private readonly int _column;
-        private readonly int _row;
 
         public LayerView()
         {
@@ -29,17 +35,18 @@ namespace Presentation.Views
             InitializeComponent();
             LayerName = layerModel.Name;
             NameBlock.Text = layerModel.Name;
-            _column = layerModel.Column;
-            _row = layerModel.Row;
+            Row = layerModel.Row;
+            Column = layerModel.Column;
             var childMargin = CalculateChildMargin(layerModel);
-            bool visible = !layerModel.Anonymous;
-            var childs = layerModel.Children.Select(x => new LayerView(x)).ToList();
+            var visible = !layerModel.Anonymous;
+            var childs = layerModel.Children.Select(ViewModelGenerator.CreateViewFromViewModel).ToList();
             foreach (var child in childs)
             {
-                child.Border.Margin = childMargin;
-                ChildHolder.Children.Add(child);
-                Grid.SetColumn(child, child._column);
-                Grid.SetRow(child, child._row);
+                if(child is LayerView)
+                    (child as LayerView).Border.Margin = childMargin;
+                ChildHolder.Children.Add(child.UiElement);
+                Grid.SetColumn(child.UiElement, child.Column);
+                Grid.SetRow(child.UiElement, child.Row);
             }
 
             for (var i = 0; i < layerModel.Rows; i++)
@@ -94,5 +101,8 @@ namespace Presentation.Views
         }
 
         public string LayerName { get; set; }
+        public int Row { get; set; }
+        public UIElement UiElement => this;
+        public int Column { get; set; }
     }
 }

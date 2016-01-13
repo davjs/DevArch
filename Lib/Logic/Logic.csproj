@@ -116,6 +116,7 @@
     <Compile Include="Filtering\PatternFinder.cs" />
     <Compile Include="Filtering\ModelFilterer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SemanticTree\OrientationKind.cs" />
     <Compile Include="SemanticTree\ReferenceLocationExtensions.cs" />
     <Compile Include="Building\SemanticModelWalker.cs" />
     <Compile Include="SemanticTree\Node.cs" />

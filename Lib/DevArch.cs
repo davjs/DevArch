@@ -30,7 +30,7 @@ namespace Lib
             var solution = new AdvancedSolution(enivorment);
             var modelGen = new DiagramFromModelDefinitionGenerator(solution);
             var tree = modelGen.GenerateDiagram(ModelDefinition.RootDefault);
-            var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
+            var viewModel = LayerMapper.TreeModelToArchViewModel(tree,true);
             view.Diagram.RenderModel(viewModel);
         }
     }

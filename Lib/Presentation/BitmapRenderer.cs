@@ -24,7 +24,7 @@ namespace Presentation
                     File.Delete(outputSettings.Path);
             }
 
-            var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
+            var viewModel = LayerMapper.TreeModelToArchViewModel(tree,dependencyDown);
 
             var thread = new Thread(() =>
             {
