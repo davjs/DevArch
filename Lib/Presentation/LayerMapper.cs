@@ -12,21 +12,43 @@ namespace Presentation
     {
         static readonly IPalletteAlgorithm Pallette = new HueRangeDivisor();
 
-        public static ArchViewModel TreeModelToArchViewModel(Node model)
+        public static ArchViewModel TreeModelToArchViewModel(Node model,bool dependencyDown)
         {
             return new ArchViewModel
             {
-                Layers = PaintAndMapNodes(model.Childs).ToList()
+                Layers = PaintAndMapNodes(model.Childs,dependencyDown)
             };
         }
 
-        private static IEnumerable<LayerViewModel> PaintAndMapNodes(IEnumerable<Node> nodes)
+        private static IEnumerable<DiagramSymbolViewModel> PaintAndMapNodes(IEnumerable<Node> nodes, bool dependencyDown)
         {
             var layers = nodes.Select(NodeViewModelToLayerViewModel).ToList();
-            return PaintLayers(layers).ToList();
+            layers = PaintLayers(layers);
+            return AddArrows(layers, Vertical,dependencyDown);
         }
 
-        public static IEnumerable<LayerViewModel> PaintLayers(List<LayerViewModel> layers,
+        private static List<DiagramSymbolViewModel> AddArrows(IEnumerable<DiagramSymbolViewModel> layers,OrientationKind parentOrientation ,bool dependencyDown)
+        {
+            var viewModels = layers.ToList();
+            var arrowdirection = dependencyDown ?
+                ArrowViewModel.Direction.Down : ArrowViewModel.Direction.Up;
+
+            foreach (var layer in viewModels.Cast<LayerViewModel>())
+            {
+                layer.Children = AddArrows(layer.Children,layer.Orientation,dependencyDown);
+            }
+
+            if (viewModels.Count <= 1 || parentOrientation == Horizontal)
+                return viewModels;
+            for (var i = 1; i < viewModels.Count; i += 2)
+            {
+                viewModels.Insert(i,new ArrowViewModel(arrowdirection));
+                viewModels[i].Row = i;
+            }
+            return viewModels;
+        }
+
+        public static List<LayerViewModel> PaintLayers(List<LayerViewModel> layers,
             IColorData parentColorData = null,LayerViewModel parent = null,int depth = 0)
         {
             var toPaintDistinct = new List<LayerViewModel>();
@@ -74,7 +96,7 @@ namespace Presentation
         private static void PaintLayer(LayerViewModel layer, IColorData colorData,int depth = 0)
         {
             layer.Color = colorData.GetColor();
-            layer.Children = PaintLayers(layer.Children.ToList(), colorData, layer,depth + 1);
+            PaintLayers(layer.Children.OfType<LayerViewModel>().ToList(), colorData, layer,depth + 1);
         }
 
         public static LayerViewModel NodeViewModelToLayerViewModel(Node node)
@@ -89,16 +111,19 @@ namespace Presentation
                 childLayer.Row = row;
                 if (node.Orientation == Horizontal)
                     column++;
+                else if (children.Count == 1)
+                    row = 0;
                 else
-                    row++;
+                    row += 2;
             }
             return new LayerViewModel
             {
                 Columns = column,
-                Rows = row,
+                Rows = row + 1,
                 Name = node.Name /* + (color.Bottom + color.Top) /2*/,
                 Anonymous = !node.Name.Any(),
                 Children = children,
+                Orientation = node.Orientation,
                 Descendants = children.Count + children.Sum(model => model.Descendants)
             };
         }

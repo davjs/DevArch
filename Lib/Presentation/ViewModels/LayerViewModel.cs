@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Logic.SemanticTree;
 using Presentation.Coloring;
 
 namespace Presentation.ViewModels
 {
-    public class LayerViewModel
+    public class LayerViewModel : DiagramSymbolViewModel
     {
         public string Name;
-        public IEnumerable<LayerViewModel> Children = new List<LayerViewModel>();
-        public int Column;
-        public int Row;
+        public IEnumerable<DiagramSymbolViewModel> Children = new List<DiagramSymbolViewModel>();
         public bool Anonymous;
         public int Rows;
         public int Columns;
         public AdvancedColor Color;
         public int Descendants;
+        public OrientationKind Orientation;
 
 
         public override string ToString()
@@ -24,9 +24,10 @@ namespace Presentation.ViewModels
         }
     }
 
+
     public class ArchViewModel
     {
-        public IEnumerable<LayerViewModel> Layers;
+        public IEnumerable<DiagramSymbolViewModel> Layers;
 
         public override string ToString()
         {

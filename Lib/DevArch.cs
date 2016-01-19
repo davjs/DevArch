@@ -21,7 +21,7 @@ namespace Lib
                 var tree = modelGen.GenerateDiagram(modelDef);
                 if (!tree.Childs.Any())
                     throw new NoClassesFoundException();
-                BitmapRenderer.RenderTreeToBitmap(tree, modelDef.Output);
+                BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);
             }
         }
 
@@ -30,7 +30,7 @@ namespace Lib
             var solution = new AdvancedSolution(enivorment);
             var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
-            var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
+            var viewModel = LayerMapper.TreeModelToArchViewModel(tree,true);
             view.Diagram.RenderModel(viewModel);
         }
     }

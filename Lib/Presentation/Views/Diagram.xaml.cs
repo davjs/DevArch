@@ -4,8 +4,7 @@ using Presentation.ViewModels;
 
 namespace Presentation.Views
 {
-
-    public partial class Diagram : UserControl
+    public partial class Diagram
     {
         public Diagram()
         {
@@ -15,17 +14,14 @@ namespace Presentation.Views
         public Diagram(ArchViewModel model)
         {
             InitializeComponent();
-            foreach (var layer in model.Layers)
-            {
-                MasterPanel.Children.Add(new LayerView(layer));
-            }
+            RenderModel(model);
         }
 
         public void RenderModel(ArchViewModel model)
         {
             foreach (var layer in model.Layers)
             {
-                MasterPanel.Children.Add(new LayerView(layer));
+                MasterPanel.Children.Add(ViewModelGenerator.CreateViewFromViewModel(layer).UiElement);
             }
         }
     }

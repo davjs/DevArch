@@ -10,12 +10,6 @@ using Project = Microsoft.CodeAnalysis.Project;
 
 namespace Logic.SemanticTree
 {
-    public enum OrientationKind
-    {
-        Horizontal,
-        Vertical
-    }
-
     public class Node : UniqueEntity
     {
         public Node(ISymbol symbol)

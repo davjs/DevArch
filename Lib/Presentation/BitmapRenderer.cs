@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using JetBrains.Annotations;
 using Logic;
 using Logic.SemanticTree;
+using Presentation.ViewModels;
 using Thread = System.Threading.Thread;
 
 namespace Presentation
@@ -15,7 +16,7 @@ namespace Presentation
     public static class BitmapRenderer
     {
 
-        public static void RenderTreeToBitmap(Node tree, OutputSettings outputSettings,bool overWrite = true)
+        public static void RenderTreeToBitmap(Node tree, bool dependencyDown, OutputSettings outputSettings, bool overWrite = true)
         {
             if (overWrite)
             {
@@ -23,18 +24,19 @@ namespace Presentation
                     File.Delete(outputSettings.Path);
             }
 
+            var viewModel = LayerMapper.TreeModelToArchViewModel(tree,dependencyDown);
+
             var thread = new Thread(() =>
             {
-                _RenderTreeToBitmap(tree, outputSettings.Path, outputSettings.Size);
+                RenderViewModelToBitmap(viewModel, outputSettings.Path, outputSettings.Size);
             });
             thread.SetApartmentState(ApartmentState.STA); //Make the thread a ui thread
             thread.Start();
             thread.Join();
         }
 
-        private static void _RenderTreeToBitmap(Node tree,[NotNull] string path, int scale = 1, double maxWidth = double.PositiveInfinity, double maxheight = double.PositiveInfinity)
+        private static void RenderViewModelToBitmap(ArchViewModel viewModel,[NotNull] string path, int scale = 1, double maxWidth = double.PositiveInfinity, double maxheight = double.PositiveInfinity)
         {
-            var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
             var control = new Views.Diagram(viewModel);
             RenderControlToBitmap(control, path,scale, maxWidth, maxheight);
         }
