@@ -1,4 +1,5 @@
 ﻿// ReSharper disable All
+#pragma warning disable 169,
 
 namespace Tests.Sample
 {

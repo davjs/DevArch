@@ -1,8 +1,6 @@
-﻿using System;
+﻿// ReSharper disable All
+#pragma warning disable 169
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tests.Sample
 {
