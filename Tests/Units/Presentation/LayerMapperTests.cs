@@ -38,8 +38,8 @@ namespace Tests.Units.Presentation
 
             Assert.AreEqual(0, vtop.Row);
 
-            Assert.AreEqual(1, vbottom.Row);
-            Assert.AreEqual(1, vbottom.Row);
+            Assert.AreEqual(2, vbottom.Row);
+            Assert.AreEqual(2, vbottom.Row);
 
             Assert.AreEqual(0, vtop.Children.First().Column);
             Assert.AreEqual(1, vtop.Children.Last().Column);

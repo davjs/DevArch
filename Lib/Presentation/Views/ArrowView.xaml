@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Presentation.Views.ArrowView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Presentation.Views"
+             mc:Ignorable="d" 
+             Width="10"
+             Height="10"
+             d:DesignHeight="100" d:DesignWidth="100" d:DataContext="{d:DesignInstance local:ArrowView}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Presentation;component/Resources/arrow-symbols.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Rectangle Width="Auto" Height="Auto" OpacityMask="{DynamicResource Arrow12}">
+        <Rectangle.Fill>
+            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                <GradientStop Color="Black"/>
+                <GradientStop Color="#FFE3E69E" Offset="1"/>
+            </LinearGradientBrush>
+        </Rectangle.Fill>
+        <Rectangle.LayoutTransform>
+            <RotateTransform Angle="{Binding Angle}"></RotateTransform>
+        </Rectangle.LayoutTransform>
+    </Rectangle>
+
+
+</UserControl>
