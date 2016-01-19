@@ -18,8 +18,8 @@ namespace Tests.Integration
         public void FindsDependencies()
         {
             var solution = new AdvancedSolution(GetDte());
-            var modelGen = new DiagramFromModelDefinitionGenerator(solution);
-            var tree = modelGen.GenerateDiagram(ModelDefinition.RootDefault);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
             Assert.AreEqual(1,lib.DescendantNodes().Count(x => x.Name == "Node"));
             var clients = tree.Childs.WithName("Clients");
@@ -54,7 +54,7 @@ namespace Tests.Integration
             tree.RemoveChild("ProjectScope");
             tree.RemoveChild("NamespaceScope");
             tree.RemoveChild("ClassScope");
-            tree.RemoveChild("DiagramFromModelDefinitionGenerator");
+            tree.RemoveChild("DiagramFromDiagramDefinitionGenerator");
             tree.RemoveChild("NoArchProjectsFound");
             var filtering = tree.DescendantNodes().WithName("Filtering");
             filtering.RemoveChild("SiblingReorderer");
@@ -78,10 +78,10 @@ namespace Tests.Integration
             var solution = new AdvancedSolution(GetDte());
             var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic");
             tree = tree.Childs.First(); tree = tree.Childs.First();
-            tree.RemoveChild(tree.Childs.WithName("ModelDefinition"));
+            tree.RemoveChild(tree.Childs.WithName("DiagramDefinition"));
             tree.RemoveChild(tree.Childs.WithName("Filters"));
-            tree.RemoveChild(tree.Childs.WithName("DiagramFromModelDefinitionGenerator"));
-            tree.RemoveChild(tree.Childs.WithName("ModelDefinitionParser"));
+            tree.RemoveChild(tree.Childs.WithName("DiagramFromDiagramDefinitionGenerator"));
+            tree.RemoveChild(tree.Childs.WithName("DiagramDefinitionParser"));
             tree.RemoveChild(tree.Childs.WithName("Common"));
             tree.RemoveChild(tree.Childs.WithName("OutputSettings"));
             tree.RemoveChild(tree.Childs.WithName("NamedScope"));

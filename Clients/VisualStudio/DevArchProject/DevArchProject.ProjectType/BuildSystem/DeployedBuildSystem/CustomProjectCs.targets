@@ -11,7 +11,7 @@
 
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\csProjectItemsSchema.xaml;"/>
 
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\modeldefinition.xaml;">
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\diagramdefinition.xaml;">
       <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
     

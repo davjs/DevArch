@@ -36,8 +36,8 @@ namespace Tests.Units.Presentation
         {
             var enviroment = GetDte();
             var solution = new AdvancedSolution(enviroment);
-            var modelGen = new DiagramFromModelDefinitionGenerator(solution);
-            var modelDef = new ModelDefinition("",
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelDef = new DiagramDefinition("",
                 new NamespaceScope {Name = @"Tests\Integration\Samples"},
                 new OutputSettings {Path = @"IntegrationTests\VerticalAnonymousLayer.png"},
                 new Filters {RemoveTests = false}

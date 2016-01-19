@@ -1,12 +1,14 @@
-﻿namespace Logic
+﻿using System;
+
+namespace Logic
 {
-    public class ModelDefinition
+    public class DiagramDefinition
     {
         public string Name;
         public IScope Scope;
         public OutputSettings Output;
 
-        public ModelDefinition(string name, IScope scope, OutputSettings output, Filters filters, bool dependencyDown = true)
+        public DiagramDefinition(string name, IScope scope, OutputSettings output, Filters filters, bool dependencyDown = true)
         {
             Name = name;
             Scope = scope;
@@ -18,8 +20,8 @@
         public readonly Filters Filters;
         public readonly bool DependencyDown;
 
-        public static readonly ModelDefinition RootDefault 
-            = new ModelDefinition("", new RootScope(), new OutputSettings(), new Filters());
+        public static readonly DiagramDefinition RootDefault 
+            = new DiagramDefinition("", new RootScope(), new OutputSettings(), new Filters());
     }
 
     public class OutputSettings

@@ -229,7 +229,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="BuildSystem\Rules\modeldefinition.xaml">
+    <Page Include="BuildSystem\Rules\diagramdefinition.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -35,13 +35,13 @@
 
     <!-- MODEL DEFINITION CONTENT -->
     <ContentType
-	    Name="modeldefinitionFile" 
+	    Name="diagramdefinitionFile" 
 	    DisplayName="Model Definition" 
-	    ItemType="modeldefinitionCompile">
+	    ItemType="diagramdefinitionCompile">
     </ContentType>
     
-    <ItemType Name="modeldefinitionCompile" DisplayName="DevArch diagram generator"/>
-    <FileExtension Name=".modeldefinition" ContentType="modeldefinitionSourceFile" />
+    <ItemType Name="diagramdefinitionCompile" DisplayName="DevArch diagram generator"/>
+    <FileExtension Name=".diagramdefinition" ContentType="diagramdefinitionSourceFile" />
 
     <ItemType Name="Compile" DisplayName="C# compiler"/>
     <ItemType Name="EmbeddedResource" DisplayName="Embedded Resource"/>

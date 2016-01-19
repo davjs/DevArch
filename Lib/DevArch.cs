@@ -14,8 +14,8 @@ namespace Lib
         public static void RenderAllArchDiagramsToFiles(_DTE enivorment)
         {
             var solution = new AdvancedSolution(enivorment);
-            var modelGen = new DiagramFromModelDefinitionGenerator(solution);
-            var modelDefs = modelGen.GetModelDefinitions();
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelDefs = modelGen.GetDiagramDefinitions();
             foreach (var modelDef in modelDefs)
             {
                 var tree = modelGen.GenerateDiagram(modelDef);
@@ -28,8 +28,8 @@ namespace Lib
         public static void RenderCompleteDiagramToView(_DTE enivorment,ref ArchView view)
         {
             var solution = new AdvancedSolution(enivorment);
-            var modelGen = new DiagramFromModelDefinitionGenerator(solution);
-            var tree = modelGen.GenerateDiagram(ModelDefinition.RootDefault);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree);
             view.Diagram.RenderModel(viewModel);
         }

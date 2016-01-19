@@ -394,26 +394,26 @@ namespace Tests.Units.Logic.Filtering.Ordering
         [TestMethod]
         public void DoesNotProduceDuplicateRootScopes()
         {
-            var modelDefinition = new Node("ModelDefinition");
-            var modelDefinitionParser = new Node("ModelDefinitionParser");
+            var diagramDefinition = new Node("DiagramDefinition");
+            var diagramDefinitionParser = new Node("DiagramDefinitionParser");
             var rootScope = new Node("RootScope");
             var filters = new Node("Filters");
             var modelFilterer = new Node("ModelFilterer");
             
-            modelDefinition.SiblingDependencies.Add(rootScope);
-            modelDefinitionParser.SiblingDependencies.Add(rootScope);
-            modelDefinitionParser.SiblingDependencies.Add(modelDefinition);
+            diagramDefinition.SiblingDependencies.Add(rootScope);
+            diagramDefinitionParser.SiblingDependencies.Add(rootScope);
+            diagramDefinitionParser.SiblingDependencies.Add(diagramDefinition);
             modelFilterer.SiblingDependencies.Add(filters);
 
             var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
-                modelDefinition,modelDefinitionParser,rootScope,filters,modelFilterer
+                diagramDefinition,diagramDefinitionParser,rootScope,filters,modelFilterer
             });
 
 
             //     RootScope
-            //    ModelDefinition        Filters
-            //  ModelDefinitionParser ModelFilterer
+            //    DiagramDefinition        Filters
+            //  DiagramDefinitionParser ModelFilterer
 
             Assert.AreEqual(1,
                 newChildOrder.Count(x => x.Name == "RootScope") +

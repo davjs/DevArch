@@ -8,20 +8,20 @@ using Logic.SemanticTree;
 
 namespace Logic
 {
-    public class DiagramFromModelDefinitionGenerator
+    public class DiagramFromDiagramDefinitionGenerator
     {
         private readonly AdvancedSolution _solution;
-        public DiagramFromModelDefinitionGenerator(AdvancedSolution solution)
+        public DiagramFromDiagramDefinitionGenerator(AdvancedSolution solution)
         {
             _solution = solution;
         }
 
-        public IEnumerable<ModelDefinition> GetModelDefinitions()
+        public IEnumerable<DiagramDefinition> GetDiagramDefinitions()
         {
-            return ModelDefinitionParser.GetModelDefinitionsFromSolution(_solution);
+            return DiagramDefinitionParser.GetDiagramDefinitionsFromSolution(_solution);
         }
 
-        public Node GenerateDiagram(ModelDefinition modelDef)
+        public Node GenerateDiagram(DiagramDefinition modelDef)
         {
             Node tree = null;
             if (modelDef.Scope is RootScope)

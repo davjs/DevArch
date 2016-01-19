@@ -7,9 +7,9 @@ using Logic.Integration;
 
 namespace Logic
 {
-    public static class ModelDefinitionParser
+    public static class DiagramDefinitionParser
     {
-        public static IEnumerable<ModelDefinition> GetModelDefinitionsFromSolution(AdvancedSolution solution)
+        public static IEnumerable<DiagramDefinition> GetDiagramDefinitionsFromSolution(AdvancedSolution solution)
         {
             var archProjects = solution.FindArchProjects();
             if (archProjects.Count != 1) throw new NoArchProjectsFound();
@@ -17,14 +17,14 @@ namespace Logic
             var archProject = archProjects.First();
             var projectItems = archProject.GetAllProjectItems();
             var items =
-                projectItems.Where(d => d.Name.EndsWith(".modeldefinition")).ToList();
+                projectItems.Where(d => d.Name.EndsWith(".diagramdefinition")).ToList();
 
-            var list = new List<ModelDefinition>();
+            var list = new List<DiagramDefinition>();
             foreach (var item in items)
             {
                 var path = item.FileNames[0];
                 var name = item.Name;
-                var definition = ParseModelDefinition(path, name);
+                var definition = ParseDiagramDefinition(path, name);
                 //Insert directory before output path
                 definition.Output.Path =solution.Directory() + "\\" + definition.Output.Path;
                 list.Add(definition);
@@ -32,7 +32,7 @@ namespace Logic
             return list;
         }
 
-        private static ModelDefinition ParseModelDefinition(string path, string name)
+        private static DiagramDefinition ParseDiagramDefinition(string path, string name)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(path);
@@ -55,8 +55,8 @@ namespace Logic
                 {
                     ParseFilter(filter,ref filters);
                 }
-            var modelDefinition = new ModelDefinition(name, scope, outputSettings, filters, dependencyDown);
-            return modelDefinition;
+            var diagramDefinition = new DiagramDefinition(name, scope, outputSettings, filters, dependencyDown);
+            return diagramDefinition;
         }
 
         private static void ParseFilter(XmlNode filter,ref Filters filters)
