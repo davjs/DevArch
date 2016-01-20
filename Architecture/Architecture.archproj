@@ -10,16 +10,16 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Logic.modeldefinition" />
-    <None Include="complete.modeldefinition" />
-    <None Include="Samples\ComplexDepth1.modeldefinition" />
-    <None Include="Samples\ComplexDepth2.modeldefinition" />
-    <None Include="Samples\ComplexFull.modeldefinition" />
-    <None Include="Samples\FindsAnononymousLayerSample.modeldefinition" />
-    <None Include="Samples\NoPatterns.modeldefinition" />
-    <None Include="Samples\Patterns.modeldefinition" />
-    <None Include="Samples\LayerDefaultOrder.modeldefinition" />
-    <None Include="Samples\LayerReverseOrder.modeldefinition" />
+    <None Include="complete.diagramdefinition" />
+    <None Include="Logic.diagramdefinition" />
+    <None Include="Samples\ComplexDepth1.diagramdefinition" />
+    <None Include="Samples\ComplexDepth2.diagramdefinition" />
+    <None Include="Samples\ComplexFull.diagramdefinition" />
+    <None Include="Samples\FindsAnononymousLayerSample.diagramdefinition" />
+    <None Include="Samples\LayerDefaultOrder.diagramdefinition" />
+    <None Include="Samples\LayerReverseOrder.diagramdefinition" />
+    <None Include="Samples\NoPatterns.diagramdefinition" />
+    <None Include="Samples\Patterns.diagramdefinition" />
     <None Include="Tests\VerticalAnonymousLayer.modeldefinition" />
   </ItemGroup>
   <Import Project="$(CustomProjectExtensionsPath)CustomProjectCs.targets" />
