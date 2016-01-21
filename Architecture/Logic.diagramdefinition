@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Model>
+<Diagram>
   <Scope>
     <Project Name ="Logic"/>
   </Scope>
@@ -8,4 +8,4 @@
     <RemoveExceptions>On</RemoveExceptions>
     <MinMethods>1</MinMethods>
   </Filters>
-</Model>
+</Diagram>

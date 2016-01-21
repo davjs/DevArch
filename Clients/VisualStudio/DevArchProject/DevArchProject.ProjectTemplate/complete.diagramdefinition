@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Model>
+<Diagram>
   <Scope>
     <Root/>
   </Scope>
   <Output Path="Current arch.png" Scale="1"/>
   <Filters>
   </Filters>
-</Model>
+</Diagram>

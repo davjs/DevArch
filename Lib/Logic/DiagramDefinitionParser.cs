@@ -36,9 +36,9 @@ namespace Logic
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(path);
-            var modelRoot = xmlDoc["Model"];
+            var modelRoot = xmlDoc["Diagram"];
             if (modelRoot == null)
-                throw new Exception("Unable to find Model tag in diagram definition");
+                throw new Exception("Unable to find diagram tag in diagram definition");
 
             var scopeHolderNode = modelRoot["Scope"];
             var dependencyAttributeValue = modelRoot.Attributes?.GetNamedItem("DependencyDirection")?.Value;

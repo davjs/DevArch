@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Model>
+<Diagram>
   <Scope>
     <Document Name ="Tests\Sample\FindsAnononymousLayer.cs"/>
   </Scope>
@@ -7,4 +7,4 @@
   <Filters>
     <RemoveTests>Off</RemoveTests>
   </Filters>
-</Model>
+</Diagram>

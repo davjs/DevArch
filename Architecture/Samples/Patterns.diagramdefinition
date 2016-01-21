@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Model>
+<Diagram>
   <Scope>
     <Document Name ="Tests\Sample\Patterns.cs"/>
   </Scope>
@@ -8,4 +8,4 @@
     <RemoveTests>Off</RemoveTests>
     <FindNamingPatterns>On</FindNamingPatterns>
   </Filters>
-</Model>
+</Diagram>
