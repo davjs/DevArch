@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Logic.SemanticTree;
+using MoreLinq;
 using Presentation.Coloring;
 using Presentation.Coloring.ColoringAlgorithms;
 using Presentation.ViewModels;
@@ -22,33 +23,37 @@ namespace Presentation
 
         private static IEnumerable<DiagramSymbolViewModel> PaintAndMapNodes(IEnumerable<Node> nodes, bool dependencyDown)
         {
-            var layers = nodes.Select(NodeViewModelToLayerViewModel).ToList();
-            layers = PaintLayers(layers);
-            return AddArrows(layers, Vertical,dependencyDown);
+            var layers = nodes.Select(NodeViewModelToLayerViewModel);
+            layers = PaintLayers(layers.ToList());
+
+            var layerAndArrows = AddArrows(layers, Vertical, dependencyDown).ToList();
+            layerAndArrows.OfType<LayerViewModel>().ForEach(model => SetupColumnAndRows(model, model.Children));
+
+            return layerAndArrows;
         }
 
-        private static List<DiagramSymbolViewModel> AddArrows(IEnumerable<DiagramSymbolViewModel> layers,OrientationKind parentOrientation ,bool dependencyDown)
+        private static IEnumerable<DiagramSymbolViewModel> AddArrows(IEnumerable<DiagramSymbolViewModel> layers,OrientationKind parentOrientation ,bool dependencyDown)
         {
             var viewModels = layers.ToList();
+            if (!viewModels.OfType<LayerViewModel>().Any(x => x.Children.OfType<LayerViewModel>().Any(y => y.Children.Any())))
+                return viewModels;
+
             var arrowdirection = dependencyDown ?
                 ArrowViewModel.Direction.Down : ArrowViewModel.Direction.Up;
 
             foreach (var layer in viewModels.Cast<LayerViewModel>())
-            {
                 layer.Children = AddArrows(layer.Children,layer.Orientation,dependencyDown);
-            }
 
             if (viewModels.Count <= 1 || parentOrientation == Horizontal)
                 return viewModels;
             for (var i = 1; i < viewModels.Count; i += 2)
             {
                 viewModels.Insert(i,new ArrowViewModel(arrowdirection));
-                viewModels[i].Row = i;
             }
             return viewModels;
         }
 
-        public static List<LayerViewModel> PaintLayers(List<LayerViewModel> layers,
+        public static IEnumerable<LayerViewModel> PaintLayers(List<LayerViewModel> layers,
             IColorData parentColorData = null,LayerViewModel parent = null,int depth = 0)
         {
             var toPaintDistinct = new List<LayerViewModel>();
@@ -101,31 +106,34 @@ namespace Presentation
 
         public static LayerViewModel NodeViewModelToLayerViewModel(Node node)
         {
-            var column = 0;
-            var row = 0;
-
             var children = node.Childs.Select(NodeViewModelToLayerViewModel).ToList();
-            foreach (var childLayer in children)
-            {
-                childLayer.Column = column;
-                childLayer.Row = row;
-                if (node.Orientation == Horizontal)
-                    column++;
-                else if (children.Count == 1)
-                    row = 0;
-                else
-                    row += 2;
-            }
             return new LayerViewModel
             {
-                Columns = column,
-                Rows = row + 1,
                 Name = node.Name /* + (color.Bottom + color.Top) /2*/,
                 Anonymous = !node.Name.Any(),
                 Children = children,
                 Orientation = node.Orientation,
                 Descendants = children.Count + children.Sum(model => model.Descendants)
             };
+        }
+
+        private static void SetupColumnAndRows(LayerViewModel node, IEnumerable<DiagramSymbolViewModel> children)
+        {
+            children.OfType<LayerViewModel>().ForEach(model => SetupColumnAndRows(model, model.Children));
+
+            var column = 0;
+            var row = 0;
+            foreach (var childLayer in children)
+            {
+                childLayer.Column = column;
+                childLayer.Row = row;
+                if (node.Orientation == Horizontal)
+                    column++;
+                else
+                    row++;
+            }
+            node.Rows = row;
+            node.Columns = column;
         }
     }
 }

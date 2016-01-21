@@ -21,21 +21,21 @@
       
       <Button guid="guidDevarchToolsMenu" id="cmdidDevArchGenerateDiagramImages" priority="0x0000" type="Button">
         <Parent guid="guidDevarchToolsMenu" id="DevArchMenuGroup"/>
-        <Icon guid="guidImages" id="bmpPic2"/>
         <Strings>
              <CommandName>DevArch - Generate Diagram Images</CommandName>
              <ButtonText>Generate Diagram Images</ButtonText>
         </Strings>
       </Button>
 
+      <!--
       <Button guid="guidDevarchToolsMenu" id="cmdidDevArchViewDiagrams" priority="0x0000" type="Button">
         <Parent guid="guidDevarchToolsMenu" id="DevArchMenuGroup"/>
-        <Icon guid="guidImages" id="bmpPic2"/>
         <Strings>
           <CommandName>DevArch - View Diagrams</CommandName>
           <ButtonText>View Diagrams</ButtonText>
         </Strings>
       </Button>
+      -->
       
     </Buttons>
 
@@ -69,7 +69,7 @@
 
       <!-- Buttons -->
       <IDSymbol name="cmdidDevArchGenerateDiagramImages" value="0x0105"/>
-      <IDSymbol name="cmdidDevArchViewDiagrams" value="0x0106"/>
+      <!--<IDSymbol name="cmdidDevArchViewDiagrams" value="0x0106"/>-->
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{f2ab06cf-feae-4790-94b1-b508b3ecf75f}" >

@@ -8,22 +8,9 @@ namespace ToolsMenu.Commands
 {
     internal sealed class GenerateImagesCommand : CommandBase
     {
-        
         /// On Press
         public override void OnClick(object sender, EventArgs e)
         {
-            var message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.OnClick()", GetType().FullName);
-            const string title = "Generate Images";
-            
-            VsShellUtilities.ShowMessageBox(
-                ServiceProvider,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-
-
             var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
             Lib.DevArch.RenderAllArchDiagramsToFiles(dte);
         }

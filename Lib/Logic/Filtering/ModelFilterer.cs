@@ -57,29 +57,27 @@ namespace Logic.Filtering
         {
             tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
             tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
-            
+
             if (filters.RemoveTests)
-                ApplyNodeFilter(tree,NodeFilters.Tests);
+                ApplyNodeFilter(tree, NodeFilters.Tests);
             if (filters.RemoveDefaultNamespaces)
                 RemoveDefaultNamespaces(tree);
             if (filters.MaxDepth > 0)
                 RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
             if (filters.RemoveExceptions)
                 ApplyClassFilter(tree, ClassFilters.Exceptions);
-            if(filters.MinMethods > 0)
+            if (filters.MinMethods > 0)
                 ApplyClassFilter(tree, new SmallClassFilter(filters.MinMethods));
             if (filters.MinReferences > 0)
                 RemoveNodesReferencedLessThan(tree, filters.MinReferences);
             if (filters.RemoveSinglePaths)
                 RemoveSinglePaths(tree);
             RemoveSingleChildAnonymous(tree);
-            if (filters.FindNamingPatterns) { 
+            if (filters.FindNamingPatterns)
                 tree = FindSiblingPatterns(tree);
-            }
-            //tree = RemoveSinglePaths(tree); change to remove projects/namespaces containing zero classes
         }
 
-        
+
         private static void RemoveDefaultNamespaces(Node tree)
         {
             var projects = tree.Projects();

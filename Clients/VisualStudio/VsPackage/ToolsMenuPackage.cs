@@ -35,7 +35,7 @@ namespace ToolsMenu
             var guidDevarchToolsMenu = new Guid("d5a065b2-0a4e-4adc-ad08-2e4178f6ed21");
 
             commandFactory.AddCommand(new GenerateImagesCommand(serviceProvider), new CommandID(guidDevarchToolsMenu, 0x0105));
-            commandFactory.AddCommand(new ViewDiagramsCommand(serviceProvider), new CommandID(guidDevarchToolsMenu, 0x0106) );
+            //commandFactory.AddCommand(new ViewDiagramsCommand(serviceProvider), new CommandID(guidDevarchToolsMenu, 0x0106) );
             base.Initialize();
         }
 
