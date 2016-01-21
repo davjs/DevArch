@@ -23,6 +23,8 @@ namespace Logic.Integration
             var build = MSBuildWorkspace.Create();
             var dteSolution = dte.Solution;
             _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
+            if (string.IsNullOrEmpty(_fullName))
+                throw new Exception("Unable to find opened solution");
             RoslynSolution = KeepTrying.ToGet(() => build.OpenSolutionAsync(_fullName).Result);
             DteProjects = KeepTrying.ToGet(() =>dteSolution.Projects);
             Name = Path.GetFileName(_fullName);
@@ -83,7 +85,7 @@ namespace Logic.Integration
     static class KeepTrying
     {
         static int _totalRetries = 0;
-        const int Maxtries = 4;
+        const int Maxtries = 3;
 
         public static T ToGet<T>(Func<T> function) where T : class
         {

@@ -38,7 +38,7 @@ namespace Logic
             xmlDoc.Load(path);
             var modelRoot = xmlDoc["Model"];
             if (modelRoot == null)
-                throw new NotImplementedException();
+                throw new Exception("Unable to find Model tag in diagram definition");
 
             var scopeHolderNode = modelRoot["Scope"];
             var dependencyAttributeValue = modelRoot.Attributes?.GetNamedItem("DependencyDirection")?.Value;
@@ -51,10 +51,12 @@ namespace Logic
             var filtersNode = modelRoot["Filters"];
             var filters = new Filters();
             if (filtersNode?.ChildNodes != null)
+            {
                 foreach (XmlNode filter in (filtersNode?.ChildNodes))
                 {
-                    ParseFilter(filter,ref filters);
+                    ParseFilter(filter, ref filters);
                 }
+            }   
             var diagramDefinition = new DiagramDefinition(name, scope, outputSettings, filters, dependencyDown);
             return diagramDefinition;
         }

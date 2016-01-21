@@ -7,7 +7,7 @@ using Presentation;
 
 namespace Lib
 {
-    public class DevArch
+    public static class DevArch
     {
         public static void RenderAllArchDiagramsToFiles(_DTE enivorment)
         {

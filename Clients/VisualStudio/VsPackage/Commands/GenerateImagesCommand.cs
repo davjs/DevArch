@@ -17,6 +17,7 @@ namespace ToolsMenu.Commands
 
         public GenerateImagesCommand(IServiceProvider serviceProvider) : base(serviceProvider)
         {
+
         }
     }
 

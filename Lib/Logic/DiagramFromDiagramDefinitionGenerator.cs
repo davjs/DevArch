@@ -21,32 +21,32 @@ namespace Logic
             return DiagramDefinitionParser.GetDiagramDefinitionsFromSolution(_solution);
         }
 
-        public Node GenerateDiagram(DiagramDefinition modelDef)
+        public Node GenerateDiagram(DiagramDefinition diagramDef)
         {
             Node tree = null;
-            if (modelDef.Scope is RootScope)
+            if (diagramDef.Scope is RootScope)
             {
                 tree = SemanticTreeBuilder.AnalyseSolution(_solution);
             }
-            if (modelDef.Scope is DocumentScope)
+            if (diagramDef.Scope is DocumentScope)
             {
-                tree = SemanticTreeBuilder.AnalyseDocument(_solution, ((DocumentScope) modelDef.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseDocument(_solution, ((DocumentScope) diagramDef.Scope).Name);
             }
-            if (modelDef.Scope is ClassScope)
+            if (diagramDef.Scope is ClassScope)
             {
-                tree = SemanticTreeBuilder.AnalyseClass(_solution, ((ClassScope)modelDef.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseClass(_solution, ((ClassScope)diagramDef.Scope).Name);
             }
-            if (modelDef.Scope is NamespaceScope)
+            if (diagramDef.Scope is NamespaceScope)
             {
-                tree = SemanticTreeBuilder.AnalyseNamespace(_solution, ((NamespaceScope) modelDef.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseNamespace(_solution, ((NamespaceScope) diagramDef.Scope).Name);
             }
-            if (modelDef.Scope is ProjectScope)
+            if (diagramDef.Scope is ProjectScope)
             {
-                tree = SemanticTreeBuilder.AnalyseProject(_solution, ((ProjectScope) modelDef.Scope).Name);
+                tree = SemanticTreeBuilder.AnalyseProject(_solution, ((ProjectScope) diagramDef.Scope).Name);
             }
-            ModelFilterer.ApplyFilter(ref tree,modelDef.Filters);
+            ModelFilterer.ApplyFilter(ref tree,diagramDef.Filters);
 
-            return modelDef.DependencyDown ? ReverseTree(tree) : tree;
+            return diagramDef.DependencyDown ? ReverseTree(tree) : tree;
         }
 
         private static Node ReverseTree(Node tree)
