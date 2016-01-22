@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Logic.Common;
 using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 
@@ -25,7 +26,7 @@ namespace Logic.Building
                         throw new Exception("Unable to find document: " + documentName);
                 }
 
-                var semanticModels = documents.Select(d => d.GetSemanticModelAsync().Result).ToList();
+                var semanticModels = documents.SelectList(d => d.GetSemanticModelAsync().Result);
                 var classes = SemanticModelWalker.GetClassesInModels(semanticModels);
                 if (!classes.Any())
                     continue;

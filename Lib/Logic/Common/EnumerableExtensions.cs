@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace Logic.Common
 {
-    static class EnumerableExtensions
+    public static class EnumerableExtensions
     {
         public static bool ContainsAnyFrom<T>(this IEnumerable<T> set, IEnumerable<T> set2)
         {
             return set.Intersect(set2).Any();
         }
+
+        public static IReadOnlyCollection<TResult> SelectList<TResult,TSource>(this IEnumerable<TSource> input,  Func<TSource,TResult> selector)
+        {
+            return input.Select(selector).ToList();
+        } 
 
 
         public static IEnumerable<T> Except<T>(this IEnumerable<T> set, T t)

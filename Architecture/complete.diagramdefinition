@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Model DependencyDirection = "Down">
+<Diagram DependencyDirection = "Down">
   <Scope>
     <Root/>
   </Scope>
@@ -10,4 +10,4 @@
     <RemoveExceptions>On</RemoveExceptions>
     <MinReferences>2</MinReferences>
   </Filters>
-</Model>
+</Diagram>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using EnvDTE;
 using Logic.Integration;
@@ -9,7 +10,7 @@ namespace Logic
 {
     public static class DiagramDefinitionParser
     {
-        public static IEnumerable<DiagramDefinition> GetDiagramDefinitionsFromSolution(AdvancedSolution solution)
+        public static IReadOnlyCollection<DiagramDefinitionParseResult> GetDiagramDefinitionsFromSolution(AdvancedSolution solution)
         {
             var archProjects = solution.FindArchProjects();
             if (archProjects.Count != 1) throw new NoArchProjectsFound();
@@ -19,36 +20,58 @@ namespace Logic
             var items =
                 projectItems.Where(d => d.Name.EndsWith(".diagramdefinition")).ToList();
 
-            var list = new List<DiagramDefinition>();
+            var list = new List<DiagramDefinitionParseResult>();
             foreach (var item in items)
             {
                 var path = item.FileNames[0];
                 var name = item.Name;
-                var definition = ParseDiagramDefinition(path, name);
-                //Insert directory before output path
-                definition.Output.Path =solution.Directory() + "\\" + definition.Output.Path;
-                list.Add(definition);
+                try
+                {
+                    var definition = ParseDiagramDefinition(path, name);
+                    //Insert directory before output path
+                    definition.Output.Path = solution.Directory() + "\\" + definition.Output.Path;
+                    list.Add(new DiagramDefinitionParseResult(definition));
+                }
+                catch (Exception e)
+                {
+                    list.Add(new DiagramDefinitionParseResult(new Exception(name + "- " + e.Message)));
+                }
             }
             return list;
+        }
+
+        public static XmlElement RequireTag(this XmlNode doc, string tagName)
+        {
+            var x = doc[tagName];
+            if(x == null)
+                throw new Exception($"Unable to find {tagName} tag");
+            return x;
         }
 
         private static DiagramDefinition ParseDiagramDefinition(string path, string name)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(path);
-            var modelRoot = xmlDoc["Diagram"];
-            if (modelRoot == null)
-                throw new Exception("Unable to find diagram tag in diagram definition");
 
-            var scopeHolderNode = modelRoot["Scope"];
+            var modelRoot = xmlDoc.RequireTag("Diagram");
+            var scopeHolderNode = modelRoot.RequireTag("Scope");
+            var output = modelRoot.RequireTag("Output");
+            // Can be null
+            var filtersNode = modelRoot["Filters"]; 
+
+            // Dependency direction
             var dependencyAttributeValue = modelRoot.Attributes?.GetNamedItem("DependencyDirection")?.Value;
             var dependencyDown = true;
             if (dependencyAttributeValue != null)
                 dependencyDown = dependencyAttributeValue.Equals("Down");
+
+            // Scope
             var scope = ParseScope(scopeHolderNode);
-            var output = modelRoot["Output"];
+
+            // OutputSettings
             var outputSettings = ParseOutputSettings(output);
-            var filtersNode = modelRoot["Filters"];
+
+            // Filters
             var filters = new Filters();
             if (filtersNode?.ChildNodes != null)
             {
@@ -68,12 +91,13 @@ namespace Logic
             int number;
             int.TryParse(filter.InnerText, out number);
             if (fname == "RemoveTests") filters.RemoveTests = on;
-            if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = on;
-            if (fname == "RemoveExceptions") filters.RemoveExceptions = on;
-            if (fname == "FindNamingPatterns") filters.FindNamingPatterns = on;
-            if (fname == "MaxDepth") filters.MaxDepth = number;
-            if (fname == "MinMethods") filters.MinMethods = number;
-            if (fname == "MinReferences") filters.MinReferences = number;
+            else if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = on;
+            else if (fname == "RemoveExceptions") filters.RemoveExceptions = on;
+            else if (fname == "FindNamingPatterns") filters.FindNamingPatterns = on;
+            else if (fname == "MaxDepth") filters.MaxDepth = number;
+            else if (fname == "MinMethods") filters.MinMethods = number;
+            else if (fname == "MinReferences") filters.MinReferences = number;
+            else throw new Exception("Unrecognized filter: " + fname);
         }
 
         private static OutputSettings ParseOutputSettings(XmlNode output)
@@ -118,6 +142,26 @@ namespace Logic
             if (scope is NamedScope)
                 (scope as NamedScope).Name = scopeNode?.Attributes?[0].Value;
             return scope;
+        }
+    }
+
+    public struct DiagramDefinitionParseResult
+    {
+        public bool Succeed;
+        public DiagramDefinition Definition;
+        public Exception Exception;
+
+        public DiagramDefinitionParseResult(Exception exception)
+        {
+            Exception = exception;
+            Succeed = false;
+            Definition = null;
+        }
+        public DiagramDefinitionParseResult(DiagramDefinition definition)
+        {
+            Definition = definition;
+            Succeed = true;
+            Exception = null;
         }
     }
 

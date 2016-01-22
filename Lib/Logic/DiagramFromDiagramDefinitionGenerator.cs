@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using EnvDTE;
 using Logic.Building;
 using Logic.Filtering;
 using Logic.Integration;
@@ -16,7 +15,7 @@ namespace Logic
             _solution = solution;
         }
 
-        public IEnumerable<DiagramDefinition> GetDiagramDefinitions()
+        public IReadOnlyCollection<DiagramDefinitionParseResult> GetDiagramDefinitions()
         {
             return DiagramDefinitionParser.GetDiagramDefinitionsFromSolution(_solution);
         }

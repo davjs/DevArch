@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Model DependencyDirection = "Up">
+<Diagram DependencyDirection = "Up">
   <Scope>
     <Document Name ="Tests\Sample\Complex.cs"/>
   </Scope>
@@ -8,4 +8,4 @@
     <MaxDepth>1</MaxDepth>
     <RemoveTests>Off</RemoveTests>
   </Filters>
-</Model>
+</Diagram>
