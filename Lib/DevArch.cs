@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
 using Logic;
@@ -29,7 +30,7 @@ namespace Lib
                 BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);
                 resultLogger.PrintCreated(modelDef.Output.Path);
             }
-            resultLogger.PrintSuccess();
+           resultLogger.PrintSuccess();
         }
 
         public static void RenderCompleteDiagramToView(_DTE enivorment,ref ArchView view)
@@ -55,8 +56,17 @@ namespace Lib
                 return;
 
             var outputWindow = dte2.ToolWindows.OutputWindow;
-            _output = outputWindow.OutputWindowPanes.Item("DevArch") ??
-                      outputWindow.OutputWindowPanes.Add("DevArch");
+            outputWindow.Parent.Activate();
+            try
+            {
+                _output = outputWindow.OutputWindowPanes.Item("DevArch");
+            }
+            catch (Exception)
+            {
+                _output = null;
+            }
+            if (_output == null)
+                 _output = outputWindow.OutputWindowPanes.Add("DevArch");
             _output.Activate();
             PrintLine("Generating diagrams...");
         }

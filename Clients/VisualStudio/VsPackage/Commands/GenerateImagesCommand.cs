@@ -3,6 +3,7 @@ using System.Globalization;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Task = System.Threading.Tasks.Task;
 
 namespace ToolsMenu.Commands
 {
@@ -12,7 +13,7 @@ namespace ToolsMenu.Commands
         public override void OnClick(object sender, EventArgs e)
         {
             var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
-            Lib.DevArch.RenderAllArchDiagramsToFiles(dte);
+            Task.Run( () => Lib.DevArch.RenderAllArchDiagramsToFiles(dte));
         }
 
         public GenerateImagesCommand(IServiceProvider serviceProvider) : base(serviceProvider)
