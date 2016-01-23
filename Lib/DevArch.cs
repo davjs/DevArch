@@ -17,11 +17,11 @@ namespace Lib
         {
             var solution = new AdvancedSolution(enivorment);
             var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
-            var modelDefs = modelGen.GetDiagramDefinitions();
-            var resultLogger = new ParseResultLogger(enivorment,modelDefs);
+            var parseResults = modelGen.GetDiagramDefinitions();
+            var resultLogger = new ParseResultLogger(enivorment,parseResults);
             resultLogger.PrintErrors();
 
-            var definitions = modelDefs.Where(x => x.Succeed).SelectList(x => x.Definition);
+            var definitions = parseResults.Where(x => x.Succeed).SelectList(x => x.Definition);
             foreach (var modelDef in definitions)
             {
                 var tree = modelGen.GenerateDiagram(modelDef);

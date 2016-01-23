@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Devarch.ToolsMenu.66fc4a30-5b22-465e-b2d1-a40e69b41d2a" Version="0.10422" Language="en-US" Publisher="David Jensen" />
+    <Identity Id="Devarch.ToolsMenu.66fc4a30-5b22-465e-b2d1-a40e69b41d2a" Version="0.10424" Language="en-US" Publisher="David Jensen" />
     <DisplayName>Devarch.ToolsMenu</DisplayName>
     <Description xml:space="preserve">DevArch - easy diagram generation</Description>
   </Metadata>
