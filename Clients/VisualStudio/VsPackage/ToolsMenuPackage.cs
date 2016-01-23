@@ -8,10 +8,10 @@ using System;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using DevArch.Commands;
 using Microsoft.VisualStudio.Shell;
-using ToolsMenu.Commands;
 
-namespace ToolsMenu
+namespace DevArch
 {
     // To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     [PackageRegistration(UseManagedResourcesOnly = true)]

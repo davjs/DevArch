@@ -23,8 +23,8 @@
     <ProjectGuid>{4A3EA481-FE04-4734-BC19-F9D4C06D6D15}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ToolsMenu</RootNamespace>
-    <AssemblyName>ToolsMenu</AssemblyName>
+    <RootNamespace>DevArch</RootNamespace>
+    <AssemblyName>DevArch</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
