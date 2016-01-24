@@ -72,6 +72,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Current arch.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\devarch.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\TestCommand.png" />
     <Content Include="Resources\Devarch.ToolsMenu.ico" />
     <VSCTCompile Include="ToolsMenuPackage.vsct">
