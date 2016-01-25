@@ -25,7 +25,8 @@ namespace Logic.Integration
             _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
             if (string.IsNullOrEmpty(_fullName))
                 throw new Exception("Unable to find opened solution");
-            RoslynSolution = KeepTrying.ToGet(() => build.OpenSolutionAsync(_fullName).Result);
+            var sol = build.OpenSolutionAsync(_fullName);
+            RoslynSolution = KeepTrying.ToGet(() => sol.Result);
             DteProjects = KeepTrying.ToGet(() =>dteSolution.Projects);
             Name = Path.GetFileName(_fullName);
         }
