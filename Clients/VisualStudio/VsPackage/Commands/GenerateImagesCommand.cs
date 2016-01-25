@@ -13,6 +13,9 @@ namespace DevArch.Commands
         public override async void OnClick(object sender, EventArgs e)
         {
             var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
+//#if DEBUG
+            await Task.Run(() => Lib.DevArch.RenderAllArchDiagramsToFiles(dte));
+/*#else
             try
             {
                 await Task.Run(() => Lib.DevArch.RenderAllArchDiagramsToFiles(dte));
@@ -27,7 +30,9 @@ namespace DevArch.Commands
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
+#endif*/
         }
+
 
         public GenerateImagesCommand(IServiceProvider serviceProvider) : base(serviceProvider)
         {
