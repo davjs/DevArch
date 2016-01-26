@@ -53,7 +53,7 @@ namespace Logic.Integration
         {
             if (_fullName == null)
                 throw new NoSolutionOpenException();
-            return Path.GetDirectoryName(_fullName);
+            return Path.GetDirectoryName(_fullName) + "\\";
         }
         
         private class NoSolutionOpenException : Exception
