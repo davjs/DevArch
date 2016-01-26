@@ -95,9 +95,9 @@ namespace Presentation.Views
         private void Hide()
         {
             NameBlock.Visibility = Visibility.Collapsed;
-            Border.BorderThickness = new Thickness(0);
-            Border.Margin = new Thickness(0);
-            Border.Background = null;
+            //Border.BorderThickness = new Thickness(0);
+            //Border.Margin = new Thickness(0);
+            //Border.Background = null;
         }
 
         public string LayerName { get; set; }

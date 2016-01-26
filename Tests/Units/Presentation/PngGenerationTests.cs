@@ -39,11 +39,27 @@ namespace Tests.Units.Presentation
             var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
             var modelDef = new DiagramDefinition("",
                 new NamespaceScope {Name = @"Tests\Integration\Samples"},
-                new OutputSettings {Path = @"IntegrationTests\VerticalAnonymousLayer.png"},
+                new OutputSettings {Path = solution.Directory() + @"IntegrationTests\VerticalAnonymousLayer.png" },
                 new Filters {RemoveTests = false}
                 );
             var tree =modelGen.GenerateDiagram(modelDef);
             BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);
+        }
+
+        [TestCategory("PngGeneration")]
+        [TestMethod]
+        public void RemovesNamespaces()
+        {
+            var enviroment = GetDte();
+            var solution = new AdvancedSolution(enviroment);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelDef = new DiagramDefinition("",
+                new RootScope(), 
+                new OutputSettings { Path = solution.Directory() + @"IntegrationTests\WithoutNspaces.png" },
+                new Filters { RemoveContainers = true,MaxDepth = 4}
+                );
+            var tree = modelGen.GenerateDiagram(modelDef);
+            BitmapRenderer.RenderTreeToBitmap(tree, modelDef.DependencyDown, modelDef.Output);
         }
     }
 }

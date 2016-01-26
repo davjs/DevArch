@@ -34,7 +34,6 @@ namespace Logic.Filtering
         public static Func<Node, bool> Tests = x =>
             x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)
             || x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase);
-
     }
 
     public class ModelFilterer
@@ -52,18 +51,20 @@ namespace Logic.Filtering
             toRemove.ForEach(t.RemoveChild);
             t.Childs.ForEach(x => ApplyClassFilter(x, filter));
         }
-
+        //Everything that removes children of parent nodes needs to update their parent dependencies
+        //Filters that pushes children upwards does not need to care
         public static void ApplyFilter(ref Node tree, Filters filters)
         {
-            tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
-            tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
-
             if (filters.RemoveTests)
                 ApplyNodeFilter(tree, NodeFilters.Tests);
-            if (filters.RemoveDefaultNamespaces)
-                RemoveDefaultNamespaces(tree);
             if (filters.MaxDepth > 0)
                 RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
+            if (filters.RemoveContainers)
+                RemoveContainers(ref tree);
+
+            tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
+            tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
+            
             if (filters.RemoveExceptions)
                 ApplyClassFilter(tree, ClassFilters.Exceptions);
             if (filters.MinMethods > 0)
@@ -75,6 +76,13 @@ namespace Logic.Filtering
             RemoveSingleChildAnonymous(tree);
             if (filters.FindNamingPatterns)
                 tree = FindSiblingPatterns(tree);
+            if (filters.MaxDepth > 0)
+                RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
+        }
+
+        private static void RemoveContainers(ref Node tree)
+        {
+            tree.SetChildren(tree.DescendantNodes().Where(c => !c.HasChildren()));
         }
 
 
@@ -96,7 +104,10 @@ namespace Logic.Filtering
                 currDepth += 1;
 
             if (currDepth == maxDepth)
+            {
+                tree.Dependencies.AddRange(tree.Childs.SelectMany(x => x.AllSubDependencies()).Distinct());
                 tree.SetChildren(new List<Node>());
+            }
             else
             {
                 foreach (var child in tree.Childs)
@@ -108,6 +119,13 @@ namespace Logic.Filtering
 
         private static void RemoveNodesReferencedLessThan(Node tree, int byReference)
         {
+            /*var allSubDependencies = tree.AllSubDependencies();
+            tree.SetChildren(tree.Childs.Where(x => allSubDependencies.Contains(x)));
+            foreach (var child in tree.Childs)
+            {
+                RemoveNodesReferencedLessThan(child, byReference);
+            }*/
+
             /*tree.SetChildren(tree.Childs.Where(x => !(x is ClassNode) || (x as ClassNode).References.Count() >= byReference));
             foreach (var child in tree.Childs)
             {
@@ -122,22 +140,19 @@ namespace Logic.Filtering
 
             foreach (var oldChild in tree.Childs.ToList())
             {
-                if (tree.Childs.Count == 1)
+                if (tree.Childs.Count != 1) continue;
+                var node = tree;
+                var newChild = tree.Childs.First();
                 {
-                    var node = tree as Node;
-                    var newChild = tree.Childs.First();
-                    if (node != null)
+                    newChild.SiblingDependencies.UnionWith(node.SiblingDependencies);
+                    var dependsOnNode = node.Parent.Childs.Where(x => x.SiblingDependencies.Contains(tree));
+                    foreach (var dependant in dependsOnNode)
                     {
-                        newChild.SiblingDependencies.UnionWith(node.SiblingDependencies);
-                        var dependsOnNode = node.Parent.Childs.Where(x => x.SiblingDependencies.Contains(tree));
-                        foreach (var dependant in dependsOnNode)
-                        {
-                            dependant.SiblingDependencies.Remove(node);
-                            dependant.SiblingDependencies.Add(newChild);
-                        }
+                        dependant.SiblingDependencies.Remove(node);
+                        dependant.SiblingDependencies.Add(newChild);
                     }
-                    tree.ReplaceChild(oldChild,newChild);
                 }
+                tree.ReplaceChild(oldChild,newChild);
             }
         }
 

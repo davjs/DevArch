@@ -120,8 +120,8 @@ namespace Logic.Filtering
                     newChildOrder.Add(CreateHorizontalLayer(firstLayer));
                 }
             }
-            if (unreferenced.Any())
-                newChildOrder.Add(CreateHorizontalLayer(unreferenced));
+            //if (unreferenced.Any())
+            //    newChildOrder.Add(CreateHorizontalLayer(unreferenced));
 
 
             newChildOrder.Reverse();

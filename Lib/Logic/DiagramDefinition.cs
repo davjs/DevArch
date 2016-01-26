@@ -29,7 +29,7 @@ namespace Logic
         public string Path;
         public int Size = 1;
     }
-    
+    //TODO: define what filters should be availible aswell as the parsing string and operation for them in a single place
     public class Filters
     {
         public bool RemoveTests = true;
@@ -40,6 +40,7 @@ namespace Logic
         public bool RemoveExceptions = true;
         public bool FindNamingPatterns = false;
         public int MinMethods = 0;
+        public bool RemoveContainers = false;
     }
 
     public interface IScope
