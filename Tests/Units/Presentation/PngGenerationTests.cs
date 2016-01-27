@@ -2,7 +2,10 @@
 using EnvDTE;
 using Lib;
 using Logic;
+using Logic.Building;
+using Logic.Filtering;
 using Logic.Integration;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
 
@@ -56,9 +59,12 @@ namespace Tests.Units.Presentation
             var modelDef = new DiagramDefinition("",
                 new RootScope(), 
                 new OutputSettings { Path = solution.Directory() + @"IntegrationTests\WithoutNspaces.png" },
-                new Filters { RemoveContainers = true,MaxDepth = 4}
+                new Filters { RemoveContainers = true,MaxDepth = 6}
                 );
-            var tree = modelGen.GenerateDiagram(modelDef);
+            //var tree = modelGen.GenerateDiagram(modelDef);
+            var tree = SemanticTreeBuilder.AnalyseSolution(solution) as Node;
+            tree.RemoveChild("Clients");
+            ModelFilterer.ApplyFilter(ref tree, modelDef.Filters);
             BitmapRenderer.RenderTreeToBitmap(tree, modelDef.DependencyDown, modelDef.Output);
         }
     }
