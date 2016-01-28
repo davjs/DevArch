@@ -44,6 +44,9 @@ namespace Logic.Filtering
 
         public static List<Node> RegroupSiblingNodes(List<Node> oldChildList)
         {
+            if (oldChildList.Count <= 1)
+                return oldChildList;
+
             var newChildOrder = new List<Node>();
             var target = oldChildList;
             var unreferenced = oldChildList.Where(x => !x.SiblingDependencies.Any()
@@ -120,9 +123,9 @@ namespace Logic.Filtering
                     newChildOrder.Add(CreateHorizontalLayer(firstLayer));
                 }
             }
+            //TODO: handle this or just skip?
             //if (unreferenced.Any())
             //    newChildOrder.Add(CreateHorizontalLayer(unreferenced));
-
 
             newChildOrder.Reverse();
             return newChildOrder;
