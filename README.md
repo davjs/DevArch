@@ -1,18 +1,28 @@
 # DevArch - Continuous architecting
-### Automated Software architecture diagram generation with handmade quality
 ___
-DevArch provides an alternative method for creating architecture diagrams.
 
-Following the footsteps of reverse-architecting, DevArch aims to provide one button press diagram generation.
+### Simple diagram generation and management
+DevArch provides an easy way to auto generate and keep diagrams updated.
 
-However, instead of allowing the developer to later modify the generated diagrams to their liking (which can be extremely demanding), DevArch relies on smart filtering algorithms that allows the user to customize *how* the diagram is generated: What makes a class important enough to be displayed on this diagram? What is the scope and what do i want to communicate? etc.
+![Project](/Docs/ProjectSample.PNG)
 
-These customizations, or rather, *diagram definitions*, can then be checked in together with the sourcecode. 
+The **DevArch Project** contains **Diagram Definitions** which at the press of a button all gets turned into diagrams
 
-This means that anyone with the sourcecode are able to review the architecture and modify it without losing the original architects intent.
-___
-**DevArch makes diagram generation faster, easier and more formal.**
+![Generating](/Docs/GenerateSample.png)
 
+###The first reverse-architechting tool to generate beautiful layer diagrams
+
+Because **everyone** understands them.
+
+![DiagramDefinition](/Docs/Logic.png)
+
+###Handmade quality diagrams
+
+Reverse engineered diagrams are usually big and complex because they are not abstracted. By providing a framework (the diagram definition) in which one can specify and combine different filters, the diagrams become readable again.
+
+![DiagramDefinition](/Docs/Filters example.png)
+
+Sounds too complicated? No problem, just stick with the defaults!
 
 
 ###Samples
