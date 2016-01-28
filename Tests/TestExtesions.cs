@@ -17,6 +17,10 @@ namespace Tests
             var withName = tree.Childs.WithName(name);
             if (withName == null)
                 throw new ChildNotFoundException(name);
+            foreach (var child in tree.Childs.Where(child => child.Dependencies.Contains(withName)))
+            {
+                child.Dependencies.Remove(withName);
+            }
             tree.RemoveChild(withName);
         }
     }
