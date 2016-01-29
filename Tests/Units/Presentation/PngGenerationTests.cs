@@ -75,6 +75,7 @@ namespace Tests.Units.Presentation
             filtering.RemoveChild(nameof(SiblingReorderer));
             filtering.RemoveChild(nameof(ClassFilters));
             filtering.RemoveChild(nameof(NodeFilters));
+            filtering.RemoveChild(nameof(PatternFinder));
             //filtering.RemoveChild(nameof(ChildrenFilter));
             logic.RemoveChild("Integration");
             logic.RemoveChild("Common");
@@ -89,10 +90,13 @@ namespace Tests.Units.Presentation
             sem.RemoveChild(nameof(VerticalSiblingHolderNode));
             sem.RemoveChild(nameof(HorizontalSiblingHolderNode));
             sem.RemoveChild(nameof(NodeExtensions));
-            //sem.RemoveChild(nameof(SolutionNode));
+            sem.RemoveChild(nameof(UniqueEntity));
+            sem.RemoveChild(nameof(ProjectNode));
+            sem.RemoveChild(nameof(SiblingHolderNode));
             /* logic.RemoveChild("SemanticTree");*/
 
-            var pres = lib.Childs.WithName("Presentation");
+            //Presentation filtering
+            /*var pres = lib.Childs.WithName("Presentation");
             pres = pres.Childs.WithName("Presentation");
             pres.RemoveChild("Coloring");
             pres.RemoveChild("Views");
@@ -101,8 +105,11 @@ namespace Tests.Units.Presentation
             var viewModels = pres.Childs.WithName("ViewModels");
             viewModels.RemoveChild(nameof(ArchViewModel));
             viewModels.RemoveChild(nameof(ArrowViewModel));
-            viewModels.RemoveChild(nameof(LayerViewModel));        
+            viewModels.RemoveChild(nameof(LayerViewModel));
+            viewModels.RemoveChild(nameof(DiagramSymbolViewModel));
             pres.RemoveChild(nameof(BitmapRenderer));
+            pres.RemoveChild("ViewModels");*/
+            lib.RemoveChild("Presentation");
 
             ModelFilterer.ApplyFilter(ref tree, modelDef.Filters);
             DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
