@@ -16,20 +16,14 @@ namespace Tests.Units.Presentation
     [TestClass]
     public class PngGenerationTests
     {
-        private static DTE GetDte()
-        {
-            return (DTE) Marshal.
-                GetActiveObject("VisualStudio.DTE.14.0");
-        }
-
         [TestCategory("PngGeneration")]
         [TestMethod]
         public void GenerateAllArchDiagrams()
         {
-            var enviroment = GetDte();
+            var enviroment = TestExtesions.Dte;
             while (enviroment.Solution == null)
             {
-                enviroment = GetDte();
+                enviroment = TestExtesions.Dte;
             }
             DevArch.RenderAllArchDiagramsToFiles(enviroment);
         }
@@ -39,7 +33,7 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void GenerateAlignmentTest()
         {
-            var enviroment = GetDte();
+            var enviroment = TestExtesions.Dte;
             var solution = new AdvancedSolution(enviroment);
             var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
             var modelDef = new DiagramDefinition("",
@@ -55,7 +49,7 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void RemovesNamespaces()
         {
-            var enviroment = GetDte();
+            var enviroment = TestExtesions.Dte;
             var solution = new AdvancedSolution(enviroment);
             var modelDef = new DiagramDefinition("",
                 new RootScope(), 
@@ -67,39 +61,48 @@ namespace Tests.Units.Presentation
             tree.RemoveChild("Clients");
             var lib = tree.Childs.WithName("Lib");
             lib.RemoveChild("Lib");
+
             var logic = lib.Childs.WithName("Logic");
             logic = logic.Childs.WithName("Logic");
             logic.RemoveChild("NamespaceScope");
             logic.RemoveChild("DocumentScope");
             logic.RemoveChild("ClassScope");
             logic.RemoveChild("ProjectScope");
-            logic.RemoveChild("RootScope");
             logic.RemoveChild(nameof(NamedScope));
             logic.RemoveChild("Building");
-            logic.RemoveChild("Filtering");
+            //logic.RemoveChild("Filtering");
+            var filtering = logic.Childs.WithName("Filtering");
+            filtering.RemoveChild(nameof(SiblingReorderer));
+            filtering.RemoveChild(nameof(ClassFilters));
+            filtering.RemoveChild(nameof(NodeFilters));
+            //filtering.RemoveChild(nameof(ChildrenFilter));
+            logic.RemoveChild("Integration");
+            logic.RemoveChild("Common");
             logic.RemoveChild(nameof(OutputSettings));
-            logic.RemoveChild(nameof(DiagramDefinition));
-            logic.RemoveChild(nameof(DiagramFromDiagramDefinitionGenerator));
-            logic.RemoveChild(nameof(DiagramDefinitionParser));
-
-            var semanticTree = logic.Childs.WithName("SemanticTree");
-            semanticTree.RemoveChild(nameof(UniqueEntity));
-            semanticTree.RemoveChild(nameof(NodeExtensions));
-            semanticTree.RemoveChild(nameof(ProjectNode));
-            semanticTree.RemoveChild(nameof(SiblingHolderNode));
-            semanticTree.RemoveChild(nameof(SolutionNode));
-            semanticTree.RemoveChild(nameof(VerticalSiblingHolderNode));
-            semanticTree.RemoveChild(nameof(HorizontalSiblingHolderNode));
-            semanticTree.RemoveChild(nameof(ClassNode));
-            //logic.RemoveChild("SemanticTree");
+            //logic.RemoveChild(nameof(DiagramDefinition));
+            //logic.RemoveChild(nameof(DiagramFromDiagramDefinitionGenerator));
+            //logic.RemoveChild(nameof(DiagramDefinitionParser));
+            logic.RemoveChild(nameof(Filters));
+             logic.RemoveChild(nameof(NoArchProjectsFound));
+            var sem = logic.Childs.WithName("SemanticTree");
+            sem.RemoveChild(nameof(CircularDependencyHolderNode));
+            sem.RemoveChild(nameof(VerticalSiblingHolderNode));
+            sem.RemoveChild(nameof(HorizontalSiblingHolderNode));
+            sem.RemoveChild(nameof(NodeExtensions));
+            //sem.RemoveChild(nameof(SolutionNode));
+            /* logic.RemoveChild("SemanticTree");*/
 
             var pres = lib.Childs.WithName("Presentation");
             pres = pres.Childs.WithName("Presentation");
             pres.RemoveChild("Coloring");
             pres.RemoveChild("Views");
+            pres.RemoveChild("InvalidPathException");
+            pres.RemoveChild(nameof(LayerMapper));
             var viewModels = pres.Childs.WithName("ViewModels");
-            viewModels.RemoveChild(nameof(LayerViewModel));            
-            //pres.RemoveChild(nameof(BitmapRenderer));
+            viewModels.RemoveChild(nameof(ArchViewModel));
+            viewModels.RemoveChild(nameof(ArrowViewModel));
+            viewModels.RemoveChild(nameof(LayerViewModel));        
+            pres.RemoveChild(nameof(BitmapRenderer));
 
             ModelFilterer.ApplyFilter(ref tree, modelDef.Filters);
             DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);

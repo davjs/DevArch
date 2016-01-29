@@ -126,6 +126,7 @@
     <Compile Include="Units\Logic\Building\UnitTest1.cs" />
     <Compile Include="Units\Logic\Filtering\Ordering\DependencyPatternTests.cs" />
     <Compile Include="Units\Logic\Filtering\Ordering\VerticalLayersTests.cs" />
+    <Compile Include="Units\Logic\Filtering\NotProduceDuplicateTests.cs" />
     <Compile Include="Units\Logic\Integration\AdvancedSolutionTests.cs" />
     <Compile Include="Integration\Integration.cs" />
     <Compile Include="Units\Presentation\ColorRangeTests.cs" />

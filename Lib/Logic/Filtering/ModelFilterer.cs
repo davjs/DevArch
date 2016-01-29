@@ -61,12 +61,12 @@ namespace Logic.Filtering
                 RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
             if (filters.RemoveContainers)
                 RemoveContainers(ref tree);
+            if (filters.RemoveExceptions)
+                ApplyClassFilter(tree, ClassFilters.Exceptions);
 
             tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
             tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
             
-            if (filters.RemoveExceptions)
-                ApplyClassFilter(tree, ClassFilters.Exceptions);
             if (filters.MinMethods > 0)
                 ApplyClassFilter(tree, new SmallClassFilter(filters.MinMethods));
             if (filters.MinReferences > 0)
