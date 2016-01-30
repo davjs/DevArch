@@ -61,12 +61,16 @@ namespace Logic.Filtering
                 RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
             if (filters.RemoveContainers)
                 RemoveContainers(ref tree);
+            if (filters.RemoveDefaultNamespaces)
+                RemoveDefaultNamespaces(tree);
             if (filters.RemoveExceptions)
                 ApplyClassFilter(tree, ClassFilters.Exceptions);
 
             tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
             tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
             
+            if (filters.MaxDepth > 0)
+                RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
             if (filters.MinMethods > 0)
                 ApplyClassFilter(tree, new SmallClassFilter(filters.MinMethods));
             if (filters.MinReferences > 0)
@@ -76,8 +80,6 @@ namespace Logic.Filtering
             RemoveSingleChildAnonymous(tree);
             if (filters.FindNamingPatterns)
                 tree = FindSiblingPatterns(tree);
-            if (filters.MaxDepth > 0)
-                RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
         }
 
         private static void RemoveContainers(ref Node tree)

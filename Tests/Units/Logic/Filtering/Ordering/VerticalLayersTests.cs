@@ -449,7 +449,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 C,
                 D,
                 E,
-                F
+                F,
+                X
             });
 
             //             

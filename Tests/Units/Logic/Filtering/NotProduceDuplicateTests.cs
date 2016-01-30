@@ -51,14 +51,7 @@ namespace Tests.Units.Logic.Filtering
                         .Select(x => x.Key)
                         .ToList();
 
-
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
-
-            var solution = new AdvancedSolution(TestExtesions.Dte);
-            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = solution.Directory() + @"IntegrationTests\Analysis.png" });
-
-            if (dups.Any())
-                throw new AssertFailedException(dups.First().ToString() + allNodes.Count());
+            CollectionAssert.AreEqual(dups,new List<Node>());
         }
 
 
@@ -96,14 +89,48 @@ namespace Tests.Units.Logic.Filtering
                         .Select(x => x.Key)
                         .ToList();
 
-
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
-
-            var solution = new AdvancedSolution(TestExtesions.Dte);
-            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = solution.Directory() + @"IntegrationTests\Analysis2.png" });
-
-            if (dups.Any())
-                throw new AssertFailedException(dups.First().ToString() + allNodes.Count());
+            CollectionAssert.AreEqual(dups, new List<Node>());
         }
+
+        [TestCategory("SiblingOrder.DuplicateTests")]
+        [TestMethod]
+        public void UnknownErrorCause()
+        {
+            //Produes duplicate RootScope
+            Node rootScope = new Node(nameof(rootScope));
+            Node node = new Node(nameof(node));
+            Node classNode = new Node(nameof(classNode)) { SiblingDependencies = { node } };
+            Node childrenFilter = new Node(nameof(childrenFilter)) { SiblingDependencies = { classNode } };
+
+            Node diagramDefiniton = new Node(nameof(diagramDefiniton)) { SiblingDependencies = { rootScope } };
+
+            Node diagramDefinitionParser = new Node(nameof(diagramDefinitionParser)) { SiblingDependencies = { diagramDefiniton, rootScope } };
+            
+            Node smallClassFilter = new Node(nameof(smallClassFilter)) { SiblingDependencies = { childrenFilter } };
+            
+            Node modelFilterer = new Node(nameof(modelFilterer)) { SiblingDependencies = { node,classNode,smallClassFilter } };
+
+            Node solutioNode = new Node(nameof(solutioNode)) { SiblingDependencies = { node } };
+
+            Node diagramFromDiagramGenerator = new Node(nameof(diagramFromDiagramGenerator)) {SiblingDependencies = {diagramDefinitionParser, node,diagramDefiniton,rootScope,modelFilterer }};
+
+            var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            {
+                rootScope, diagramDefiniton, diagramDefinitionParser, node, classNode, childrenFilter, smallClassFilter,modelFilterer,solutioNode,diagramFromDiagramGenerator
+            }).ToList();
+
+            var tree = new Node("tree");
+            tree.SetChildren(newList);
+            var allNodes = tree.DescendantNodes().Where(x => !string.IsNullOrEmpty(x.Name));
+
+            var dups = allNodes.GroupBy(x => x)
+                        .Where(x => x.Count() > 1)
+                        .Select(x => x.Key)
+                        .ToList();
+
+            CollectionAssert.AreEqual(dups, new List<Node>());
+        }
+
+
     }
 }
