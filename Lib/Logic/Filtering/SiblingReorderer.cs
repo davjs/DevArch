@@ -119,6 +119,7 @@ namespace Logic.Filtering
                             }
                             currentLayer.Add(new VerticalSiblingHolderNode(newList));
                         }
+                        nextGroupTarget = toBeGrouped;
                     }
                     else
                     {
