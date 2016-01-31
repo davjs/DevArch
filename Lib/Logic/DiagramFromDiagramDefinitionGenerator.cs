@@ -48,7 +48,7 @@ namespace Logic
             return diagramDef.DependencyDown ? ReverseTree(tree) : tree;
         }
 
-        private static Node ReverseTree(Node tree)
+        public static Node ReverseTree(Node tree)
         {
             tree.SetChildren(tree.Childs.Select(ReverseTree).Reverse());
             return tree;

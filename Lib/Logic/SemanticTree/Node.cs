@@ -26,7 +26,7 @@ namespace Logic.SemanticTree
 
         public readonly ISymbol Symbol;
         public List<Node> Dependencies = new List<Node>();
-        public readonly HashSet<Node> SiblingDependencies = new HashSet<Node>();
+        public HashSet<Node> SiblingDependencies = new HashSet<Node>();
         public Node Parent;
         public OrientationKind Orientation = OrientationKind.Vertical;
 
@@ -53,6 +53,7 @@ namespace Logic.SemanticTree
         public void SetChildren(IEnumerable<Node> children)
         {
             var newList = children.ToList();
+            ChildsList.ForEach(n => n.Parent = null);
             ChildsList.Clear();
             AddChilds(newList);
         }

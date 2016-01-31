@@ -29,7 +29,7 @@ namespace Logic
                 {
                     var definition = ParseDiagramDefinition(path, name);
                     //Insert directory before output path
-                    definition.Output.Path = solution.Directory() + "\\" + definition.Output.Path;
+                    definition.Output.Path = solution.Directory() + definition.Output.Path;
                     list.Add(new DiagramDefinitionParseResult(definition));
                 }
                 catch (Exception e)
@@ -84,16 +84,20 @@ namespace Logic
             return diagramDefinition;
         }
 
+        // ReSharper disable once ConvertIfStatementToSwitchStatement
         private static void ParseFilter(XmlNode filter,ref Filters filters)
         {
             var fname = filter.Name;
             var on = filter.InnerText.Equals("on", StringComparison.CurrentCultureIgnoreCase);
             int number;
             int.TryParse(filter.InnerText, out number);
+            //Toggles
             if (fname == "RemoveTests") filters.RemoveTests = on;
             else if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = on;
             else if (fname == "RemoveExceptions") filters.RemoveExceptions = on;
             else if (fname == "FindNamingPatterns") filters.FindNamingPatterns = on;
+            else if (fname == "RemoveContainers") filters.RemoveContainers = on;
+            // Degrees
             else if (fname == "MaxDepth") filters.MaxDepth = number;
             else if (fname == "MinMethods") filters.MinMethods = number;
             else if (fname == "MinReferences") filters.MinReferences = number;

@@ -8,6 +8,7 @@ using Logic.Filtering;
 using Logic.Integration;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Tests.TestExtesions;
 
 namespace Tests.Integration
 {
@@ -17,8 +18,7 @@ namespace Tests.Integration
         [TestMethod]
         public void FindsDependencies()
         {
-            var solution = new AdvancedSolution(GetDte());
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
             Assert.AreEqual(1,lib.DescendantNodes().Count(x => x.Name == "Node"));
@@ -30,66 +30,29 @@ namespace Tests.Integration
         [TestMethod]
         public void SemanticTreeDoesNotContainDoubles()
         {
-            var solution = new AdvancedSolution(GetDte());
-            var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic\\SemanticTree");
+            var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic\\SemanticTree");
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
             ModelFilterer.ApplyFilter(ref tree, new Filters());
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
         }
 
-        //TODO Copy in old version of this test from sourcecontrol
         [TestMethod]
-        public void LogicDoesNotContainDoubles()
+        public void LogicLayerIsVertical()
         {
-            var solution = new AdvancedSolution(GetDte());
-            var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic");
-            tree = tree.Childs.First();
-            tree = tree.Childs.First();
-            tree.RemoveChild("Building");
+            var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic");
+            tree = tree.Childs.First(); tree = tree.Childs.First();
+            tree.RemoveChild("DiagramDefinition");
+            tree.RemoveChild("Filters");
+            tree.RemoveChild("DiagramFromDiagramDefinitionGenerator");
+            tree.RemoveChild("DiagramDefinitionParser");
             tree.RemoveChild("Common");
-            tree.RemoveChild("Integration");
             tree.RemoveChild("OutputSettings");
             tree.RemoveChild("NamedScope");
             tree.RemoveChild("DocumentScope");
             tree.RemoveChild("ProjectScope");
             tree.RemoveChild("NamespaceScope");
             tree.RemoveChild("ClassScope");
-            tree.RemoveChild("DiagramFromDiagramDefinitionGenerator");
             tree.RemoveChild("NoArchProjectsFound");
-            var filtering = tree.DescendantNodes().WithName("Filtering");
-            filtering.RemoveChild("SiblingReorderer");
-            filtering.RemoveChild("PatternFinder");
-            tree.RemoveChild(filtering);
-            tree.AddChild(filtering.Childs.First());
-            foreach (var child in tree.Childs)
-            {
-                //Remove those not in childs
-                child.Dependencies = 
-                    child.Dependencies.Intersect(tree.Childs).ToList();
-            }
-            Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "RootScope"));
-            ModelFilterer.ApplyFilter(ref tree, new Filters());
-            Assert.AreEqual(1,tree.DescendantNodes().Count(x => x.Name == "RootScope"));
-        }
-
-        [TestMethod]
-        public void LogicLayerIsVertical()
-        {
-            var solution = new AdvancedSolution(GetDte());
-            var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic");
-            tree = tree.Childs.First(); tree = tree.Childs.First();
-            tree.RemoveChild(tree.Childs.WithName("DiagramDefinition"));
-            tree.RemoveChild(tree.Childs.WithName("Filters"));
-            tree.RemoveChild(tree.Childs.WithName("DiagramFromDiagramDefinitionGenerator"));
-            tree.RemoveChild(tree.Childs.WithName("DiagramDefinitionParser"));
-            tree.RemoveChild(tree.Childs.WithName("Common"));
-            tree.RemoveChild(tree.Childs.WithName("OutputSettings"));
-            tree.RemoveChild(tree.Childs.WithName("NamedScope"));
-            tree.RemoveChild(tree.Childs.WithName("DocumentScope"));
-            tree.RemoveChild(tree.Childs.WithName("ProjectScope"));
-            tree.RemoveChild(tree.Childs.WithName("NamespaceScope"));
-            tree.RemoveChild(tree.Childs.WithName("ClassScope"));
-            tree.RemoveChild(tree.Childs.WithName("NoArchProjectsFound"));
             
             foreach (var child in tree.Childs)
             {
@@ -101,11 +64,13 @@ namespace Tests.Integration
             Assert.AreEqual(OrientationKind.Vertical,tree.Orientation);
         }
 
-
-        private static DTE GetDte()
+        [TestMethod]
+        public void GeneratesWholeSolutionDiagramWithoutNamespacesWithoutCausingDuplicates()
         {
-            return (DTE)Marshal.
-                GetActiveObject("VisualStudio.DTE.14.0");
+            var tree = SemanticTreeBuilder.AnalyseSolution(TestSolution) as Node;
+            ModelFilterer.ApplyFilter(ref tree, new Filters { RemoveContainers = true });
+            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            TreeAssert.DoesNotContainDuplicates(tree);
         }
     }
 }

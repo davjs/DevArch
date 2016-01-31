@@ -1,8 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Logic;
 using Logic.Filtering;
+using Logic.Integration;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Presentation;
 
 namespace Tests.Units.Logic.Filtering.Ordering
 {
@@ -49,6 +54,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
             D.SiblingDependencies.Add(B);
             D.SiblingDependencies.Add(C);
+            D.SiblingDependencies.Add(X);
             B.SiblingDependencies.Add(A);
             A.SiblingDependencies.Add(X);
             C.SiblingDependencies.Add(X);
@@ -425,32 +431,16 @@ namespace Tests.Units.Logic.Filtering.Ordering
         [TestMethod]
         public void PutsPartlyCommonDependencyOnNextLayer()
         {
-            Node A = new Node(nameof(A));
-            Node B = new Node(nameof(B));
-            Node C = new Node(nameof(C));
-            Node D = new Node(nameof(D));
-            Node E = new Node(nameof(E));
-            Node F = new Node(nameof(F));
-            Node X = new Node(nameof(X));
+            var nodesList = OrderingTestFactory.CreateNodeList(
+                @"A ->
+                B ->
+                C -> A,X
+                D -> B,X
+                E -> B
+                F -> C,D,E
+                X ->");
 
-            F.SiblingDependencies.Add(C);
-            F.SiblingDependencies.Add(D);
-            F.SiblingDependencies.Add(E);
-            C.SiblingDependencies.Add(A);
-            C.SiblingDependencies.Add(X);
-            D.SiblingDependencies.Add(X);
-            D.SiblingDependencies.Add(B);
-            E.SiblingDependencies.Add(B);
-
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
-            {
-                A,
-                B,
-                C,
-                D,
-                E,
-                F
-            });
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(nodesList);
 
             //             
             //1.  A  X   B
@@ -459,23 +449,68 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
             Assert.AreEqual(3, newChildOrder.Count);
             //0
-            Assert.AreEqual(X, newChildOrder.First());
+            Assert.AreEqual("X", newChildOrder.First().Name);
             var hor = newChildOrder.ElementAt(1);
             Assert.AreEqual(OrientationKind.Horizontal, hor.Orientation);
             Assert.AreEqual(2, hor.Childs.Count);
             var right = hor.Childs.First();
             var left = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
-            Assert.AreEqual(A, left.Childs.First());
-            Assert.AreEqual(C, left.Childs.Last());
+            Assert.AreEqual("A", left.Childs.First().Name);
+            Assert.AreEqual("C", left.Childs.Last().Name);
             Assert.IsTrue(right is VerticalSiblingHolderNode);
-            Assert.AreEqual(B, right.Childs.First());
+            Assert.AreEqual("B", right.Childs.First().Name);
             var rightBot = right.Childs.Last();
             Assert.AreEqual(OrientationKind.Horizontal, rightBot.Orientation);
-            CollectionAssert.Contains(rightBot.Childs.ToArray(), D);
-            CollectionAssert.Contains(rightBot.Childs.ToArray(), E);
+            Assert.IsTrue(rightBot.Childs.Any(x => x.Name == "D"));
+            Assert.IsTrue(rightBot.Childs.Any(x => x.Name == "E"));
             //1
-            Assert.AreEqual(F, newChildOrder.Last());
+            Assert.AreEqual("F", newChildOrder.Last().Name);
+        }
+
+
+        [TestCategory("SiblingOrder.VerticalLayers")]
+        [TestMethod]
+        public void MultipleHorizontalLayers()
+        {
+
+            var nodesList = OrderingTestFactory.CreateNodeList(
+                @"ColorDataWithDepth ->
+                LayerViewModel ->
+                RootScope ->
+                ArchView ->
+                Hsl -> ColorDataWithDepth
+                ColorRange -> ColorDataWithDepth
+                HueRangeDivisor -> ColorRange
+                BitmapRenderer -> LayerMapper
+                LayerMapper -> HueRangeDivisor, LayerViewModel
+                DevArch -> BitmapRenderer, ArchView, LayerMapper"
+                );
+
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(nodesList);
+            
+            var assertLayout =
+                @"
+                [
+                     [                        
+                        DevArch,
+                        [ArchView,BitmapRenderer]
+                        LayerMapper  
+                        [
+                            LayerViewModel,
+                            [HueRangeDivisor, ColorRange]
+                        ]
+                    ]
+                    Hsl
+                ]
+                ColorDataWithDepth
+            ".BuildTree();
+
+            var tree = new Node("tree");
+            tree.SetChildren(newChildOrder);
+            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            TestExtesions.TreeAssert.DoesNotContainDuplicates(tree);
+            OrderingTestFactory.AssertLayout(assertLayout,tree);
         }
     }
 }

@@ -1,32 +1,30 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
 using EnvDTE;
 using Lib;
 using Logic;
+using Logic.Building;
+using Logic.Filtering;
 using Logic.Integration;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
+using Presentation.Coloring;
+using Presentation.Coloring.ColoringAlgorithms;
+using Presentation.ViewModels;
+using Presentation.Views;
+using static Tests.TestExtesions;
 
 namespace Tests.Units.Presentation
 {
     [TestClass]
     public class PngGenerationTests
     {
-        private static DTE GetDte()
-        {
-            return (DTE) Marshal.
-                GetActiveObject("VisualStudio.DTE.14.0");
-        }
-
         [TestCategory("PngGeneration")]
         [TestMethod]
         public void GenerateAllArchDiagrams()
         {
-            var enviroment = GetDte();
-            while (enviroment.Solution == null)
-            {
-                enviroment = GetDte();
-            }
-            DevArch.RenderAllArchDiagramsToFiles(enviroment);
+            DevArch.RenderAllArchDiagramsToFiles(Dte);
         }
 
 
@@ -34,12 +32,10 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void GenerateAlignmentTest()
         {
-            var enviroment = GetDte();
-            var solution = new AdvancedSolution(enviroment);
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var modelDef = new DiagramDefinition("",
                 new NamespaceScope {Name = @"Tests\Integration\Samples"},
-                new OutputSettings {Path = @"IntegrationTests\VerticalAnonymousLayer.png"},
+                new OutputSettings {Path = SlnDir + @"IntegrationTests\VerticalAnonymousLayer.png" },
                 new Filters {RemoveTests = false}
                 );
             var tree =modelGen.GenerateDiagram(modelDef);

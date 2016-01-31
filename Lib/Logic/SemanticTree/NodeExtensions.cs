@@ -27,6 +27,11 @@ namespace Logic.SemanticTree
             return node.SiblingDependencies.Contains(dependency);
         }
 
+        public static bool IndirectlyDependsOn(this Node node,Node Dependency)
+        {
+            return node.IndirectSiblingDependencies().Contains(Dependency);
+        }
+
         /*public static int TotalReferences(this IEnumerable<Node> nodes)
         {
             return nodes.Select(n => n.References).Distinct().Count();
@@ -61,8 +66,7 @@ namespace Logic.SemanticTree
             }
         } */
 
-            public static
-            IEnumerable<Node> DescendantNodes(this Node tree)
+        public static IEnumerable<Node> DescendantNodes(this Node tree)
         {
             foreach (var child in tree.Childs)
             {
@@ -70,6 +74,18 @@ namespace Logic.SemanticTree
                 foreach (var descendantsOfChild in child.DescendantNodes())
                 {
                     yield return descendantsOfChild;
+                }
+            }
+        }
+
+        public static IEnumerable<Node> IndirectSiblingDependencies(this Node tree)
+        {
+            foreach (var dependency in tree.SiblingDependencies)
+            {
+                yield return dependency;
+                foreach (var dependenciesOfDependency in IndirectSiblingDependencies(dependency))
+                {
+                    yield return dependenciesOfDependency;
                 }
             }
         }
