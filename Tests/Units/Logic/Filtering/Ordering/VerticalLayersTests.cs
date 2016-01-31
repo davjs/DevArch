@@ -1,8 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Logic;
 using Logic.Filtering;
+using Logic.Integration;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Presentation;
 
 namespace Tests.Units.Logic.Filtering.Ordering
 {
@@ -49,6 +54,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
             D.SiblingDependencies.Add(B);
             D.SiblingDependencies.Add(C);
+            D.SiblingDependencies.Add(X);
             B.SiblingDependencies.Add(A);
             A.SiblingDependencies.Add(X);
             C.SiblingDependencies.Add(X);
@@ -477,6 +483,140 @@ namespace Tests.Units.Logic.Filtering.Ordering
             CollectionAssert.Contains(rightBot.Childs.ToArray(), E);
             //1
             Assert.AreEqual(F, newChildOrder.Last());
+        }
+
+
+        public class OrderingTestFactory
+        {
+            public static List<Node> CreateNodeList(string nodeCreationQuery)
+            {
+                nodeCreationQuery = Regex.Replace(nodeCreationQuery,@"[ \r]", "");
+                var entries = nodeCreationQuery.Split('\n').ToList();
+                //entries.RemoveAt(entries.Count-1);
+                var splitEntries =
+                    entries.Select(x => x.Split(new[] {"->"}, StringSplitOptions.RemoveEmptyEntries));
+
+                var nodes = splitEntries.Select(x => new Node(x[0])).ToList();
+
+                var i = 0;
+                foreach (var dependencyString in splitEntries.Select(x => x.Length == 2 ? x[1] : null))
+                {
+                    if (dependencyString != null)
+                    {
+                        var dependencies = dependencyString.Split(',');
+                        var nodeDependencies = dependencies.Select(x => nodes.WithName(x));
+                        nodes[i].SiblingDependencies = new HashSet<Node>(nodeDependencies);
+                    }
+                    i++;
+                }
+                
+                return nodes;
+            }
+            
+
+
+            public static void AssertLayout(Node expected, Node actual)
+            {
+                
+                if(expected.Childs.Count != actual.Childs.Count)
+                    throw new AssertFailedException($"Expected {expected.Name ?? actual.Name} to have {expected.Childs.Count} childs got {actual.Childs.Count}\n" +
+                                                    "Expected:\n" +
+                                                    $" {expected}\n " +
+                                                    "--------------------\nGot:\n" +
+                                                    $" {actual}");
+                foreach (var child in expected.Childs)
+                {
+                    var foundChild = false;
+                    if (string.IsNullOrEmpty(child.Name))
+                    {
+                        if (actual.Childs.Any(x => CompareNodesByLayout(child, x)))
+                            foundChild = true;
+                    }
+                    else
+                    {
+                        if (actual.Childs.WithName(child.Name) != null)
+                            foundChild = true;
+                    }
+                    if(!foundChild)
+                        throw new AssertFailedException($"{expected.Name ?? actual.Name} did not have child {child} got {actual.Childs}\n" +
+                                                        "Expected:\n" +
+                                                        $" {expected}\n " +
+                                                        "--------------------\nGot:\n" +
+                                                        $" {actual}");
+                }
+            }
+
+            private static bool CompareNodesByLayout(Node expected, Node actual)
+            {
+                foreach (var child in expected.Childs)
+                {
+                    if (string.IsNullOrEmpty(child.Name))
+                    {
+                        if (!actual.Childs.Any(x => CompareNodesByLayout(child, x)))
+                            return false;
+                    }
+                    else
+                    {
+                        if (actual.Childs.WithName(child.Name) == null)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+
+        [TestCategory("SiblingOrder.VerticalLayers")]
+        [TestMethod]
+        public void MultipleHorizontalLayers()
+        {
+
+            var nodesList = OrderingTestFactory.CreateNodeList(
+                @"ColorDataWithDepth ->
+                LayerViewModel ->
+                RootScope ->
+                ArchView ->
+                Hsl -> ColorDataWithDepth
+                ColorRange -> ColorDataWithDepth
+                HueRangeDivisor -> ColorRange
+                BitmapRenderer -> LayerMapper
+                LayerMapper -> HueRangeDivisor, LayerViewModel
+                DevArch -> BitmapRenderer, ArchView, LayerMapper"
+                );
+
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(nodesList);
+            
+            var assertLayout =
+                @"
+                [
+                     [                        
+                        DevArch,
+                        [ArchView,BitmapRenderer]
+                        LayerMapper  
+                        [
+                            LayerViewModel,
+                            [HueRangeDivisor, ColorRange]
+                        ]
+                    ]
+                    Hsl
+                ]
+                ColorDataWithDepth
+            ".BuildTree();
+
+            var tree = new Node("tree");
+            tree.SetChildren(newChildOrder);
+            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+
+            var allNodes = tree.DescendantNodes().Where(x => !string.IsNullOrEmpty(x.Name));
+
+            var dups = allNodes.GroupBy(x => x)
+                        .Where(x => x.Count() > 1)
+                        .Select(x => x.Key)
+                        .ToList();
+            
+            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + @"IntegrationTests\Analysis.png" });
+
+            OrderingTestFactory.AssertLayout(assertLayout,tree);
         }
     }
 }

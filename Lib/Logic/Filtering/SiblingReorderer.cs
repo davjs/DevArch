@@ -64,58 +64,67 @@ namespace Logic.Filtering
                     nextGroupTarget = currentLayer.SiblingDependencies().ToList();
                     //Get the next layer to check if any of the dependencies are unique to a node of the current layer
                     var nextLayer = GetFacadeNodes(nextGroupTarget);
+
+                    //Check if any nodes that have not been added yet has dependencies on the unique ones, in this case they arent really unique
+                    var leftForNextBatch = toBeGrouped.Except(currentLayer.Union(nextLayer));
+                    nextLayer.RemoveAll(x => leftForNextBatch.SiblingDependencies().Contains(x));
+
                     var uniqueDependencies =
-                        nextLayer.Where(x => !currentLayer.All(n => n.SiblingDependencies.Contains(x)))
-                            .ToImmutableHashSet();
+                        nextLayer.Where(x => !currentLayer.All(n => n.SiblingDependencies.Contains(x))).Distinct().ToList();
+                    
 
                     //If there are unique dependencies, vertical layers are created to separate the unique dependency from layers that dont depend on it
                     if (uniqueDependencies.Any())
                     {
-                        var dependencyGroups = FindDependencyGroups(currentLayer, nextLayer);
+                        var groupsToCreate = FindDependencyGroups(currentLayer, nextLayer);
+                        var toBeShared = new HashSet<Node>();
                         toBeGrouped.RemoveRange(currentLayer);
-                        foreach (var dependencyGroup in dependencyGroups)
+                        foreach (var dependencyGroup in groupsToCreate)
                         {
                             currentLayer.RemoveRange(dependencyGroup.Referencers.ToList());
                             var dependants = dependencyGroup.Dependants.ToList();
                             nextGroupTarget.RemoveRange(dependants);
                             toBeGrouped.RemoveRange(dependants);
+                            // Add dependant to the vertical layer
                             var depNode = CreateHorizontalLayer(dependants);
+                            // Add references to the vertical layer
                             var referenceNode = CreateHorizontalLayer(dependencyGroup.Referencers);
                             var newList = new List<Node> {depNode, referenceNode};
-                            //Needs to be only those that are unique dependencies
-                            var nestedDependencies = dependants.SiblingDependencies().ToList();
-                            //Get the other groups
-                            var otherGroups = dependencyGroups.Except(dependencyGroup);
-                            var nodesInOtherGroups = otherGroups.SelectMany(x => x.Dependants.Union(x.Referencers));
-                            var otherNodes =
-                                toBeGrouped.Union(nodesInOtherGroups).Union(currentLayer).Except(nestedDependencies);
-                            var nonUniqueDependencies = otherNodes.SiblingDependencies();
-                            //Remove nodes that are dependency for a node in other vertical layer or left in childlist (except for those in depNodeDep)
-                            nestedDependencies.RemoveRange(
-                                nestedDependencies.Where(x => nonUniqueDependencies.Contains(x)).ToList());
+                            //Get ALL the possible candidates for the vertical layer
+                            var verticalCandidates = dependants.SelectMany(x => x.IndirectSiblingDependencies()).Distinct().ToList();
 
-                            foreach (var depNodeDependency in nestedDependencies)
+                            //Get all the nodes in this current call depth
+                            var otherGroups = groupsToCreate.Except(dependencyGroup);
+                            var nodesInOtherGroups = otherGroups.
+                                SelectMany(x => x.Dependants.Union(x.Referencers));
+                            var otherNodes =
+                                toBeGrouped.Union(currentLayer).Union(nodesInOtherGroups).Except(verticalCandidates);
+
+                            //If any of the other nodes depends on the vertical candidate the candidate is removed and will be placed in a later iteration of this call (it is still left in toBeGrouped)
+                            foreach (var nestedNode in verticalCandidates.ToList().
+                                Where(nestedNode => toBeShared.Contains(nestedNode) || 
+                                otherNodes.Any(x => x.DependsOn(nestedNode))))
                             {
-                                depNodeDependency.SiblingDependencies.RemoveWhere(x => !nestedDependencies.Contains(x));
+                                verticalCandidates.Remove(nestedNode);
+                                verticalCandidates.ForEach(x => x.SiblingDependencies.Remove(nestedNode));
+                                toBeShared.Add(nestedNode);
                             }
-                            //Should be any of the verticals
-                            nestedDependencies.RemoveRange(
-                                nestedDependencies.Where(x => toBeGrouped.Any(y => y.DependsOn(x))).ToList());
-                            if (nestedDependencies.Any())
+
+                            if (verticalCandidates.Any())
                             {
-                                toBeGrouped.RemoveRange(nestedDependencies);
-                                nextGroupTarget.RemoveRange(nestedDependencies);
-                                var dependenciesOfNestedNodes = nestedDependencies.SiblingDependencies().ToList();
+                                toBeGrouped.RemoveRange(verticalCandidates);
+                                nextGroupTarget.RemoveRange(verticalCandidates);
+                                var dependenciesOfNestedNodes = verticalCandidates.SiblingDependencies().ToList();
                                 if (!dependenciesOfNestedNodes.Any())
-                                    nestedDependencies = new List<Node> {CreateHorizontalLayer(nestedDependencies)};
+                                    verticalCandidates = new List<Node> {CreateHorizontalLayer(verticalCandidates)};
                                 else
                                 {
                                     //Remove all nodes from this levels stack that should be added by the recursive call
                                     toBeGrouped.RemoveRange(dependenciesOfNestedNodes);
                                     nextGroupTarget.RemoveRange(dependenciesOfNestedNodes);
-                                    nestedDependencies = GroupNodes(nestedDependencies).ToList();
+                                    verticalCandidates = GroupNodes(verticalCandidates).ToList();
                                 }
-                                newList.InsertRange(0, nestedDependencies);
+                                newList.InsertRange(0, verticalCandidates);
                             }
                             currentLayer.Add(new VerticalSiblingHolderNode(newList));
                         }
@@ -135,6 +144,7 @@ namespace Logic.Filtering
             groupedNodes.Reverse();
             return groupedNodes;
         }
+        
 
         public static IEnumerable<Dependency> FindDependencies(List<Node> firstLayer, List<Node> nextLayer)
         {

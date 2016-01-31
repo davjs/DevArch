@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using Logic.Integration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Tests.TestExtesions;
 
 namespace Tests.Units.Logic.Integration
 {
@@ -13,17 +14,10 @@ namespace Tests.Units.Logic.Integration
         [TestCategory("AdvancedSolution")]
         public void FindArchProjectsTest()
         {
-            var sln = new AdvancedSolution(GetDte());
-            var archProj = sln.FindArchProjects().First();
+            var archProj = TestSolution.FindArchProjects().First();
             var projectItems = archProj.GetAllProjectItems();
             Assert.IsTrue(projectItems.Count() > 6);
         }
-
-
-        private static DTE GetDte()
-        {
-            return (DTE)Marshal.
-                GetActiveObject("VisualStudio.DTE.14.0");
-        }
+        
     }
 }

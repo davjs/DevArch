@@ -61,8 +61,7 @@ namespace Logic.SemanticTree
             }
         } */
 
-            public static
-            IEnumerable<Node> DescendantNodes(this Node tree)
+        public static IEnumerable<Node> DescendantNodes(this Node tree)
         {
             foreach (var child in tree.Childs)
             {
@@ -70,6 +69,18 @@ namespace Logic.SemanticTree
                 foreach (var descendantsOfChild in child.DescendantNodes())
                 {
                     yield return descendantsOfChild;
+                }
+            }
+        }
+
+        public static IEnumerable<Node> IndirectSiblingDependencies(this Node tree)
+        {
+            foreach (var dependency in tree.SiblingDependencies)
+            {
+                yield return dependency;
+                foreach (var dependenciesOfDependency in IndirectSiblingDependencies(dependency))
+                {
+                    yield return dependenciesOfDependency;
                 }
             }
         }

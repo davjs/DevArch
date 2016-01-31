@@ -127,6 +127,13 @@ namespace Tests.Units.Logic.Filtering
                         .Where(x => x.Count() > 1)
                         .Select(x => x.Key)
                         .ToList();
+            
+            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            
+            
+            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + @"IntegrationTests\Analysis.png" });
+
+
 
             CollectionAssert.AreEqual(dups, new List<Node>());
         }
