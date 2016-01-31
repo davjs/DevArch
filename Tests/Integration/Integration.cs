@@ -8,6 +8,7 @@ using Logic.Filtering;
 using Logic.Integration;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Tests.TestExtesions;
 
 namespace Tests.Integration
 {
@@ -17,8 +18,7 @@ namespace Tests.Integration
         [TestMethod]
         public void FindsDependencies()
         {
-            var solution = new AdvancedSolution(GetDte());
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
             Assert.AreEqual(1,lib.DescendantNodes().Count(x => x.Name == "Node"));
@@ -30,8 +30,7 @@ namespace Tests.Integration
         [TestMethod]
         public void SemanticTreeDoesNotContainDoubles()
         {
-            var solution = new AdvancedSolution(GetDte());
-            var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic\\SemanticTree");
+            var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic\\SemanticTree");
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
             ModelFilterer.ApplyFilter(ref tree, new Filters());
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
@@ -41,8 +40,7 @@ namespace Tests.Integration
         [TestMethod]
         public void LogicDoesNotContainDoubles()
         {
-            var solution = new AdvancedSolution(GetDte());
-            var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic");
+            var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic");
             tree = tree.Childs.First();
             tree = tree.Childs.First();
             tree.RemoveChild("Building");
@@ -75,8 +73,7 @@ namespace Tests.Integration
         [TestMethod]
         public void LogicLayerIsVertical()
         {
-            var solution = new AdvancedSolution(GetDte());
-            var tree = SemanticTreeBuilder.AnalyseNamespace(solution, "Logic");
+            var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic");
             tree = tree.Childs.First(); tree = tree.Childs.First();
             tree.RemoveChild(tree.Childs.WithName("DiagramDefinition"));
             tree.RemoveChild(tree.Childs.WithName("Filters"));
@@ -99,13 +96,6 @@ namespace Tests.Integration
             }
             ModelFilterer.ApplyFilter(ref tree, new Filters());
             Assert.AreEqual(OrientationKind.Vertical,tree.Orientation);
-        }
-
-
-        private static DTE GetDte()
-        {
-            return (DTE)Marshal.
-                GetActiveObject("VisualStudio.DTE.14.0");
         }
     }
 }

@@ -13,6 +13,7 @@ using Presentation.Coloring;
 using Presentation.Coloring.ColoringAlgorithms;
 using Presentation.ViewModels;
 using Presentation.Views;
+using static Tests.TestExtesions;
 
 namespace Tests.Units.Presentation
 {
@@ -23,12 +24,7 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void GenerateAllArchDiagrams()
         {
-            var enviroment = TestExtesions.Dte;
-            while (enviroment.Solution == null)
-            {
-                enviroment = TestExtesions.Dte;
-            }
-            DevArch.RenderAllArchDiagramsToFiles(enviroment);
+            DevArch.RenderAllArchDiagramsToFiles(Dte);
         }
 
 
@@ -36,12 +32,10 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void GenerateAlignmentTest()
         {
-            var enviroment = TestExtesions.Dte;
-            var solution = new AdvancedSolution(enviroment);
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var modelDef = new DiagramDefinition("",
                 new NamespaceScope {Name = @"Tests\Integration\Samples"},
-                new OutputSettings {Path = solution.Directory() + @"IntegrationTests\VerticalAnonymousLayer.png" },
+                new OutputSettings {Path = SlnDir + @"IntegrationTests\VerticalAnonymousLayer.png" },
                 new Filters {RemoveTests = false}
                 );
             var tree =modelGen.GenerateDiagram(modelDef);
@@ -52,15 +46,13 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void RemovesNamespaces()
         {
-            var enviroment = TestExtesions.Dte;
-            var solution = new AdvancedSolution(enviroment);
             var modelDef = new DiagramDefinition("",
                 new RootScope(), 
-                new OutputSettings { Path = solution.Directory() + @"IntegrationTests\WithoutNspaces.png" },
+                new OutputSettings { Path = SlnDir + @"IntegrationTests\WithoutNspaces.png" },
                 new Filters { RemoveContainers = true,MaxDepth = 6}
                 );
             //var tree = modelGen.GenerateDiagram(modelDef);
-            var tree = SemanticTreeBuilder.AnalyseSolution(solution) as Node;
+            var tree = SemanticTreeBuilder.AnalyseSolution(TestSolution) as Node;
             tree.RemoveChild("Clients");
             var lib = tree.Childs.WithName("Lib");
             //lib.RemoveChild("Lib");
