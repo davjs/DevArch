@@ -36,57 +36,23 @@ namespace Tests.Integration
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
         }
 
-        //TODO Copy in old version of this test from sourcecontrol
         [TestMethod]
-        public void LogicDoesNotContainDoubles()
+        public void LogicLayerIsVertical()
         {
             var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic");
-            tree = tree.Childs.First();
-            tree = tree.Childs.First();
-            tree.RemoveChild("Building");
+            tree = tree.Childs.First(); tree = tree.Childs.First();
+            tree.RemoveChild("DiagramDefinition");
+            tree.RemoveChild("Filters");
+            tree.RemoveChild("DiagramFromDiagramDefinitionGenerator");
+            tree.RemoveChild("DiagramDefinitionParser");
             tree.RemoveChild("Common");
-            tree.RemoveChild("Integration");
             tree.RemoveChild("OutputSettings");
             tree.RemoveChild("NamedScope");
             tree.RemoveChild("DocumentScope");
             tree.RemoveChild("ProjectScope");
             tree.RemoveChild("NamespaceScope");
             tree.RemoveChild("ClassScope");
-            tree.RemoveChild("DiagramFromDiagramDefinitionGenerator");
             tree.RemoveChild("NoArchProjectsFound");
-            var filtering = tree.DescendantNodes().WithName("Filtering");
-            filtering.RemoveChild("SiblingReorderer");
-            filtering.RemoveChild("PatternFinder");
-            tree.RemoveChild(filtering);
-            tree.AddChild(filtering.Childs.First());
-            foreach (var child in tree.Childs)
-            {
-                //Remove those not in childs
-                child.Dependencies = 
-                    child.Dependencies.Intersect(tree.Childs).ToList();
-            }
-            Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "RootScope"));
-            ModelFilterer.ApplyFilter(ref tree, new Filters());
-            Assert.AreEqual(1,tree.DescendantNodes().Count(x => x.Name == "RootScope"));
-        }
-
-        [TestMethod]
-        public void LogicLayerIsVertical()
-        {
-            var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic");
-            tree = tree.Childs.First(); tree = tree.Childs.First();
-            tree.RemoveChild(tree.Childs.WithName("DiagramDefinition"));
-            tree.RemoveChild(tree.Childs.WithName("Filters"));
-            tree.RemoveChild(tree.Childs.WithName("DiagramFromDiagramDefinitionGenerator"));
-            tree.RemoveChild(tree.Childs.WithName("DiagramDefinitionParser"));
-            tree.RemoveChild(tree.Childs.WithName("Common"));
-            tree.RemoveChild(tree.Childs.WithName("OutputSettings"));
-            tree.RemoveChild(tree.Childs.WithName("NamedScope"));
-            tree.RemoveChild(tree.Childs.WithName("DocumentScope"));
-            tree.RemoveChild(tree.Childs.WithName("ProjectScope"));
-            tree.RemoveChild(tree.Childs.WithName("NamespaceScope"));
-            tree.RemoveChild(tree.Childs.WithName("ClassScope"));
-            tree.RemoveChild(tree.Childs.WithName("NoArchProjectsFound"));
             
             foreach (var child in tree.Childs)
             {
@@ -96,6 +62,15 @@ namespace Tests.Integration
             }
             ModelFilterer.ApplyFilter(ref tree, new Filters());
             Assert.AreEqual(OrientationKind.Vertical,tree.Orientation);
+        }
+
+        [TestMethod]
+        public void GeneratesWholeSolutionDiagramWithoutNamespacesWithoutCausingDuplicates()
+        {
+            var tree = SemanticTreeBuilder.AnalyseSolution(TestSolution) as Node;
+            ModelFilterer.ApplyFilter(ref tree, new Filters { RemoveContainers = true });
+            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            TreeAssert.DoesNotContainDuplicates(tree);
         }
     }
 }

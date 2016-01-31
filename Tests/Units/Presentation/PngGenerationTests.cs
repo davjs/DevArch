@@ -41,31 +41,5 @@ namespace Tests.Units.Presentation
             var tree =modelGen.GenerateDiagram(modelDef);
             BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);
         }
-
-        [TestCategory("PngGeneration")]
-        [TestMethod]
-        public void GeneratesWholeSolutionDiagramWithoutNamespacesWithoutCausingDuplicates()
-        {
-            var modelDef = new DiagramDefinition("",
-                new RootScope(), 
-                new OutputSettings { Path = SlnDir + @"IntegrationTests\WithoutNspaces.png" },
-                new Filters { RemoveContainers = true}
-                );
-
-            var tree = SemanticTreeBuilder.AnalyseSolution(TestSolution) as Node;
-
-            ModelFilterer.ApplyFilter(ref tree, modelDef.Filters);
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
-
-            var allNodes = tree.DescendantNodes().Where(x => !string.IsNullOrEmpty(x.Name));
-
-            var dups = allNodes.GroupBy(x => x)
-                        .Where(x => x.Count() > 1)
-                        .Select(x => x.Key)
-                        .ToList();
-
-            if (dups.Any())
-                throw new AssertFailedException(dups.First().ToString() + allNodes.Count());
-        }
     }
 }

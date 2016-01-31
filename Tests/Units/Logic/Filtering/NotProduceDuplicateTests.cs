@@ -41,17 +41,8 @@ namespace Tests.Units.Logic.Filtering
             // arrow arch
             // diagramsybol      circulardeps
             //              node
-
-            var tree = new Node("tree");
-            tree.SetChildren(newList);
-            var allNodes = tree.DescendantNodes().Where(x => !string.IsNullOrEmpty(x.Name));
-
-            var dups = allNodes.GroupBy(x => x)
-                        .Where(x => x.Count() > 1)
-                        .Select(x => x.Key)
-                        .ToList();
-
-            CollectionAssert.AreEqual(dups,new List<Node>());
+            
+            TestExtesions.TreeAssert.DoesNotContainDuplicates(newList);
         }
 
 
@@ -77,19 +68,9 @@ namespace Tests.Units.Logic.Filtering
             var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 rootScope,patternFinder,smallClassFilter,diagramSymbol,diagramDefiniton,diagramDefinitonGenerator,diagramDefinitionParser,layerMapper,modelFilterer
-            }).ToList();
-            
+            });
 
-            var tree = new Node("tree");
-            tree.SetChildren(newList);
-            var allNodes = tree.DescendantNodes().Where(x => !string.IsNullOrEmpty(x.Name));
-
-            var dups = allNodes.GroupBy(x => x)
-                        .Where(x => x.Count() > 1)
-                        .Select(x => x.Key)
-                        .ToList();
-
-            CollectionAssert.AreEqual(dups, new List<Node>());
+            TestExtesions.TreeAssert.DoesNotContainDuplicates(newList);
         }
 
         [TestCategory("SiblingOrder.DuplicateTests")]
@@ -117,25 +98,9 @@ namespace Tests.Units.Logic.Filtering
             var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node>
             {
                 rootScope, diagramDefiniton, diagramDefinitionParser, node, classNode, childrenFilter, smallClassFilter,modelFilterer,solutioNode,diagramFromDiagramGenerator
-            }).ToList();
-
-            var tree = new Node("tree");
-            tree.SetChildren(newList);
-            var allNodes = tree.DescendantNodes().Where(x => !string.IsNullOrEmpty(x.Name));
-
-            var dups = allNodes.GroupBy(x => x)
-                        .Where(x => x.Count() > 1)
-                        .Select(x => x.Key)
-                        .ToList();
+            });
             
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
-            
-            
-            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + @"IntegrationTests\Analysis.png" });
-
-
-
-            CollectionAssert.AreEqual(dups, new List<Node>());
+            TestExtesions.TreeAssert.DoesNotContainDuplicates(newList);
         }
 
 

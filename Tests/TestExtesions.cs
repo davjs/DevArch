@@ -25,7 +25,15 @@ namespace Tests
             }
             tree.RemoveChild(withName);
         }
-        
+
+
+        internal class ChildNotFoundException : Exception
+        {
+            public ChildNotFoundException(string message) : base(message)
+            {
+            }
+        }
+
         public static string SubStrBetween(this string str, int startIndex,int endIndex)
         {
             return str.Substring(startIndex, endIndex - startIndex);
@@ -92,12 +100,29 @@ namespace Tests
             }
 
         }
-    }
 
-    internal class ChildNotFoundException : Exception
-    {
-        public ChildNotFoundException(string message) : base(message)
+        public static class TreeAssert
         {
+
+            public static void DoesNotContainDuplicates(Node tree)
+            {
+                DoesNotContainDuplicates(tree.Childs);
+            }
+
+            public static void DoesNotContainDuplicates(IEnumerable<Node> tree)
+            {
+                var allNodes = tree.SelectMany(x => x.DescendantNodes()).Where(x => !String.IsNullOrEmpty(x.Name));
+
+                var dups = allNodes.GroupBy(x => x)
+                            .Where(x => x.Count() > 1)
+                            .Select(x => x.Key)
+                            .ToList();
+
+                if(dups.Any())
+                    throw new AssertFailedException($"Got {dups.Count} duplicates:" +
+                                                    $"{string.Join(",",dups)}");
+            }
         }
     }
+
 }

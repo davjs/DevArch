@@ -431,33 +431,16 @@ namespace Tests.Units.Logic.Filtering.Ordering
         [TestMethod]
         public void PutsPartlyCommonDependencyOnNextLayer()
         {
-            Node A = new Node(nameof(A));
-            Node B = new Node(nameof(B));
-            Node C = new Node(nameof(C));
-            Node D = new Node(nameof(D));
-            Node E = new Node(nameof(E));
-            Node F = new Node(nameof(F));
-            Node X = new Node(nameof(X));
+            var nodesList = OrderingTestFactory.CreateNodeList(
+                @"A ->
+                B ->
+                C -> A,X
+                D -> B,X
+                E -> B
+                F -> C,D,E
+                X ->");
 
-            F.SiblingDependencies.Add(C);
-            F.SiblingDependencies.Add(D);
-            F.SiblingDependencies.Add(E);
-            C.SiblingDependencies.Add(A);
-            C.SiblingDependencies.Add(X);
-            D.SiblingDependencies.Add(X);
-            D.SiblingDependencies.Add(B);
-            E.SiblingDependencies.Add(B);
-
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
-            {
-                A,
-                B,
-                C,
-                D,
-                E,
-                F,
-                X
-            });
+            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(nodesList);
 
             //             
             //1.  A  X   B
@@ -466,103 +449,23 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
             Assert.AreEqual(3, newChildOrder.Count);
             //0
-            Assert.AreEqual(X, newChildOrder.First());
+            Assert.AreEqual("X", newChildOrder.First().Name);
             var hor = newChildOrder.ElementAt(1);
             Assert.AreEqual(OrientationKind.Horizontal, hor.Orientation);
             Assert.AreEqual(2, hor.Childs.Count);
             var right = hor.Childs.First();
             var left = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
-            Assert.AreEqual(A, left.Childs.First());
-            Assert.AreEqual(C, left.Childs.Last());
+            Assert.AreEqual("A", left.Childs.First().Name);
+            Assert.AreEqual("C", left.Childs.Last().Name);
             Assert.IsTrue(right is VerticalSiblingHolderNode);
-            Assert.AreEqual(B, right.Childs.First());
+            Assert.AreEqual("B", right.Childs.First().Name);
             var rightBot = right.Childs.Last();
             Assert.AreEqual(OrientationKind.Horizontal, rightBot.Orientation);
-            CollectionAssert.Contains(rightBot.Childs.ToArray(), D);
-            CollectionAssert.Contains(rightBot.Childs.ToArray(), E);
+            Assert.IsTrue(rightBot.Childs.Any(x => x.Name == "D"));
+            Assert.IsTrue(rightBot.Childs.Any(x => x.Name == "E"));
             //1
-            Assert.AreEqual(F, newChildOrder.Last());
-        }
-
-
-        public class OrderingTestFactory
-        {
-            public static List<Node> CreateNodeList(string nodeCreationQuery)
-            {
-                nodeCreationQuery = Regex.Replace(nodeCreationQuery,@"[ \r]", "");
-                var entries = nodeCreationQuery.Split('\n').ToList();
-                //entries.RemoveAt(entries.Count-1);
-                var splitEntries =
-                    entries.Select(x => x.Split(new[] {"->"}, StringSplitOptions.RemoveEmptyEntries));
-
-                var nodes = splitEntries.Select(x => new Node(x[0])).ToList();
-
-                var i = 0;
-                foreach (var dependencyString in splitEntries.Select(x => x.Length == 2 ? x[1] : null))
-                {
-                    if (dependencyString != null)
-                    {
-                        var dependencies = dependencyString.Split(',');
-                        var nodeDependencies = dependencies.Select(x => nodes.WithName(x));
-                        nodes[i].SiblingDependencies = new HashSet<Node>(nodeDependencies);
-                    }
-                    i++;
-                }
-                
-                return nodes;
-            }
-            
-
-
-            public static void AssertLayout(Node expected, Node actual)
-            {
-                
-                if(expected.Childs.Count != actual.Childs.Count)
-                    throw new AssertFailedException($"Expected {expected.Name ?? actual.Name} to have {expected.Childs.Count} childs got {actual.Childs.Count}\n" +
-                                                    "Expected:\n" +
-                                                    $" {expected}\n " +
-                                                    "--------------------\nGot:\n" +
-                                                    $" {actual}");
-                foreach (var child in expected.Childs)
-                {
-                    var foundChild = false;
-                    if (string.IsNullOrEmpty(child.Name))
-                    {
-                        if (actual.Childs.Any(x => CompareNodesByLayout(child, x)))
-                            foundChild = true;
-                    }
-                    else
-                    {
-                        if (actual.Childs.WithName(child.Name) != null)
-                            foundChild = true;
-                    }
-                    if(!foundChild)
-                        throw new AssertFailedException($"{expected.Name ?? actual.Name} did not have child {child} got {actual.Childs}\n" +
-                                                        "Expected:\n" +
-                                                        $" {expected}\n " +
-                                                        "--------------------\nGot:\n" +
-                                                        $" {actual}");
-                }
-            }
-
-            private static bool CompareNodesByLayout(Node expected, Node actual)
-            {
-                foreach (var child in expected.Childs)
-                {
-                    if (string.IsNullOrEmpty(child.Name))
-                    {
-                        if (!actual.Childs.Any(x => CompareNodesByLayout(child, x)))
-                            return false;
-                    }
-                    else
-                    {
-                        if (actual.Childs.WithName(child.Name) == null)
-                            return false;
-                    }
-                }
-                return true;
-            }
+            Assert.AreEqual("F", newChildOrder.Last().Name);
         }
 
 
@@ -606,16 +509,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var tree = new Node("tree");
             tree.SetChildren(newChildOrder);
             DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
-
-            var allNodes = tree.DescendantNodes().Where(x => !string.IsNullOrEmpty(x.Name));
-
-            var dups = allNodes.GroupBy(x => x)
-                        .Where(x => x.Count() > 1)
-                        .Select(x => x.Key)
-                        .ToList();
-            
-            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + @"IntegrationTests\Analysis.png" });
-
+            TestExtesions.TreeAssert.DoesNotContainDuplicates(tree);
             OrderingTestFactory.AssertLayout(assertLayout,tree);
         }
     }
