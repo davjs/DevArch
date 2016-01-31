@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\Samples\VerticalAnonymousLayer.cs" />
+    <Compile Include="OrderingTestFactory.cs" />
     <Compile Include="Sample\Patterns.cs" />
     <Compile Include="TestExtesions.cs" />
     <Compile Include="Units\Logic\AnalyserTests.cs" />
