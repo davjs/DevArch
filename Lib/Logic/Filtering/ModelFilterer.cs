@@ -57,12 +57,16 @@ namespace Logic.Filtering
         {
             if (filters.RemoveTests)
                 ApplyNodeFilter(tree, NodeFilters.Tests);
-            if (filters.MaxDepth > 0)
-                RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
-            if (filters.RemoveContainers)
-                RemoveContainers(ref tree);
             if (filters.RemoveDefaultNamespaces)
                 RemoveDefaultNamespaces(tree);
+
+            if (filters.RemoveContainers)
+            {
+                if (filters.MaxDepth > 0)
+                    RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
+                RemoveContainers(ref tree);
+            }
+
             if (filters.RemoveExceptions)
                 ApplyClassFilter(tree, ClassFilters.Exceptions);
 
