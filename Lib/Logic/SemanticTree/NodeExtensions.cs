@@ -27,6 +27,11 @@ namespace Logic.SemanticTree
             return node.SiblingDependencies.Contains(dependency);
         }
 
+        public static bool IndirectlyDependsOn(this Node node,Node Dependency)
+        {
+            return node.IndirectSiblingDependencies().Contains(Dependency);
+        }
+
         /*public static int TotalReferences(this IEnumerable<Node> nodes)
         {
             return nodes.Select(n => n.References).Distinct().Count();

@@ -103,7 +103,7 @@ namespace Logic.Filtering
                             //If any of the other nodes depends on the vertical candidate the candidate is removed and will be placed in a later iteration of this call (it is still left in toBeGrouped)
                             foreach (var nestedNode in verticalCandidates.ToList().
                                 Where(nestedNode => toBeShared.Contains(nestedNode) || 
-                                otherNodes.Any(x => x.DependsOn(nestedNode))))
+                                otherNodes.Any(x => x.IndirectlyDependsOn(nestedNode))))
                             {
                                 verticalCandidates.Remove(nestedNode);
                                 verticalCandidates.ForEach(x => x.SiblingDependencies.Remove(nestedNode));
