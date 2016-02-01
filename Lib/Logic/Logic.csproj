@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="Building\SemanticTreeBuilder.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
+    <Compile Include="Ordering\CircularReferenceFinder.cs" />
     <Compile Include="Integration\AdvancedSolution.cs" />
     <Compile Include="DiagramDefinition.cs" />
     <Compile Include="Building\ProjectTreeBuilder.cs" />
@@ -121,7 +122,7 @@
     <Compile Include="Building\SemanticModelWalker.cs" />
     <Compile Include="SemanticTree\Node.cs" />
     <Compile Include="SemanticTree\NodeExtensions.cs" />
-    <Compile Include="Filtering\SiblingReorderer.cs" />
+    <Compile Include="Ordering\SiblingReorderer.cs" />
     <Compile Include="SemanticTree\UniqueEntity.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@ using System.Linq;
 using Logic;
 using Logic.Filtering;
 using Logic.Integration;
+using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,7 +32,7 @@ namespace Tests.Units.Logic.Filtering
             Node layerMapper = new Node(nameof(layerMapper)) { SiblingDependencies = {node,archView,diagramSymbol,arrowView}};
             Node bitmapRenderer = new Node(nameof(bitmapRenderer)) {SiblingDependencies = {node,archView,layerMapper}};
             
-            var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newList = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 node,diagramSymbol,CircularDependencyHolder,archView,arrowView,layerMapper,bitmapRenderer
             }).ToList();
@@ -65,7 +66,7 @@ namespace Tests.Units.Logic.Filtering
                 SiblingDependencies = { diagramDefinitionParser, diagramDefiniton,rootScope,modelFilterer }
             };
 
-            var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newList = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 rootScope,patternFinder,smallClassFilter,diagramSymbol,diagramDefiniton,diagramDefinitonGenerator,diagramDefinitionParser,layerMapper,modelFilterer
             });
@@ -95,7 +96,7 @@ namespace Tests.Units.Logic.Filtering
 
             Node diagramFromDiagramGenerator = new Node(nameof(diagramFromDiagramGenerator)) {SiblingDependencies = {diagramDefinitionParser, node,diagramDefiniton,rootScope,modelFilterer }};
 
-            var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newList = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 rootScope, diagramDefiniton, diagramDefinitionParser, node, classNode, childrenFilter, smallClassFilter,modelFilterer,solutioNode,diagramFromDiagramGenerator
             });

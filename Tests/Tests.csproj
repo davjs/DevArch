@@ -125,14 +125,14 @@
     <Compile Include="Units\Logic\AnalyserTests.cs" />
     <Compile Include="Units\Logic\Building\SemanticTreeBuilderTests.cs" />
     <Compile Include="Units\Logic\Building\UnitTest1.cs" />
-    <Compile Include="Units\Logic\Filtering\Ordering\DependencyPatternTests.cs" />
-    <Compile Include="Units\Logic\Filtering\Ordering\VerticalLayersTests.cs" />
+    <Compile Include="Units\Logic\Ordering\DependencyPatternTests.cs" />
+    <Compile Include="Units\Logic\Ordering\VerticalLayersTests.cs" />
     <Compile Include="Units\Logic\Filtering\NotProduceDuplicateTests.cs" />
     <Compile Include="Units\Logic\Integration\AdvancedSolutionTests.cs" />
     <Compile Include="Integration\Integration.cs" />
     <Compile Include="Units\Presentation\ColorRangeTests.cs" />
     <Compile Include="Units\Logic\Filtering\FilterTests.cs" />
-    <Compile Include="Units\Logic\Filtering\Ordering\CircularReferenceTests.cs" />
+    <Compile Include="Units\Logic\Ordering\CircularReferenceTests.cs" />
     <Compile Include="Units\Presentation\LayerMapperTests.cs" />
     <Compile Include="Units\Logic\PatternFinderTests.cs" />
     <Compile Include="Units\Presentation\PngGenerationTests.cs" />
@@ -141,7 +141,7 @@
     <Compile Include="Units\Logic\DependencyTests.cs" />
     <Compile Include="Sample\Complex.cs" />
     <Compile Include="Sample\FindsAnononymousLayer.cs" />
-    <Compile Include="Units\Logic\Filtering\Ordering\SiblingOrderTests.cs" />
+    <Compile Include="Units\Logic\Ordering\SiblingOrderTests.cs" />
     <Compile Include="Sample\Layers.cs" />
     <Compile Include="Units\Logic\SolutionDirectoryTests.cs" />
   </ItemGroup>

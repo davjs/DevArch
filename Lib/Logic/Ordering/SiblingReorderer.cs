@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Logic.Building;
 using Logic.Common;
+using Logic.Filtering;
 using Logic.SemanticTree;
-using static Logic.SemanticTree.OrientationKind;
 
-namespace Logic.Filtering
+namespace Logic.Ordering
 {
     public static class SiblingReorderer
     {
@@ -21,7 +19,7 @@ namespace Logic.Filtering
             if (!childs.SiblingDependencies().Any())
             {
                 if (childs.Any() && childs.First().Parent != null)
-                    childs.First().Parent.Orientation = Horizontal;
+                    childs.First().Parent.Orientation = OrientationKind.Horizontal;
                 return childs;
             }
 
@@ -32,8 +30,8 @@ namespace Logic.Filtering
 
         private static IEnumerable<Node> GroupNodes(List<Node> oldChildList)
         {
-            FindCircularReferences(ref oldChildList);
-            return RegroupSiblingNodes(oldChildList);
+            CircularReferenceFinder.FindCircularReferences(ref oldChildList);
+            return LayOutSiblingNodes(oldChildList);
         }
 
         public static List<Node> GetFacadeNodes(List<Node> targets)
@@ -42,7 +40,7 @@ namespace Logic.Filtering
             return targets.Where(n => !allDependencies.Contains(n)).ToList();
         }
 
-        public static List<Node> RegroupSiblingNodes(List<Node> toBeGrouped)
+        public static List<Node> LayOutSiblingNodes(List<Node> toBeGrouped)
         {
             if (toBeGrouped.Count <= 1)
                 return toBeGrouped;
@@ -254,88 +252,6 @@ namespace Logic.Filtering
                 : new HorizontalSiblingHolderNode(uniqueReferencers);
         }
 
-        public static void RegroupSiblingNodes2(List<Node> oldChildList,
-            ref List<Node> newChildOrder)
-        {
-            var nodesWithoutDependency = new List<Node>();
-            while (oldChildList.Any())
-            {
-                foreach (var node1 in nodesWithoutDependency)
-                {
-                    foreach (var node in oldChildList)
-                    {
-                        node.SiblingDependencies.Remove(node1);
-                    }
-                }
-                nodesWithoutDependency = oldChildList.Where(x => !x.SiblingDependencies.Any()).ToList();
-                if (!nodesWithoutDependency.Any())
-                {
-                    if (oldChildList.Count == 2)
-                        nodesWithoutDependency = oldChildList.ToList();
-                    else
-                        throw new LayerViolationException();
-                }
-
-                var newNode = nodesWithoutDependency.Count == 1
-                    ? nodesWithoutDependency.First()
-                    : new HorizontalSiblingHolderNode(nodesWithoutDependency);
-                newChildOrder.Add(newNode);
-                foreach (var node in nodesWithoutDependency)
-                {
-                    oldChildList.Remove(node);
-                }
-            }
-        }
-
-        public static void FindCircularReferences(ref List<Node> childList)
-        {
-            FindCircularReferences(childList, childList);
-        }
-
-        private static void FindCircularReferences(List<Node> childList1, List<Node> childList2)
-        {
-            var circularRefs = new List<Tuple<Node, Node>>();
-            foreach (var node in childList1)
-            {
-                foreach (var node2 in from node2 in childList2.Where(n => n != node)
-                    where node.SiblingDependencies.Contains(node2)
-                    where node2.SiblingDependencies.Contains(node)
-                    where circularRefs.All(x => x.Item1 != node2 && x.Item2 != node)
-                    select node2)
-                {
-                    circularRefs.Add(new Tuple<Node, Node>(node, node2));
-                }
-            }
-            var circularDependencyHolders = new List<Node>();
-            //NEEED TO CHECK FOR CIRULARREFERENCES WITH THE NEWLY CREATED CIRULARDEPENDENCYHOLDERS
-            foreach (var circularRef in circularRefs)
-            {
-                var circularDependencyHolderNode =
-                    new CircularDependencyHolderNode(new List<Node> {circularRef.Item1, circularRef.Item2});
-                circularDependencyHolderNode.SiblingDependencies.UnionWith(
-                    circularRef.Item1.SiblingDependencies.Union(circularRef.Item2.SiblingDependencies));
-                childList2.Add(circularDependencyHolderNode);
-                circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item1);
-                circularDependencyHolderNode.SiblingDependencies.Remove(circularRef.Item2);
-                childList2.Remove(circularRef.Item1);
-                childList2.Remove(circularRef.Item2);
-                foreach (var node3 in childList2.Where(n => n != circularDependencyHolderNode))
-                {
-                    var containedNode1 = node3.SiblingDependencies.Contains(circularRef.Item1);
-                    var containedNode2 = node3.SiblingDependencies.Contains(circularRef.Item2);
-                    if (containedNode1 || containedNode2)
-                        node3.SiblingDependencies.Add(circularDependencyHolderNode);
-                    if (containedNode1)
-                        node3.SiblingDependencies.Remove(circularRef.Item1);
-                    if (containedNode2)
-                        node3.SiblingDependencies.Remove(circularRef.Item2);
-                }
-                circularDependencyHolders.Add(circularDependencyHolderNode);
-            }
-            if (circularDependencyHolders.Any() && circularDependencyHolders != childList2)
-                FindCircularReferences(circularDependencyHolders, childList2);
-        }
-
         public class DependencyGroup
         {
             public readonly ISet<Node> Dependants;
@@ -367,9 +283,5 @@ namespace Logic.Filtering
                         new List<Node> {Referencer});
             }
         }
-    }
-    
-    internal class LayerViolationException : Exception
-    {
     }
 }

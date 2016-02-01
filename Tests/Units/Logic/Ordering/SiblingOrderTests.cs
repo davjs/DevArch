@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Logic.Building;
 using Logic.Filtering;
+using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Logic.SemanticTree.OrientationKind;
@@ -12,8 +13,6 @@ namespace Tests.Units.Logic.Filtering.Ordering
     [TestClass]
     public class SiblingOrderTests
     {
-        private readonly VerticalLayersTests _verticalLayersTests = new VerticalLayersTests();
-
         [TestCategory("SiblingOrder")]
         [TestMethod]
         public void TwoSiblingsAreOrderedByDependency()
@@ -119,7 +118,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             c.SiblingDependencies.Add(a);
             b.SiblingDependencies.Add(a);
 
-            var newList = SiblingReorderer.RegroupSiblingNodes(new List<Node> { c,b,a});
+            var newList = SiblingReorderer.LayOutSiblingNodes(new List<Node> { c,b,a});
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
         }
 

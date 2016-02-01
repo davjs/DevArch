@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Logic.Filtering;
+using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -53,7 +54,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             a.SiblingDependencies.Add(c);
 
             var childList = new List<Node> { a, b, c };
-            SiblingReorderer.FindCircularReferences(ref childList);
+            CircularReferenceFinder.FindCircularReferences(ref childList);
             Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.Last().GetType());
         }
 
