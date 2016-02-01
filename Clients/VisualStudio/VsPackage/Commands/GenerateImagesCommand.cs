@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using EnvDTE;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -9,12 +10,18 @@ namespace DevArch.Commands
 {
     internal sealed class GenerateImagesCommand : CommandBase
     {
+        private readonly IComponentModel _componentModel;
+
         /// On Press
         public override async void OnClick(object sender, EventArgs e)
         {
             var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
-//#if DEBUG
-            await Task.Run(() => Lib.DevArch.RenderAllArchDiagramsToFiles(dte));
+
+            var workspace = _componentModel.GetService<Microsoft.VisualStudio.LanguageServices.VisualStudioWorkspace>();
+            var solution = workspace.CurrentSolution;
+
+            //#if DEBUG
+            await Task.Run(() => Lib.DevArch.RenderAllArchDiagramsToFiles(dte, solution));
 /*#else
             try
             {
@@ -34,9 +41,9 @@ namespace DevArch.Commands
         }
 
 
-        public GenerateImagesCommand(IServiceProvider serviceProvider) : base(serviceProvider)
+        public GenerateImagesCommand(IServiceProvider serviceProvider, IComponentModel componentModel) : base(serviceProvider)
         {
-
+            _componentModel = componentModel;
         }
     }
 

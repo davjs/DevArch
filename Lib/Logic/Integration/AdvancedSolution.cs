@@ -14,21 +14,32 @@ namespace Logic.Integration
     public class AdvancedSolution
     {
         public readonly Solution RoslynSolution;
-        public readonly Projects DteProjects;
-        private readonly string _fullName;
-        public readonly string Name;
+        public Projects DteProjects;
+        private string _fullName;
+        public string Name;
 
         public AdvancedSolution(_DTE dte)
         {
             var build = MSBuildWorkspace.Create();
+            GetDteProjects(dte);
+            var sol = build.OpenSolutionAsync(_fullName);
+            RoslynSolution = KeepTrying.ToGet(() => sol.Result);
+        }
+
+        private void GetDteProjects(_DTE dte)
+        {
             var dteSolution = dte.Solution;
             _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
             if (string.IsNullOrEmpty(_fullName))
                 throw new Exception("Unable to find opened solution");
-            var sol = build.OpenSolutionAsync(_fullName);
-            RoslynSolution = KeepTrying.ToGet(() => sol.Result);
-            DteProjects = KeepTrying.ToGet(() =>dteSolution.Projects);
+            DteProjects = KeepTrying.ToGet(() => dteSolution.Projects);
             Name = Path.GetFileName(_fullName);
+        }
+
+        public AdvancedSolution(_DTE enivorment, Solution currentSolution)
+        {
+            GetDteProjects(enivorment);
+            RoslynSolution = currentSolution;
         }
 
         public IList<Project> FindArchProjects()

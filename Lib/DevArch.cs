@@ -8,14 +8,16 @@ using Logic;
 using Logic.Common;
 using Logic.Integration;
 using Presentation;
+using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Lib
 {
     public static class DevArch
     {
-        public static void RenderAllArchDiagramsToFiles(_DTE enivorment)
+        public static void RenderAllArchDiagramsToFiles(_DTE enivorment, Solution currentSolution = null)
         {
-            var solution = new AdvancedSolution(enivorment);
+            var solution = currentSolution == null ? 
+                new AdvancedSolution(enivorment) : new AdvancedSolution(enivorment,currentSolution);
             var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
             var parseResults = modelGen.GetDiagramDefinitions();
             var resultLogger = new ParseResultLogger(enivorment,parseResults);
