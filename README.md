@@ -6,7 +6,7 @@ DevArch provides an easy way to auto generate and keep diagrams updated.
 
 ![Project](/Docs/ProjectSample.PNG)
 
-The **DevArch Project** contains **Diagram Definitions** which at the press of a button all gets turned into diagrams
+The **DevArch Project** contains **Diagram Definitions** which at the press of a button all get turned into diagrams
 
 ![Generating](/Docs/GenerateSample.png)
 
