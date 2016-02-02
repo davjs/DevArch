@@ -13,17 +13,17 @@ namespace Presentation
     {
         static readonly IPalletteAlgorithm Pallette = new HueRangeDivisor();
 
-        public static ArchViewModel TreeModelToArchViewModel(Node model,bool dependencyDown)
+        public static ArchViewModel TreeModelToArchViewModel(Node model,bool dependencyDown, bool hideAnonymousNodes)
         {
             return new ArchViewModel
             {
-                Layers = PaintAndMapNodes(model.Childs,dependencyDown)
+                Layers = PaintAndMapNodes(model.Childs,dependencyDown, hideAnonymousNodes)
             };
         }
 
-        private static IEnumerable<DiagramSymbolViewModel> PaintAndMapNodes(IEnumerable<Node> nodes, bool dependencyDown)
+        private static IEnumerable<DiagramSymbolViewModel> PaintAndMapNodes(IEnumerable<Node> nodes, bool dependencyDown, bool hideAnonymousNodes)
         {
-            var layers = nodes.Select(NodeViewModelToLayerViewModel);
+            var layers = nodes.Select(x => NodeViewModelToLayerViewModel(x,hideAnonymousNodes));
             layers = PaintLayers(layers.ToList());
 
             var layerAndArrows = AddArrows(layers, Vertical, dependencyDown).ToList();
@@ -104,13 +104,15 @@ namespace Presentation
             PaintLayers(layer.Children.OfType<LayerViewModel>().ToList(), colorData, layer,depth + 1);
         }
 
-        public static LayerViewModel NodeViewModelToLayerViewModel(Node node)
+        public static LayerViewModel NodeViewModelToLayerViewModel(Node node, bool hideAnonymousNodes)
         {
-            var children = node.Childs.Select(NodeViewModelToLayerViewModel).ToList();
+            var children = node.Childs.Select(c => NodeViewModelToLayerViewModel(c, hideAnonymousNodes)).ToList();
+            var anonymous = !node.Name.Any();
             return new LayerViewModel
             {
-                Name = node.Name /* + (color.Bottom + color.Top) /2*/,
-                Anonymous = !node.Name.Any(),
+                Name = node.Name,
+                Anonymous = anonymous,
+                Invisible = hideAnonymousNodes && anonymous,
                 Children = children,
                 Orientation = node.Orientation,
                 Descendants = children.Count + children.Sum(model => model.Descendants)

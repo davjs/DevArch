@@ -1,5 +1,4 @@
-﻿using System;
-using Logic.SemanticTree;
+﻿using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Units.Logic.Building

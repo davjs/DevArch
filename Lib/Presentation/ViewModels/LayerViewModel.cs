@@ -10,6 +10,7 @@ namespace Presentation.ViewModels
         public string Name;
         public IEnumerable<DiagramSymbolViewModel> Children = new List<DiagramSymbolViewModel>();
         public bool Anonymous;
+        public bool Invisible;
         public int Rows;
         public int Columns;
         public AdvancedColor Color;

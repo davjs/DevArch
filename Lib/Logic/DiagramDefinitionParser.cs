@@ -10,36 +10,6 @@ namespace Logic
 {
     public static class DiagramDefinitionParser
     {
-        public static IReadOnlyCollection<DiagramDefinitionParseResult> GetDiagramDefinitionsFromSolution(AdvancedSolution solution)
-        {
-            var archProjects = solution.FindArchProjects();
-            if (archProjects.Count != 1) throw new NoArchProjectsFound();
-
-            var archProject = archProjects.First();
-            var projectItems = archProject.GetAllProjectItems();
-            var items =
-                projectItems.Where(d => d.Name.EndsWith(".diagramdefinition")).ToList();
-
-            var list = new List<DiagramDefinitionParseResult>();
-            foreach (var item in items)
-            {
-                var path = item.FileNames[0];
-                var name = item.Name;
-                try
-                {
-                    var definition = ParseDiagramDefinition(path, name);
-                    //Insert directory before output path
-                    definition.Output.Path = solution.Directory() + definition.Output.Path;
-                    list.Add(new DiagramDefinitionParseResult(definition));
-                }
-                catch (Exception e)
-                {
-                    list.Add(new DiagramDefinitionParseResult(new Exception(name + "- " + e.Message)));
-                }
-            }
-            return list;
-        }
-
         public static XmlElement RequireTag(this XmlNode doc, string tagName)
         {
             var x = doc[tagName];
@@ -48,22 +18,29 @@ namespace Logic
             return x;
         }
 
-        private static DiagramDefinition ParseDiagramDefinition(string path, string name)
+        private static string GetAttribute(XmlNode modelRoot, string attributeName)
+        {
+            var dependencyAttributeValue = modelRoot.Attributes?.GetNamedItem(attributeName)?.Value;
+            return dependencyAttributeValue;
+        }
+        
+        public static DiagramDefinition ParseDiagramDefinition(string name,string content)
         {
             var xmlDoc = new XmlDocument();
-            xmlDoc.Load(path);
-
+            xmlDoc.LoadXml(content);
+            
             var modelRoot = xmlDoc.RequireTag("Diagram");
             var scopeHolderNode = modelRoot.RequireTag("Scope");
             var output = modelRoot.RequireTag("Output");
             // Can be null
-            var filtersNode = modelRoot["Filters"]; 
+            var filtersNode = modelRoot["Filters"];
 
             // Dependency direction
-            var dependencyAttributeValue = modelRoot.Attributes?.GetNamedItem("DependencyDirection")?.Value;
-            var dependencyDown = true;
-            if (dependencyAttributeValue != null)
-                dependencyDown = dependencyAttributeValue.Equals("Down");
+            var dependencyAttributeValue = GetAttribute(modelRoot, "DependencyDirection");
+            var dependencyDown = dependencyAttributeValue?.Equals("Down") ?? true;
+
+            var hideAttribute = GetAttribute(modelRoot, "HideAnonymousLayers");
+            var hideAnonymous = hideAttribute?.Equals("true") ?? true;
 
             // Scope
             var scope = ParseScope(scopeHolderNode);
@@ -80,7 +57,7 @@ namespace Logic
                     ParseFilter(filter, ref filters);
                 }
             }   
-            var diagramDefinition = new DiagramDefinition(name, scope, outputSettings, filters, dependencyDown);
+            var diagramDefinition = new DiagramDefinition(name, scope, outputSettings, filters, dependencyDown, hideAnonymous);
             return diagramDefinition;
         }
 

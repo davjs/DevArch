@@ -40,7 +40,7 @@ namespace Tests
         }
 
         public static DTE Dte => (DTE)Marshal.GetActiveObject("VisualStudio.DTE.14.0");
-        public static string SlnDir => new AdvancedSolution(Dte).Directory();
+        public static string SlnDir => new AdvancedSolution(Dte).Directory;
         public static readonly AdvancedSolution TestSolution = new AdvancedSolution(Dte);
 
 

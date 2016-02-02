@@ -17,7 +17,7 @@ namespace Lib
         {
             var solution = new AdvancedSolution(enivorment);
             var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
-            var parseResults = modelGen.GetDiagramDefinitions();
+            var parseResults = modelGen.GetDiagramDefinitions().ToList();
             var resultLogger = new ParseResultLogger(enivorment,parseResults);
             resultLogger.PrintErrors();
 
@@ -27,7 +27,7 @@ namespace Lib
                 var tree = modelGen.GenerateDiagram(modelDef);
                 if (!tree.Childs.Any())
                     throw new NoClassesFoundException();
-                BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);
+                BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output, modelDef.HideAnonymousLayers);
                 resultLogger.PrintCreated(modelDef.Output.Path);
             }
            resultLogger.PrintSuccess();
@@ -38,7 +38,7 @@ namespace Lib
             var solution = new AdvancedSolution(enivorment);
             var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
-            var viewModel = LayerMapper.TreeModelToArchViewModel(tree,true);
+            var viewModel = LayerMapper.TreeModelToArchViewModel(tree,true,true);
             view.Diagram.RenderModel(viewModel);
         }
     }

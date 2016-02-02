@@ -15,9 +15,11 @@ namespace Logic
             _solution = solution;
         }
 
-        public IReadOnlyCollection<DiagramDefinitionParseResult> GetDiagramDefinitions()
+        public IEnumerable<DiagramDefinitionParseResult> GetDiagramDefinitions()
         {
-            return DiagramDefinitionParser.GetDiagramDefinitionsFromSolution(_solution);
+            return _solution.ArchProjects.SelectMany(
+                project => project.GetDiagramDefinitionFiles().Select(
+                    file => file.Parse(_solution.Directory)));
         }
 
         public Node GenerateDiagram(DiagramDefinition diagramDef)

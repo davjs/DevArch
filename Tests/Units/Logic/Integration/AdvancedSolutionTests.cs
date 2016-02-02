@@ -14,8 +14,8 @@ namespace Tests.Units.Logic.Integration
         [TestCategory("AdvancedSolution")]
         public void FindArchProjectsTest()
         {
-            var archProj = TestSolution.FindArchProjects().First();
-            var projectItems = archProj.GetAllProjectItems();
+            var archProj = TestSolution.ArchProjects.First();
+            var projectItems = archProj.GetDiagramDefinitionFiles();
             Assert.IsTrue(projectItems.Count() > 6);
         }
         

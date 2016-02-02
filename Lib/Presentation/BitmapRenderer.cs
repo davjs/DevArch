@@ -16,7 +16,7 @@ namespace Presentation
     public static class BitmapRenderer
     {
 
-        public static void RenderTreeToBitmap(Node tree, bool dependencyDown, OutputSettings outputSettings, bool overWrite = true)
+        public static void RenderTreeToBitmap(Node tree, bool dependencyDown, OutputSettings outputSettings, bool hideAnonymousNodes = true, bool overWrite = true)
         {
             if (overWrite)
             {
@@ -24,7 +24,7 @@ namespace Presentation
                     File.Delete(outputSettings.Path);
             }
 
-            var viewModel = LayerMapper.TreeModelToArchViewModel(tree,dependencyDown);
+            var viewModel = LayerMapper.TreeModelToArchViewModel(tree,dependencyDown,hideAnonymousNodes);
 
             var thread = new Thread(() =>
             {

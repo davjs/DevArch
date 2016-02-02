@@ -11,12 +11,60 @@ using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Logic.Integration
 {
+    public class ArchProject
+    {
+        private readonly Project _project;
+
+        public class DiagramDefinitionFile
+        {
+            private readonly string _path;
+            private readonly string _name;
+
+            public DiagramDefinitionFile(ProjectItem item)
+            {
+                _path = item.FileNames[0];
+                _name = item.Name;
+            }
+
+            public string Content => File.ReadAllText(_path);
+
+            public DiagramDefinitionParseResult Parse(string directory)
+            {
+                try
+                {
+                    var definition = DiagramDefinitionParser.ParseDiagramDefinition(_name, Content);
+                    //Insert directory before output path
+                    definition.Output.Path = directory + definition.Output.Path;
+                    return new DiagramDefinitionParseResult(definition);
+                }
+                catch (Exception e)
+                {
+                    return new DiagramDefinitionParseResult(new Exception(_name + "- " + e.Message));
+                }
+            }
+        }
+
+        public ArchProject(Project project)
+        {
+            _project = project;
+        }
+
+        public IEnumerable<DiagramDefinitionFile> GetDiagramDefinitionFiles()
+        {
+            var projectItems = _project.GetAllProjectItems();
+            var definitionItems = projectItems.Where(d => d.Name.EndsWith(".diagramdefinition"));
+            return definitionItems.Select(x => new DiagramDefinitionFile(x));
+        }
+    }
+
     public class AdvancedSolution
     {
         public readonly Solution RoslynSolution;
         public readonly Projects DteProjects;
         private readonly string _fullName;
         public readonly string Name;
+
+        public string Directory;
 
         public AdvancedSolution(_DTE dte)
         {
@@ -29,33 +77,33 @@ namespace Logic.Integration
             RoslynSolution = KeepTrying.ToGet(() => sol.Result);
             DteProjects = KeepTrying.ToGet(() =>dteSolution.Projects);
             Name = Path.GetFileName(_fullName);
-        }
-
-        public IList<Project> FindArchProjects()
-        {
-            var archProjects = new List<Project>();
-            foreach (Project project in DteProjects)
-            {
-                try
-                {
-                    var fullName = project.FullName;
-                    if (fullName.EndsWith(".archproj"))
-                        archProjects.Add(project);
-                }
-                catch (Exception)
-                {
-                    // ignored, happens when trying to access the full name of an unloaded project
-                }
-            }
-            return archProjects;
-        }
-        public string Directory()
-        {
             if (_fullName == null)
                 throw new NoSolutionOpenException();
-            return Path.GetDirectoryName(_fullName) + "\\";
+            Directory = Path.GetDirectoryName(_fullName) + "\\";
         }
-        
+
+        public IList<ArchProject> ArchProjects
+        {
+            get
+            {
+                var projects = new List<ArchProject>();
+                foreach (Project project in DteProjects)
+                {
+                    try
+                    {
+                        var fullName = project.FullName;
+                        if (fullName.EndsWith(".archproj"))
+                            projects.Add(new ArchProject(project));
+                    }
+                    catch (Exception)
+                    {
+                        // ignored, happens when trying to access the full name of an unloaded project
+                    }
+                }
+                return projects;
+            }
+        }
+
         private class NoSolutionOpenException : Exception
         {
         }

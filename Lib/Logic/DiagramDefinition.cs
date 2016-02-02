@@ -7,18 +7,20 @@ namespace Logic
         public string Name;
         public IScope Scope;
         public OutputSettings Output;
+        public readonly Filters Filters;
+        public readonly bool DependencyDown;
+        public readonly bool HideAnonymousLayers;
 
-        public DiagramDefinition(string name, IScope scope, OutputSettings output, Filters filters, bool dependencyDown = true)
+        public DiagramDefinition(string name, IScope scope, OutputSettings output, Filters filters, bool dependencyDown = true, bool hideAnonymousLayers = true)
         {
             Name = name;
             Scope = scope;
             Output = output;
             Filters = filters;
+            HideAnonymousLayers = hideAnonymousLayers;
             DependencyDown = dependencyDown;
         }
 
-        public readonly Filters Filters;
-        public readonly bool DependencyDown;
 
         public static readonly DiagramDefinition RootDefault 
             = new DiagramDefinition("", new RootScope(), new OutputSettings(), new Filters());

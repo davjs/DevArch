@@ -29,7 +29,7 @@ namespace Tests.Units.Presentation
             bottom.AddChild(right);
             
 
-            var viewModel = LayerMapper.NodeViewModelToLayerViewModel(root);
+            var viewModel = LayerMapper.NodeViewModelToLayerViewModel(root,true);
 
             var vtop = viewModel.Children.First() as LayerViewModel;
             var vbottom = viewModel.Children.Last() as LayerViewModel;
@@ -68,7 +68,7 @@ namespace Tests.Units.Presentation
             bottom.AddChild(right);
 
 
-            var viewModelRoot = LayerMapper.TreeModelToArchViewModel(rootroot,true);
+            var viewModelRoot = LayerMapper.TreeModelToArchViewModel(rootroot,true,true);
             var viewModel = viewModelRoot.Layers.First() as LayerViewModel;
             Assert.AreEqual(3, viewModel.Children.Count());
             var vtop = viewModel.Children.First() as LayerViewModel;
