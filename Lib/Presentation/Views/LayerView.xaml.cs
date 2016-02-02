@@ -37,8 +37,7 @@ namespace Presentation.Views
             NameBlock.Text = layerModel.Name;
             Row = layerModel.Row;
             Column = layerModel.Column;
-            var childMargin = CalculateChildMargin(layerModel);
-            var visible = !layerModel.Anonymous;
+            var childMargin = GetChildMargin();
             var childs = layerModel.Children.Select(ViewModelGenerator.CreateViewFromViewModel).ToList();
             foreach (var child in childs)
             {
@@ -65,21 +64,13 @@ namespace Presentation.Views
                 DockPanel.VerticalAlignment = VerticalAlignment.Center;
                 Border.Background = new LinearGradientBrush(layerModel.Color, borderColor, 30);
             }
-            if (!visible) Hide();
+            if (layerModel.Anonymous) HideName();
+            if (layerModel.Invisible) Hide();
         }
 
-        private static Thickness CalculateChildMargin(LayerViewModel layerModel)
+        private static Thickness GetChildMargin()
         {
-            int height;
-            int width;
-            //var maxHeight = 10;
-            //var minHeight = 1;
-            //var height = Math.Min(Math.Max((layerModel.Descendants* layerModel.Descendants) /120, minHeight), maxHeight);
-
-            height = 5;
-            width = 5;
-
-            return new Thickness(width, height, width,height);
+            return new Thickness(5, 5, 5,5);
         }
 
         //TODO: Move to model?
@@ -92,9 +83,17 @@ namespace Presentation.Views
             return borderColor;
         }
 
-        private void Hide()
+        private void HideName()
         {
             NameBlock.Visibility = Visibility.Collapsed;
+            //Border.BorderThickness = new Thickness(0);
+            //Border.Margin = new Thickness(0);
+            //Border.Background = null;
+        }
+
+
+        private void Hide()
+        {
             Border.BorderThickness = new Thickness(0);
             Border.Margin = new Thickness(0);
             Border.Background = null;
