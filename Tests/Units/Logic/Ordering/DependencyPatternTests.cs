@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Logic.Filtering;
+using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

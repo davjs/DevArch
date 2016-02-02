@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Logic;
 using Logic.Filtering;
 using Logic.Integration;
+using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
@@ -58,7 +59,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             B.SiblingDependencies.Add(A);
             A.SiblingDependencies.Add(X);
             C.SiblingDependencies.Add(X);
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -90,7 +91,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             C.SiblingDependencies.Add(A);
             C.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -136,7 +137,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             G.SiblingDependencies.Add(E);
             G.SiblingDependencies.Add(F);
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 A,B,C,D,E,F,G
             });
@@ -180,7 +181,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(D);
             
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 A,B,C,D,E,F,X
             });
@@ -221,7 +222,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             D.SiblingDependencies.Add(X);
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -268,7 +269,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             E.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -324,7 +325,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(B);
             F.SiblingDependencies.Add(C);
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 A,
                 B,
@@ -382,7 +383,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             NodeExtensions.SiblingDependencies.Add(Node);
             NodeExtensions.SiblingDependencies.Add(Tree);
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 Node,SiblingHolderNode,CircularDependencyHolderNode,NodeExtensions,
                 Tree,ClassNode,ProjectNode
@@ -411,7 +412,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             diagramDefinitionParser.SiblingDependencies.Add(diagramDefinition);
             modelFilterer.SiblingDependencies.Add(filters);
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
             {
                 diagramDefinition,diagramDefinitionParser,rootScope,filters,modelFilterer
             });
@@ -440,7 +441,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 F -> C,D,E
                 X ->");
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(nodesList);
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(nodesList);
 
             //             
             //1.  A  X   B
@@ -487,7 +488,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 DevArch -> BitmapRenderer, ArchView, LayerMapper"
                 );
 
-            var newChildOrder = SiblingReorderer.RegroupSiblingNodes(nodesList);
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(nodesList);
             
             var assertLayout =
                 @"
