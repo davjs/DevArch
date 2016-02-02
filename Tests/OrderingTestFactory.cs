@@ -12,6 +12,7 @@ namespace Tests
     {
         public static List<Node> CreateNodeList(string nodeCreationQuery)
         {
+            nodeCreationQuery = nodeCreationQuery.Trim();
             nodeCreationQuery = Regex.Replace(nodeCreationQuery,@"[ \r]", "");
             var entries = nodeCreationQuery.Split('\n').ToList();
             var splitEntries =
