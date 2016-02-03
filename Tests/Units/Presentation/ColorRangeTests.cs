@@ -14,7 +14,7 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void DivideTest()
         {
-            var divisor = new HueRangeDivisor();
+            var divisor = new HueRangeDivisor(1);
             var startColor = divisor.GetStartingColorData();
             var two = divisor.GetDistinctColors(startColor, 2);
             var c1 = two.First().GetColor().H;

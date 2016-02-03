@@ -69,7 +69,7 @@ namespace Logic.Integration
         public AdvancedSolution(_DTE dte)
         {
             var build = MSBuildWorkspace.Create();
-            var dteSolution = dte.Solution;
+            var dteSolution = KeepTrying.ToGet(() => dte.Solution);
             _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
             if (string.IsNullOrEmpty(_fullName))
                 throw new Exception("Unable to find opened solution");

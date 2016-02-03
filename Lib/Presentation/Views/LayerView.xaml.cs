@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
+using Presentation.Coloring;
 using Presentation.ViewModels;
 using Colors = Presentation.Coloring.Colors;
 
@@ -56,16 +57,30 @@ namespace Presentation.Views
 
             DataContext = this;
 
-            var borderColor = CalculateBorderColor(layerModel.Color);
-            Border.Background = new SolidColorBrush(layerModel.Color);
+            var color = layerModel.Color;
+            var borderColor = CalculateBorderColor(color);
+            var textColor = CalculateTextColor(color);
+            Border.Background = new SolidColorBrush(color);
             Border.BorderBrush = new SolidColorBrush(borderColor);
+            NameBlock.Foreground = new SolidColorBrush(textColor);
             if (!childs.Any())
             {
                 DockPanel.VerticalAlignment = VerticalAlignment.Center;
-                Border.Background = new LinearGradientBrush(layerModel.Color, borderColor, 30);
+                Border.Background = new LinearGradientBrush(color, borderColor, 30);
             }
             if (layerModel.Anonymous) HideName();
             if (layerModel.Invisible) Hide();
+        }
+
+        private Color CalculateTextColor(AdvancedColor color)
+        {
+            var copy = color.Copy();
+            if(color.L < 0.5)
+                copy.L = copy.L + 0.2;
+            else
+                copy.L = copy.L - 0.2;
+            copy.S = 0.6 - copy.L / 1.6;
+            return copy;
         }
 
         private static Thickness GetChildMargin()
@@ -74,21 +89,17 @@ namespace Presentation.Views
         }
 
         //TODO: Move to model?
-        private static Color CalculateBorderColor(Color backgroundColor)
+        private static Color CalculateBorderColor(AdvancedColor backgroundColor)
         {
-            var hsl = Colors.Rgbhsl.RGB_to_HSL(backgroundColor);
-            hsl.S *= 0.9;
-            hsl.L *= 1.1;
-            var borderColor = Colors.Rgbhsl.HSL_to_RGB(hsl);
-            return borderColor;
+            var copy = backgroundColor.Copy();
+            copy.S *= 0.9d;
+            copy.L = copy.L*1.03 + 0.02;
+            return copy;
         }
 
         private void HideName()
         {
             NameBlock.Visibility = Visibility.Collapsed;
-            //Border.BorderThickness = new Thickness(0);
-            //Border.Margin = new Thickness(0);
-            //Border.Background = null;
         }
 
 

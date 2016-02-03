@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Presentation.Coloring
 {
@@ -114,12 +116,6 @@ namespace Presentation.Coloring
                                 new Hsl(hue, parentData.S, newLight, parentData.Depth + 1));
                 }
 
-                /*if (parentData.Depth > 2)
-                {
-                    return Enumerable.Repeat(GetSubColorImplementation(parentData), slices);
-                }*/
-
-
                 range = Enumerable.Range(1, slices);
                 hues = range.Select(r => parentData.H + r*(1/((double) slices + 1)));
                 return hues.Select(
@@ -132,23 +128,30 @@ namespace Presentation.Coloring
 
         public class HueRangeDivisor : PalletteAlgorithm<ColorRange>
         {
+            private readonly int _height;
+
+            public HueRangeDivisor(int height)
+            {
+                _height = height;
+            }
+
             protected override ColorRange GetSubColorImplementation(ColorRange parentData)
             {
                 var sizeLeft = parentData.Top - parentData.Bottom;
-                var newLight = parentData.L * 1.05 + sizeLeft / 12;
+                var newLight = GetNextLightLevel(parentData);//parentData.L * 1.05 + sizeLeft / 12;
                 return new ColorRange(parentData.Top, parentData.Bottom, parentData.S, newLight,parentData.Depth+1);
             }
 
             protected override ColorRange GetStartingColorDataImplementation()
             {
-                return new ColorRange(1, 0, 0.4, 0.05, 0);
+                return new ColorRange(1, 0, 0.4, 0.1, 0);
             }
 
             protected override IEnumerable<ColorRange> GetDistinctColorsImplementation(ColorRange parentData, int slices)
             {
                 var sizeLeft = parentData.Top - parentData.Bottom;
                 var sizePerSlice = sizeLeft / slices;
-                var newLight = parentData .L* 1.05 + sizeLeft / 12;
+                var newLight = GetNextLightLevel(parentData);
                 var newBottom = parentData.Bottom;
                 var ranges = new List<ColorRange>();
                 for (var slice = 0; slice < slices; slice++)
@@ -158,6 +161,13 @@ namespace Presentation.Coloring
                     newBottom = newTop;
                 }
                 return ranges;
+            }
+
+            private double GetNextLightLevel(ColorRange parentData)
+            {
+                var progress = (parentData.Depth + 1.0)/_height;
+                var newLight = progress * 0.5 + 0.1;//0.1 + Math.Pow(progress,0.4) * 0.35;
+                return newLight;
             }
         }
     }

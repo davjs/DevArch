@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
@@ -26,8 +27,10 @@ namespace Logic
         
         public static DiagramDefinition ParseDiagramDefinition(string name,string content)
         {
+            var reader = XmlReader.Create(new StringReader(content),new XmlReaderSettings {IgnoreComments = true});
+            reader.Read();
             var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(content);
+            xmlDoc.Load(reader);
             
             var modelRoot = xmlDoc.RequireTag("Diagram");
             var scopeHolderNode = modelRoot.RequireTag("Scope");

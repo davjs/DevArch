@@ -31,6 +31,11 @@ namespace Presentation.Coloring
             S = s;
             L = l;
         }
+
+        public AdvancedColor Copy()
+        {
+            return new AdvancedColor(H,S,L);
+        }
     }
 
 

@@ -11,10 +11,11 @@ namespace Presentation
 {
     public static class LayerMapper
     {
-        static readonly IPalletteAlgorithm Pallette = new HueRangeDivisor();
+        private static IPalletteAlgorithm _pallette = new HueRangeDivisor(1);
 
         public static ArchViewModel TreeModelToArchViewModel(Node model,bool dependencyDown, bool hideAnonymousNodes)
         {
+            _pallette = new HueRangeDivisor(model.Height());
             return new ArchViewModel
             {
                 Layers = PaintAndMapNodes(model.Childs,dependencyDown, hideAnonymousNodes)
@@ -58,35 +59,38 @@ namespace Presentation
         {
             var toPaintDistinct = new List<LayerViewModel>();
             var toPaintSameColor = new List<LayerViewModel>();
-            if (parent != null && parent.Anonymous)
+            if (parentColorData == null)
+                parentColorData = _pallette.GetStartingColorData();
+            IColorData sameColor;
+            if (parent != null && parent.Invisible)
             {
+                //Parent is invisible, paint all layers with the parent color
                 toPaintSameColor = layers;
+                sameColor = parentColorData;
             }
             else
             {
+                sameColor = _pallette.GetSubColor(parentColorData);
                 if (depth == 0  && layers.Sum(x => x.Descendants) < 5)
                 {
                     toPaintDistinct = layers;
                 }
                 else
                 {
-                    //TODO: Dont do this if the levels of the tree is less than 3?
-                    toPaintDistinct = layers.Where(l => l.Children.Any() && !l.Anonymous).ToList();
-                    toPaintSameColor = layers.Where(l => !l.Children.Any() || l.Anonymous).ToList();
+                    //TODO: Maybe not require children if the tree is shorter than 3?
+                    toPaintDistinct = layers.Where(l => l.Children.Any() && !l.Invisible).ToList();
+                    toPaintSameColor = layers.Where(l => !l.Children.Any() || l.Invisible).ToList();
                 }
             }
             var distinctColors = new Stack<IColorData>();
-            if (parentColorData == null)
-                parentColorData = Pallette.GetStartingColorData();
             if (toPaintDistinct.Count > 1)
-                distinctColors = Pallette.GetDistinctColors(parentColorData,toPaintDistinct.Count);
+                distinctColors = _pallette.GetDistinctColors(parentColorData,toPaintDistinct.Count);
             if(toPaintDistinct.Count == 1)
-                distinctColors = new Stack<IColorData>(Pallette.GetDistinctColors(parentColorData,2).Take(1));
+                distinctColors = new Stack<IColorData>(_pallette.GetDistinctColors(parentColorData,2).Take(1));
 
             foreach (var layer in toPaintSameColor)
             {
-                var color = Pallette.GetSubColor(parentColorData);
-                PaintLayer(layer, color);
+                PaintLayer(layer, sameColor);
             }
 
             foreach (var layer in toPaintDistinct)

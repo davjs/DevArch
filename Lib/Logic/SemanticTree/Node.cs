@@ -71,6 +71,8 @@ namespace Logic.SemanticTree
 
         public int Height()
         {
+            if (!Childs.Any())
+                return 0;
             return Childs.Max(x => x.Height()) + 1;
         }
     }
