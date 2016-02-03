@@ -75,7 +75,7 @@ namespace Presentation.Views
         private Color CalculateTextColor(AdvancedColor color)
         {
             var copy = color.Copy();
-            if(color.L < 0.5)
+            if(color.L < 0.4)
                 copy.L = copy.L + 0.2;
             else
                 copy.L = copy.L - 0.2;

@@ -73,7 +73,9 @@ namespace Lib
 
         void PrintLine(string s)
         {
+#if !DEBUG
             _output.OutputString(s + "\n");
+#endif
         }
 
         public void PrintErrors()
