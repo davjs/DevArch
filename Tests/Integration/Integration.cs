@@ -8,6 +8,7 @@ using Logic.Filtering;
 using Logic.Integration;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Presentation;
 using static Tests.TestExtesions;
 
 namespace Tests.Integration
@@ -67,10 +68,31 @@ namespace Tests.Integration
         [TestMethod]
         public void GeneratesWholeSolutionDiagramWithoutNamespacesWithoutCausingDuplicates()
         {
-            var tree = SemanticTreeBuilder.AnalyseSolution(TestSolution) as Node;
-            ModelFilterer.ApplyFilter(ref tree, new Filters { RemoveContainers = true });
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            var diagramGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
+            var diagramDef = new DiagramDefinition("",
+                new RootScope(), new OutputSettings(), new Filters { RemoveContainers = true }, true, false);
+            var tree = diagramGen.GenerateDiagram(diagramDef);
             TreeAssert.DoesNotContainDuplicates(tree);
+        }
+
+        [TestMethod]
+        public void TestCurArchNoNspaces()
+        {
+            var diagramDef = new DiagramDefinition("",
+                new RootScope(), new OutputSettings
+                {
+                    Path = SlnDir + "IntegrationTests\\WithoutNspaces.png"
+                }, new Filters {RemoveContainers = true}, true, false);
+            var tree = SemanticTreeBuilder.AnalyseSolution(TestSolution) as Node;
+            var lib = tree.Childs.WithName("Lib");
+            lib.RemoveChild("Logic");
+            lib.RemoveChild("Presentation");
+            var clients = tree.Childs.WithName("Clients");
+            var vsclients = clients.Childs.WithName("VisualStudio");
+            vsclients.RemoveChild("DevArchProject.ProjectType");
+            ModelFilterer.ApplyFilter(ref tree, new Filters {RemoveContainers = true});
+            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            BitmapRenderer.RenderTreeToBitmap(tree, diagramDef.DependencyDown, diagramDef.Output,diagramDef.HideAnonymousLayers);
         }
     }
 }

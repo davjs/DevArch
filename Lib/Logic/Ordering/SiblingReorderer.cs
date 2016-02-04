@@ -47,6 +47,8 @@ namespace Logic.Ordering
 
             var groupedNodes = new List<Node>();
             var nextGroupTarget = toBeGrouped;
+
+            //Remove nodes that does not depend on anything and is never referenced
             var unreferenced = toBeGrouped.Where(x => !x.SiblingDependencies.Any()
                                                        && !toBeGrouped.SiblingDependencies().Contains(x)).ToList();
             nextGroupTarget.RemoveRange(unreferenced);
@@ -135,7 +137,7 @@ namespace Logic.Ordering
                     groupedNodes.Add(CreateHorizontalLayer(currentLayer));
                 }
             }
-            //TODO: handle this or just skip?
+            //TODO: Add if only one layer
             //if (unreferenced.Any())
             //    newChildOrder.Add(CreateHorizontalLayer(unreferenced));
 

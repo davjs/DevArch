@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
@@ -18,14 +19,18 @@ namespace Presentation
 
         public static void RenderTreeToBitmap(Node tree, bool dependencyDown, OutputSettings outputSettings, bool hideAnonymousNodes = true, bool overWrite = true)
         {
+            if (!tree.HasChildren())
+                throw new Exception("Empty diagram");
+
             if (overWrite)
             {
                 if (File.Exists(outputSettings.Path))
                     File.Delete(outputSettings.Path);
             }
-
+            
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree,dependencyDown,hideAnonymousNodes);
 
+            
             var thread = new Thread(() =>
             {
                 RenderViewModelToBitmap(viewModel, outputSettings.Path, outputSettings.Size);
