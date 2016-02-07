@@ -48,7 +48,7 @@ namespace DevArch.Commands
         {
             var message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.OnClick()", GetType().FullName);
             const string title = "View Diagrams";
-            Lib.DevArch.RenderAllArchDiagramsToFiles(null);
+
             VsShellUtilities.ShowMessageBox(
                 ServiceProvider,
                 message,
