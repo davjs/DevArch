@@ -18,7 +18,7 @@ namespace Tests
         {
             var withName = tree.Childs.WithName(name);
             if (withName == null)
-                throw new ChildNotFoundException(name);
+                throw new ChildNotFoundException(tree.ToString(),name);
             foreach (var child in tree.Childs.Where(child => child.Dependencies.Contains(withName)))
             {
                 child.Dependencies.Remove(withName);
@@ -29,7 +29,7 @@ namespace Tests
 
         internal class ChildNotFoundException : Exception
         {
-            public ChildNotFoundException(string message) : base(message)
+            public ChildNotFoundException(string parent, string child) : base($"unable to find {child} in {parent}")
             {
             }
         }

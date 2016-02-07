@@ -23,6 +23,7 @@ namespace Logic.Common
         {
             return set.Where(x => !Equals(x, t));
         }
+        
 
         public static void RemoveRange<T>(this List<T> list, IReadOnlyList<T> enumerable)
         {

@@ -42,19 +42,19 @@ namespace Tests.Units.Presentation
             tree.SetChildren(nodesList);
 
             ModelFilterer.ApplyFilter(ref tree, new Filters());
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings {Path= TestExtesions.SlnDir + "SEM.png"},false);
         }
 
         [TestCategory("PngGeneration")]
         [TestMethod]
-        public void CmdModel()
+        public void CmdModel1()
         {
             var nodesList = OrderingTestFactory.CreateNodeList(
             @"
             ToolsMenuPackage -> CmdFac, GenImCmd
             CmdFac -> CommandBase
-            CommandBase -> 
+            CommandBase ->
             GenImCmd -> CommandBase, DevArch
             ViewDiaCmd -> CommandBase, DevArch
             MainWindow -> DevArch
@@ -66,8 +66,35 @@ namespace Tests.Units.Presentation
             var tree = new Node("tree");
             tree.SetChildren(nodesList);
 
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + "ArchTest.png" }, false);
+            Assert.IsFalse(tree.Childs.Last().Childs.Any(x => x.Name == "CommandBase"));
+        }
+
+        [TestCategory("PngGeneration")]
+        [TestMethod]
+        public void CmdModel2()
+        {
+            var nodesList = OrderingTestFactory.CreateNodeList(
+            @"
+            ToolsMenuPackage -> CmdFac, GenImCmd
+            CmdFac -> CommandBase
+            CommandBase ->
+            GenImCmd -> CommandBase, DevArch
+            ViewDiaCmd -> CommandBase, DevArch
+            MainWindow -> DevArch
+            DevArch -> DiagramDefinition
+            DiagramDefinitonParser -> DiagramDefinition
+            DiagramDefinition ->
+            ");
+
+            nodesList = SiblingReorderer.LayOutSiblingNodes(nodesList);
+
+            var tree = new Node("tree");
+            tree.SetChildren(nodesList);
+
+            DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
+            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + "ArchTest2.png" }, false);
             Assert.IsFalse(tree.Childs.Last().Childs.Any(x => x.Name == "CommandBase"));
         }
     }

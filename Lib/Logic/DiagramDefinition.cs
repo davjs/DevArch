@@ -1,4 +1,5 @@
 ﻿using System;
+using Logic.Scopes;
 
 namespace Logic
 {
@@ -44,34 +45,37 @@ namespace Logic
         public int MinMethods = 0;
         public bool RemoveContainers = false;
     }
-
-    public interface IScope
+    
+    namespace Scopes
     {
-    }
+        public interface IScope
+        {
+        }
 
-    public class RootScope : IScope
-    {
-    }
+        public class RootScope : IScope
+        {
+        }
 
-    public class NamedScope : IScope
-    {
-        public string Name { get; set; }
-    }
+        public class NamedScope : IScope
+        {
+            public string Name { get; set; }
+        }
 
-    public class ClassScope : NamedScope
-    {
+        public class ClassScope : NamedScope
+        {
 
-    }
-    public class NamespaceScope : NamedScope
-    {
+        }
+        public class NamespaceScope : NamedScope
+        {
 
-    }
-    public class DocumentScope : NamedScope
-    {
+        }
+        public class DocumentScope : NamedScope
+        {
 
-    }
-    public class ProjectScope : NamedScope
-    {
-        
+        }
+        public class ProjectScope : NamedScope
+        {
+
+        }
     }
 }
