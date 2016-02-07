@@ -148,7 +148,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             DiagramDefinition ->
             ");
             var firstLayer = SiblingReorderer.GetFacadeNodes(nodesList);
-            var nextLayer = SiblingReorderer.GetFacadeNodes(nodesList.Except(firstLayer).ToList());
+            var nextLayer = SiblingReorderer.GetFacadeNodes(new HashSet<Node>(nodesList.Except(firstLayer)));
             var pattern = SiblingReorderer.FindDependencyPatterns(firstLayer, nextLayer);
             // Nodes depending on commandbase should be merged before those dependant on devarch, because the former is a subset of the latter
             Assert.AreEqual("CommandBase", pattern.First().Dependants.First().Name);
@@ -158,7 +158,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
         [TestMethod]
         public void FindsInnerPatternAmongNestedPatterns()
         {
-            var nodesList = new List<Node>();
+            var nodesList = new HashSet<Node>();
 
             var i = 0;
             var left = new Node("Left" + i);
@@ -177,12 +177,12 @@ namespace Tests.Units.Logic.Filtering.Ordering
             }
 
             var firstLayer = SiblingReorderer.GetFacadeNodes(nodesList);
-            var nextLayer = SiblingReorderer.GetFacadeNodes(nodesList.SiblingDependencies().ToList());
+            var nextLayer = SiblingReorderer.GetFacadeNodes(nodesList.SiblingDependencies());
             var pattern = SiblingReorderer.FindDependencyPatterns(firstLayer, nextLayer);
             CollectionAssert.Contains(pattern.First().Referencers.ToArray(), left);
-            nodesList = SiblingReorderer.LayOutSiblingNodes(nodesList);
+            var newList = SiblingReorderer.LayOutSiblingNodes(nodesList);
 
-            var toIterate = nodesList.Last();
+            var toIterate = newList.Last();
             i-=1;
             while (toIterate != null)
             {

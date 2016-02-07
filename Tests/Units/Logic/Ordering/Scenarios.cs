@@ -6,12 +6,12 @@ using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
 
-namespace Tests.Units.Presentation
+namespace Tests.Units.Logic.Ordering
 {
     [TestClass]
     public class Scenarios
     {
-        [TestCategory("PngGeneration")]
+        [TestCategory("Scenarios")]
         [TestMethod]
         public void SoftwareEngineeringModel()
         {
@@ -46,7 +46,7 @@ namespace Tests.Units.Presentation
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings {Path= TestExtesions.SlnDir + "SEM.png"},false);
         }
 
-        [TestCategory("PngGeneration")]
+        [TestCategory("Scenarios")]
         [TestMethod]
         public void CmdModel1()
         {
@@ -61,17 +61,17 @@ namespace Tests.Units.Presentation
             DevArch -> 
             ");
 
-            nodesList = SiblingReorderer.LayOutSiblingNodes(nodesList);
+            var newList = SiblingReorderer.LayOutSiblingNodes(nodesList);
 
             var tree = new Node("tree");
-            tree.SetChildren(nodesList);
+            tree.SetChildren(newList);
 
             DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + "ArchTest.png" }, false);
             Assert.IsFalse(tree.Childs.Last().Childs.Any(x => x.Name == "CommandBase"));
         }
 
-        [TestCategory("PngGeneration")]
+        [TestCategory("Scenarios")]
         [TestMethod]
         public void CmdModel2()
         {
@@ -88,10 +88,10 @@ namespace Tests.Units.Presentation
             DiagramDefinition ->
             ");
 
-            nodesList = SiblingReorderer.LayOutSiblingNodes(nodesList);
+            var newList = SiblingReorderer.LayOutSiblingNodes(nodesList);
 
             var tree = new Node("tree");
-            tree.SetChildren(nodesList);
+            tree.SetChildren(newList);
 
             DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + "ArchTest2.png" }, false);

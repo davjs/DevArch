@@ -24,37 +24,37 @@ namespace Logic.Ordering
                 return childs;
             }
 
-            var oldChildList = childs.ToList();
+            var oldChildList = childs.ToHashSet();
             var newChildOrder = GroupNodes(oldChildList);
             return newChildOrder;
         }
 
-        private static IEnumerable<Node> GroupNodes(List<Node> oldChildList)
+        private static List<Node> GroupNodes(ISet<Node> oldChildList)
         {
-            CircularReferenceFinder.FindCircularReferences(ref oldChildList);
+            CircularReferenceFinder.FindCircularReferences(oldChildList);
             return LayOutSiblingNodes(oldChildList);
         }
 
-        public static List<Node> GetFacadeNodes(List<Node> targets)
+        public static List<Node> GetFacadeNodes(ISet<Node> targets)
         {
             var allDependencies = targets.SiblingDependencies().ToList();
             return targets.Where(n => !allDependencies.Contains(n)).ToList();
         }
 
 
-        public static List<Node> LayOutSiblingNodes(List<Node> toBeGrouped)
+        public static List<Node> LayOutSiblingNodes(ISet<Node> toBeGrouped)
         {
             if (toBeGrouped.Count <= 1)
-                return toBeGrouped;
+                return toBeGrouped.ToList();
 
             var groupedNodes = new List<Node>();
             var hasBeenAdded = new HashSet<Node>();
             var nextGroupTarget = toBeGrouped;
-
+            
             //Remove nodes that does not depend on anything and is never referenced
             var unreferenced = toBeGrouped.Where(x => !x.SiblingDependencies.Any()
-                                                       && !toBeGrouped.SiblingDependencies().Contains(x)).ToList();
-            nextGroupTarget.RemoveRange(unreferenced);
+                                                       && !toBeGrouped.SiblingDependencies().Contains(x)).ToHashSet();
+            nextGroupTarget.ExceptWith(unreferenced);
             while (toBeGrouped.Any())
             {
                 if (!nextGroupTarget.Any())
@@ -64,7 +64,7 @@ namespace Logic.Ordering
                 while (nextGroupTarget.Any())
                 {
                     var currentLayer = GetFacadeNodes(nextGroupTarget);
-                    nextGroupTarget = currentLayer.SiblingDependencies().ToList();
+                    nextGroupTarget = currentLayer.SiblingDependencies().ToHashSet();
                     //Get the next layer to check if any of the dependencies are unique to a node of the current layer
                     var nextLayer = GetFacadeNodes(nextGroupTarget);
 
@@ -85,15 +85,15 @@ namespace Logic.Ordering
                             nextLayer.RemoveAll(x => leftForNextBatch.Any(y => y.IndirectlyDependsOn(x)));
                             var groupsToCreate = FindDependencyPatterns(currentLayer, nextLayer);
                             var toBeShared = new HashSet<Node>();
-                            toBeGrouped.RemoveRange(currentLayer);
+                            toBeGrouped.ExceptWith(currentLayer);
 
                             foreach (var dependencyGroup in groupsToCreate)
                             {
                                 var referencers = dependencyGroup.Referencers;
                                 currentLayer.RemoveRange(referencers.ToList());
                                 var dependants = dependencyGroup.Dependants.ToList();
-                                nextGroupTarget.RemoveRange(dependants);
-                                toBeGrouped.RemoveRange(dependants);
+                                nextGroupTarget.ExceptWith(dependants);
+                                toBeGrouped.ExceptWith(dependants);
                                 hasBeenAdded.UnionWith(dependants);
                                 hasBeenAdded.UnionWith(referencers);
                                 // Add dependant to the vertical layer
@@ -104,14 +104,14 @@ namespace Logic.Ordering
                                 //Get ALL the possible candidates for the vertical layer
                                 var verticalCandidates = 
                                     referencers.SelectMany(x => x.IndirectSiblingDependencies()).Except(dependants).Union(
-                                    dependants.SelectMany(x => x.IndirectSiblingDependencies())).Distinct().Except(hasBeenAdded).ToList();
+                                    dependants.SelectMany(x => x.IndirectSiblingDependencies())).Distinct().Except(hasBeenAdded).ToHashSet();
 
                                 //Get all the nodes in this current call depth
                                 var otherGroups = groupsToCreate.Except(dependencyGroup);
                                 var nodesInOtherGroups = otherGroups.
                                     SelectMany(x => x.Dependants.Union(x.Referencers)).ToHashSet();
                                 var otherNodes =
-                                    toBeGrouped.Union(currentLayer).Union(nodesInOtherGroups).Except(verticalCandidates).ToList();
+                                    toBeGrouped.Union(currentLayer).Union(nodesInOtherGroups).Except(verticalCandidates).ToHashSet();
 
 
                                 var siblingDepsRelevantForNewNode = new HashSet<Node>();
@@ -128,8 +128,8 @@ namespace Logic.Ordering
 
                                 if (verticalCandidates.Any())
                                 {
-                                    toBeGrouped.RemoveRange(verticalCandidates);
-                                    nextGroupTarget.RemoveRange(verticalCandidates);
+                                    toBeGrouped.ExceptWith(verticalCandidates);
+                                    nextGroupTarget.ExceptWith(verticalCandidates);
                                     hasBeenAdded.UnionWith(verticalCandidates);
 
                                     var allDepsOfVerticalCandidates = verticalCandidates.SiblingDependencies().ToHashSet(); 
@@ -140,11 +140,12 @@ namespace Logic.Ordering
                                         candidate.SiblingDependencies.RemoveWhere(x => !verticalCandidates.Contains(x));
                                     //Remove all nodes from this levels stack that should be added by the recursive call
                                     // If they dont at all depend on each other!!
+                                    List<Node> newNodes;
                                     if (!dependenciesOfNestedNodes.Any())
-                                        verticalCandidates = new List<Node> {CreateHorizontalLayer(verticalCandidates)};
+                                        newNodes = new List<Node> {CreateHorizontalLayer(verticalCandidates)};
                                     else
-                                        verticalCandidates = GroupNodes(verticalCandidates).ToList();
-                                    newList.InsertRange(0, verticalCandidates);
+                                        newNodes = GroupNodes(verticalCandidates);
+                                    newList.InsertRange(0, newNodes);
                                 }
                                 siblingDepsRelevantForNewNode.UnionWith(
                                     referencers.Union(dependants).SiblingDependencies());
@@ -162,7 +163,7 @@ namespace Logic.Ordering
                     }
                     else
                     {
-                        toBeGrouped.RemoveRange(currentLayer);
+                        toBeGrouped.ExceptWith(currentLayer);
                     }
                     groupedNodes.Add(CreateHorizontalLayer(currentLayer));
                 }

@@ -31,4 +31,9 @@ namespace Logic.Common
                 list.Remove(toRemove);
         }
     }
+
+    public static class HashetExtensions
+    {
+        
+    }
 }

@@ -18,6 +18,7 @@ namespace Tests.Integration
     [TestClass]
     public class Integration
     {
+        [TestCategory("Integration")]
         [TestMethod]
         public void FindsDependencies()
         {
@@ -30,6 +31,7 @@ namespace Tests.Integration
             Assert.IsNotNull(dependency);
         }
 
+        [TestCategory("Integration")]
         [TestMethod]
         public void SemanticTreeDoesNotContainDoubles()
         {
@@ -39,6 +41,7 @@ namespace Tests.Integration
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
         }
 
+        [TestCategory("Integration")]
         [TestMethod]
         public void LogicLayerIsVertical()
         {
@@ -62,6 +65,7 @@ namespace Tests.Integration
             Assert.AreEqual(OrientationKind.Vertical,tree.Orientation);
         }
 
+        [TestCategory("Integration")]
         [TestMethod]
         public void GeneratesWholeSolutionDiagramWithoutNamespacesWithoutCausingDuplicates()
         {

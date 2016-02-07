@@ -59,7 +59,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             B.SiblingDependencies.Add(A);
             A.SiblingDependencies.Add(X);
             C.SiblingDependencies.Add(X);
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -91,7 +91,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             C.SiblingDependencies.Add(A);
             C.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -137,7 +137,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             G.SiblingDependencies.Add(E);
             G.SiblingDependencies.Add(F);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,B,C,D,E,F,G
             });
@@ -181,7 +181,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(D);
             
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,B,C,D,E,F,X
             });
@@ -222,7 +222,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             D.SiblingDependencies.Add(X);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -269,7 +269,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             E.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -325,7 +325,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(B);
             F.SiblingDependencies.Add(C);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -383,7 +383,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             NodeExtensions.SiblingDependencies.Add(Node);
             NodeExtensions.SiblingDependencies.Add(Tree);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 Node,SiblingHolderNode,CircularDependencyHolderNode,NodeExtensions,
                 Tree,ClassNode,ProjectNode
@@ -412,7 +412,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             diagramDefinitionParser.SiblingDependencies.Add(diagramDefinition);
             modelFilterer.SiblingDependencies.Add(filters);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 diagramDefinition,diagramDefinitionParser,rootScope,filters,modelFilterer
             });
