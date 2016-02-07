@@ -40,7 +40,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.AreEqual(newList.Count, 2);
             Assert.AreEqual(newList.Last(), D);
             var hor = newList.First();
-            Assert.AreEqual(C,hor.Childs.First());
+            Assert.AreEqual(C,hor.Childs.Last());
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -59,7 +59,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             B.SiblingDependencies.Add(A);
             A.SiblingDependencies.Add(X);
             C.SiblingDependencies.Add(X);
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -91,7 +91,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             C.SiblingDependencies.Add(A);
             C.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -100,8 +100,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
                 E
             });
 
-            //0.     A B  
-            //0.  D   C
+            //0. A B  
+            //0.  C   D
             //1.    E
 
             Assert.AreEqual(2, newChildOrder.Count);
@@ -109,8 +109,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             Assert.IsTrue(hor is SiblingHolderNode);
             var left = hor.Childs.First();
             var right = hor.Childs.Last();
-            Assert.AreEqual(D, left);
-            Assert.IsTrue(right is VerticalSiblingHolderNode);
+            Assert.AreEqual(D, right);
+            Assert.IsTrue(left is VerticalSiblingHolderNode);
             Assert.AreEqual(2,hor.Childs.Count);
             Assert.AreEqual(E,newChildOrder.Last());
         }
@@ -137,7 +137,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             G.SiblingDependencies.Add(E);
             G.SiblingDependencies.Add(F);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,B,C,D,E,F,G
             });
@@ -181,7 +181,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(D);
             
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,B,C,D,E,F,X
             });
@@ -222,7 +222,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             D.SiblingDependencies.Add(X);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -269,7 +269,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             D.SiblingDependencies.Add(B);
             E.SiblingDependencies.Add(B);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -325,7 +325,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             F.SiblingDependencies.Add(B);
             F.SiblingDependencies.Add(C);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 A,
                 B,
@@ -383,7 +383,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             NodeExtensions.SiblingDependencies.Add(Node);
             NodeExtensions.SiblingDependencies.Add(Tree);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 Node,SiblingHolderNode,CircularDependencyHolderNode,NodeExtensions,
                 Tree,ClassNode,ProjectNode
@@ -412,7 +412,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             diagramDefinitionParser.SiblingDependencies.Add(diagramDefinition);
             modelFilterer.SiblingDependencies.Add(filters);
 
-            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new List<Node>
+            var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
                 diagramDefinition,diagramDefinitionParser,rootScope,filters,modelFilterer
             });
@@ -454,8 +454,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var hor = newChildOrder.ElementAt(1);
             Assert.AreEqual(OrientationKind.Horizontal, hor.Orientation);
             Assert.AreEqual(2, hor.Childs.Count);
-            var right = hor.Childs.First();
-            var left = hor.Childs.Last();
+            var left = hor.Childs.First();
+            var right = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
             Assert.AreEqual("A", left.Childs.First().Name);
             Assert.AreEqual("C", left.Childs.Last().Name);
@@ -468,7 +468,6 @@ namespace Tests.Units.Logic.Filtering.Ordering
             //1
             Assert.AreEqual("F", newChildOrder.Last().Name);
         }
-
 
         [TestCategory("SiblingOrder.VerticalLayers")]
         [TestMethod]
@@ -509,7 +508,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
             var tree = new Node("tree");
             tree.SetChildren(newChildOrder);
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
             TestExtesions.TreeAssert.DoesNotContainDuplicates(tree);
             OrderingTestFactory.AssertLayout(assertLayout,tree);
         }

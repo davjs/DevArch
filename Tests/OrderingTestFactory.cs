@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Logic.SemanticTree;
@@ -10,7 +11,7 @@ namespace Tests
 {
     internal static class OrderingTestFactory
     {
-        public static List<Node> CreateNodeList(string nodeCreationQuery)
+        public static HashSet<Node> CreateNodeList(string nodeCreationQuery)
         {
             nodeCreationQuery = nodeCreationQuery.Trim();
             nodeCreationQuery = Regex.Replace(nodeCreationQuery,@"[ \r]", "");
@@ -40,7 +41,7 @@ namespace Tests
                 i++;
             }
                 
-            return nodes;
+            return new HashSet<Node>(nodes);
         }
 
         public static void AssertLayout(Node expected, Node actual)

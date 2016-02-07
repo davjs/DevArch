@@ -65,6 +65,8 @@ namespace Logic.Filtering
             {
                 if (filters.MaxDepth > 0)
                     RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
+                if (filters.MinReferences > 0)
+                    RemoveNodesReferencedLessThan(tree, filters.MinReferences);
                 RemoveContainers(ref tree);
             }
 
@@ -74,7 +76,7 @@ namespace Logic.Filtering
             tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
             tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
             
-            if (filters.MaxDepth > 0)
+            if (filters.MaxDepth > 0 && !filters.RemoveContainers)
                 RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
             if (filters.MinMethods > 0)
                 ApplyClassFilter(tree, new SmallClassFilter(filters.MinMethods));
@@ -89,9 +91,23 @@ namespace Logic.Filtering
 
         private static void RemoveContainers(ref Node tree)
         {
-            tree.SetChildren(tree.DescendantNodes().Where(c => !c.HasChildren()));
+            tree.SetChildren(FindClasses(tree));
+            //tree.SetChildren(tree.DescendantNodes().Where(c => !c.HasChildren()));
         }
 
+        private static IEnumerable<ClassNode> FindClasses(Node tree)
+        {
+            foreach (var child in tree.Childs)
+            {
+                if (child is ClassNode)
+                    yield return child as ClassNode;
+                else
+                {
+                    foreach (var node in FindClasses(child))
+                        yield return node;
+                }
+            }
+        }
 
         private static void RemoveDefaultNamespaces(Node tree)
         {
@@ -126,6 +142,7 @@ namespace Logic.Filtering
 
         private static void RemoveNodesReferencedLessThan(Node tree, int byReference)
         {
+            //tree.SetChildren(tree.Childs.Where(x => tree.Childs.SiblingDependencies().Contains(x)));
             /*var allSubDependencies = tree.AllSubDependencies();
             tree.SetChildren(tree.Childs.Where(x => allSubDependencies.Contains(x)));
             foreach (var child in tree.Childs)

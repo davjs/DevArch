@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using Logic;
 using Logic.Filtering;
 using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Presentation;
 
 namespace Tests.Units.Logic.Filtering.Ordering
 {
@@ -96,7 +98,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             //1.  C     D E
             var firstLayer = new List<Node> { C, D, E };
             var nextLayer = new List<Node> { A, X, B };
-            var groups = SiblingReorderer.FindDependencyGroups(firstLayer, nextLayer);
+            var groups = SiblingReorderer.FindDependencyPatterns(firstLayer, nextLayer);
             Assert.AreEqual(2, groups.Count());
             //1 {C -> A , X} Cant choose, would hide D -> X dependency
             //2 {C -> A}
@@ -133,7 +135,69 @@ namespace Tests.Units.Logic.Filtering.Ordering
         }
 
 
+        [TestMethod]
+        public void FindsInnerPatternsFirst()
+        {
+            var nodesList = OrderingTestFactory.CreateNodeList(
+            @"
+            CommandBase ->
+            ViewDiaCmd -> CommandBase, DevArch
+            MainWindow -> DevArch
+            DevArch -> DiagramDefinition
+            DiagramDefinitonParser -> DiagramDefinition
+            DiagramDefinition ->
+            ");
+            var firstLayer = SiblingReorderer.GetFacadeNodes(nodesList);
+            var nextLayer = SiblingReorderer.GetFacadeNodes(new HashSet<Node>(nodesList.Except(firstLayer)));
+            var pattern = SiblingReorderer.FindDependencyPatterns(firstLayer, nextLayer);
+            // Nodes depending on commandbase should be merged before those dependant on devarch, because the former is a subset of the latter
+            Assert.AreEqual("CommandBase", pattern.First().Dependants.First().Name);
+            Assert.AreEqual(1, pattern.Count);
+        }
 
+        [TestMethod]
+        public void FindsInnerPatternAmongNestedPatterns()
+        {
+            var nodesList = new HashSet<Node>();
+
+            var i = 0;
+            var left = new Node("Left" + i);
+            nodesList.Add(left);
+            var prevDown = left;
+
+            while (++i < 10)
+            {
+                var nextRight = new Node("Right" + i);
+                var nextDown = new Node("Down" + (i + 1));
+                prevDown.SiblingDependencies.Add(nextDown);
+                nextRight.SiblingDependencies.Add(nextDown);
+                prevDown = nextDown;
+                nodesList.Add(nextRight);
+                nodesList.Add(nextDown);
+            }
+
+            var firstLayer = SiblingReorderer.GetFacadeNodes(nodesList);
+            var nextLayer = SiblingReorderer.GetFacadeNodes(nodesList.SiblingDependencies());
+            var pattern = SiblingReorderer.FindDependencyPatterns(firstLayer, nextLayer);
+            CollectionAssert.Contains(pattern.First().Referencers.ToArray(), left);
+            var newList = SiblingReorderer.LayOutSiblingNodes(nodesList);
+
+            var toIterate = newList.Last();
+            i-=1;
+            while (toIterate != null)
+            {
+                var right = toIterate.Childs.Last();
+                Assert.AreEqual("Right" + i, right.Name);
+
+                var container = toIterate?.Childs?.First();
+                if (!container.Childs.Any())
+                    break;
+                var down = container.Childs.First();
+                toIterate = container.Childs.Last();
+                Assert.AreEqual("Down" + i, down.Name);
+                i--;
+            }
+        }
 
 
     }

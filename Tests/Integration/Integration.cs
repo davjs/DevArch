@@ -2,12 +2,15 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using EnvDTE;
+using Lib;
 using Logic;
 using Logic.Building;
 using Logic.Filtering;
 using Logic.Integration;
+using Logic.Scopes;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Presentation;
 using static Tests.TestExtesions;
 
 namespace Tests.Integration
@@ -15,6 +18,7 @@ namespace Tests.Integration
     [TestClass]
     public class Integration
     {
+        [TestCategory("Integration")]
         [TestMethod]
         public void FindsDependencies()
         {
@@ -27,6 +31,7 @@ namespace Tests.Integration
             Assert.IsNotNull(dependency);
         }
 
+        [TestCategory("Integration")]
         [TestMethod]
         public void SemanticTreeDoesNotContainDoubles()
         {
@@ -36,6 +41,7 @@ namespace Tests.Integration
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
         }
 
+        [TestCategory("Integration")]
         [TestMethod]
         public void LogicLayerIsVertical()
         {
@@ -47,11 +53,6 @@ namespace Tests.Integration
             tree.RemoveChild("DiagramDefinitionParser");
             tree.RemoveChild("Common");
             tree.RemoveChild("OutputSettings");
-            tree.RemoveChild("NamedScope");
-            tree.RemoveChild("DocumentScope");
-            tree.RemoveChild("ProjectScope");
-            tree.RemoveChild("NamespaceScope");
-            tree.RemoveChild("ClassScope");
             tree.RemoveChild("NoArchProjectsFound");
             
             foreach (var child in tree.Childs)
@@ -64,12 +65,15 @@ namespace Tests.Integration
             Assert.AreEqual(OrientationKind.Vertical,tree.Orientation);
         }
 
+        [TestCategory("Integration")]
         [TestMethod]
         public void GeneratesWholeSolutionDiagramWithoutNamespacesWithoutCausingDuplicates()
         {
-            var tree = SemanticTreeBuilder.AnalyseSolution(TestSolution) as Node;
-            ModelFilterer.ApplyFilter(ref tree, new Filters { RemoveContainers = true });
-            DiagramFromDiagramDefinitionGenerator.ReverseTree(tree);
+            var diagramGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
+            var diagramDef = new DiagramDefinition("",
+                new RootScope(), new OutputSettings {Path = SlnDir + "IntegrationTests\\NoContainers.png"}, new Filters { RemoveContainers = true }, true, false);
+            var tree = diagramGen.GenerateDiagram(diagramDef);
+            BitmapRenderer.RenderTreeToBitmap(tree, diagramDef.DependencyDown, diagramDef.Output, diagramDef.HideAnonymousLayers);
             TreeAssert.DoesNotContainDuplicates(tree);
         }
     }

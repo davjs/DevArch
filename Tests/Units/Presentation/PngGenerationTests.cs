@@ -6,6 +6,7 @@ using Logic;
 using Logic.Building;
 using Logic.Filtering;
 using Logic.Integration;
+using Logic.Scopes;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;

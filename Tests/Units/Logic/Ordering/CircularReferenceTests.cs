@@ -53,8 +53,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             b.SiblingDependencies.Add(c);
             a.SiblingDependencies.Add(c);
 
-            var childList = new List<Node> { a, b, c };
-            CircularReferenceFinder.FindCircularReferences(ref childList);
+            var childList = new HashSet<Node> { a, b, c };
+            CircularReferenceFinder.FindCircularReferences(childList);
             Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.Last().GetType());
         }
 

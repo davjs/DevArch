@@ -23,11 +23,17 @@ namespace Logic.Common
         {
             return set.Where(x => !Equals(x, t));
         }
+        
 
         public static void RemoveRange<T>(this List<T> list, IReadOnlyList<T> enumerable)
         {
             foreach (var toRemove in enumerable)
                 list.Remove(toRemove);
         }
+    }
+
+    public static class HashetExtensions
+    {
+        
     }
 }

@@ -118,7 +118,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             c.SiblingDependencies.Add(a);
             b.SiblingDependencies.Add(a);
 
-            var newList = SiblingReorderer.LayOutSiblingNodes(new List<Node> { c,b,a});
+            var newList = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node> { c,b,a});
             Assert.IsTrue(newList.SequenceEqual(new List<Node> {a,b,c}));
         }
 
