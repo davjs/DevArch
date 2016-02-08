@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="Building\SemanticTreeBuilder.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
+    <Compile Include="Filtering\IndirectSiblingBuilder.cs" />
     <Compile Include="Ordering\CircularReferenceFinder.cs" />
     <Compile Include="Integration\AdvancedSolution.cs" />
     <Compile Include="DiagramDefinition.cs" />

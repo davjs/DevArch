@@ -26,6 +26,12 @@ namespace Tests
             tree.RemoveChild(withName);
         }
 
+        public static Node AddToRoot(this IEnumerable<Node> nodelist)
+        {
+            var root = new Node("Root");
+            root.AddChilds(nodelist);
+            return root;
+        }
 
         internal class ChildNotFoundException : Exception
         {

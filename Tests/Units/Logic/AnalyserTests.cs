@@ -60,32 +60,96 @@ namespace Tests.Units.Logic
         }
 
 
+        [TestCategory("IndirectSiblingDependencies")]
         [TestMethod]
         public void FindsIndirectSiblingDependencies()
         {
-            var siblings = OrderingTestFactory.CreateNodeList(@"
+            var root = OrderingTestFactory.CreateNodeList(@"
             A -> B
             B -> C
             C -> D
             D ->            
-            ");
+            ").AddToRoot();
 
-            ModelFilterer.SetupIndirectSiblingDeps(siblings);
-            var A = siblings.WithName("A");
-            var B = siblings.WithName("B");
-            var C = siblings.WithName("C");
-            var D = siblings.WithName("D");
+            ModelFilterer.FindIndirectSiblingDeps(root);
+
+            var A = root.Childs.WithName("A");
+            var B = root.Childs.WithName("B");
+            var C = root.Childs.WithName("C");
+            var D = root.Childs.WithName("D");
 
             Assert.IsTrue(A.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
                 B,C,D
             }));
             
-            Assert.IsTrue(B.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue( B.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
                 C,D
             }));
             
             Assert.IsTrue(C.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
                 D
+            }));
+        }
+
+        [TestCategory("IndirectSiblingDependencies")]
+        [TestMethod]
+        public void CirclularDepsDoesNotCauseIndirectSiblingCalcToHang()
+        {
+            var root = OrderingTestFactory.CreateNodeList(@"
+            A -> B
+            B -> C
+            C -> D
+            D -> C
+            ").AddToRoot();
+
+            ModelFilterer.FindIndirectSiblingDeps(root);
+            var A = root.Childs.WithName("A");
+            var B = root.Childs.WithName("B");
+            var C = root.Childs.WithName("C");
+            var D = root.Childs.WithName("D");
+
+            Assert.IsTrue(A.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                B,C,D
+            }));
+
+            Assert.IsTrue(B.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                C,D
+            }));
+
+            Assert.IsTrue(C.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                D
+            }));
+
+            Assert.IsTrue(D.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                C
+            }));
+        }
+
+        [TestCategory("IndirectSiblingDependencies")]
+        [TestMethod]
+        public void LongCircularReferences()
+        {
+            var root = OrderingTestFactory.CreateNodeList(@"
+            A -> B
+            B -> C
+            C -> A
+            ").AddToRoot();
+
+            ModelFilterer.FindIndirectSiblingDeps(root);
+            var A = root.Childs.WithName("A");
+            var B = root.Childs.WithName("B");
+            var C = root.Childs.WithName("C");
+            
+            Assert.IsTrue(A.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                B,C
+            }));
+
+            Assert.IsTrue(B.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                A,C
+            }));
+
+            Assert.IsTrue(C.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                A,B
             }));
         }
     }

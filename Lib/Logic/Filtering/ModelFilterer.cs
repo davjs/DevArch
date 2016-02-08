@@ -121,6 +121,15 @@ namespace Logic.Filtering
             }
         }
 
+        public static void FindIndirectSiblingDeps(Node node)
+        {
+            foreach (var descendantNode in node.DescendantNodes())
+            {
+                descendantNode.IndirectSiblingDependencies = IndirectSiblingBuilder.BuildDepsFor(descendantNode);
+            }
+        }
+
+
         public static void RemoveNodesWithMoreDepthThan(Node tree, int maxDepth, int currDepth = -1)
         {
             if (!(tree is SiblingHolderNode))
@@ -228,37 +237,6 @@ namespace Logic.Filtering
             }
             tree.SetChildren(tree.Childs.Select(FindSiblingPatterns).Cast<Node>());
             return tree;
-        }
-
-        public static void FindIndirectSiblingDeps(Node node)
-        {
-            var willBuildDepsFor = node.DescendantNodes().ToHashSet();
-            while (willBuildDepsFor.Any())
-            {
-                var curr = willBuildDepsFor.First();
-                var alldeps = new HashSet<Node>();
-                var toBeAdded = curr.SiblingDependencies;
-                while (toBeAdded.Any())
-                {
-                    alldeps.UnionWith(alldeps);
-                    toBeAdded = alldeps.SelectMany(x => x.SiblingDependencies).ToHashSet();
-                }
-                curr.IndirectSiblingDependencies = alldeps;
-                willBuildDepsFor.Remove(curr);
-            }
-        }
-
-
-        public static HashSet<Node> SetupIndirectSiblingDeps(IEnumerable<Node> siblingDependencies)
-        {
-            var allDeps = siblingDependencies.ToHashSet();
-            foreach (var node in siblingDependencies)
-            {
-               if(node.IndirectSiblingDependencies == null)
-                    node.IndirectSiblingDependencies = SetupIndirectSiblingDeps(node.SiblingDependencies);
-               allDeps.UnionWith(node.IndirectSiblingDependencies);
-            }
-            return allDeps;
         }
 
 

@@ -36,7 +36,9 @@ namespace Tests.Units.Logic.Ordering
                 CM ->
                 MDSD -> Embsys, Erlang, LAD, ProjectSys
                 ProjectChange -> UiDb, Prog, ProjectProg, SWProc
-                ");
+                IndustBestPractice -> ProjectSys, ProjectDist, ProjectProg, ProjectIndus
+                ResearchMethods ->
+                Thesis -> ResearchMethods, ProjectSys, ProjectDist, ProjectProg, ProjectIndus");
             
             var tree = new Node("tree");
             tree.SetChildren(nodesList);
