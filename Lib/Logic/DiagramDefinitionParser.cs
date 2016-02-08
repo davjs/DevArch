@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using EnvDTE;
 using Logic.Integration;
+using Logic.Scopes;
 
 namespace Logic
 {

@@ -3,6 +3,7 @@ using System.Linq;
 using Logic.Building;
 using Logic.Filtering;
 using Logic.Integration;
+using Logic.Scopes;
 using Logic.SemanticTree;
 
 namespace Logic
@@ -47,12 +48,14 @@ namespace Logic
             }
             ModelFilterer.ApplyFilter(ref tree,diagramDef.Filters);
 
-            return diagramDef.DependencyDown ? ReverseTree(tree) : tree;
+            return diagramDef.DependencyDown ? ReverseChildren(tree) : tree;
         }
 
-        public static Node ReverseTree(Node tree)
+        public static Node ReverseChildren(Node tree)
         {
-            tree.SetChildren(tree.Childs.Select(ReverseTree).Reverse());
+            tree.SetChildren(tree.Orientation == OrientationKind.Horizontal
+                ? tree.Childs.Select(ReverseChildren) // Horizontal layers are ordered alphabetically
+                : tree.Childs.Select(ReverseChildren).Reverse());
             return tree;
         }
     }

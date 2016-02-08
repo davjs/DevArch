@@ -142,7 +142,7 @@ namespace Logic.SemanticTree
     public class HorizontalSiblingHolderNode : SiblingHolderNode
     {
         public HorizontalSiblingHolderNode(IEnumerable<Node> siblingNodes) 
-            : base(siblingNodes,OrientationKind.Horizontal) {}
+            : base(siblingNodes.OrderBy(x => x.Name),OrientationKind.Horizontal) {}
     }
 
     public class VerticalSiblingHolderNode : SiblingHolderNode

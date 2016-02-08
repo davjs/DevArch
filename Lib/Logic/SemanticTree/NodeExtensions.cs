@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
 
 namespace Logic.SemanticTree
 {
@@ -18,9 +19,9 @@ namespace Logic.SemanticTree
         {
             return node.Childs.Any();
         }
-        public static IEnumerable<Node> SiblingDependencies(this IEnumerable<Node> nodeList)
+        public static HashSet<Node> SiblingDependencies(this IEnumerable<Node> nodeList)
         {
-            return nodeList.SelectMany(x => x.SiblingDependencies).Distinct();
+            return nodeList.SelectMany(x => x.SiblingDependencies).Distinct().ToHashSet();
         }
         public static bool DependsOn(this Node node,Node dependency)
         {
