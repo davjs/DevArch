@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Logic.Building;
 using Logic.Filtering;
 using Logic.SemanticTree;
@@ -26,40 +27,6 @@ namespace Tests.Units.Logic
                 Assert.IsTrue(tree.Childs.Any(x => x.Name == "B"));
             }
         }
-
-        /*
-        [TestMethod]
-        [TestCategory("ModelBuilder")]
-        public void IgnoresSinglePaths()
-        {
-            using (var fakeWorkspace = new AdhocWorkspace())
-            {
-                var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
-                fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {class ClassA {}}"));
-                var tree = new Tree();
-                ProjectTreeBuilder.AddProjectsToTree(fakeWorkspace.CurrentSolution, ref tree);
-                ModelFilterer.RemoveSinglePaths(tree);
-                Assert.IsFalse(tree.Childs.Any());
-            }
-        }
-
-        [TestMethod]
-        [TestCategory("ModelBuilder")]
-        public void IgnoresNamespacesAllTheWayDown()
-        {
-            using (var fakeWorkspace = new AdhocWorkspace())
-            {
-                var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
-                fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From("namespace NamespaceA {namespace NamespaceAA {namespace NamespaceAAA {class ClassA {}}}}"));
-                fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA {namespace NamespaceAB {namespace NamespaceABB {class ClassB {}}}}"));
-                var tree = new Tree();
-                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
-                ModelFilterer.RemoveSinglePaths(tree);
-                Assert.IsTrue(tree.Childs.Any(x => x.Name == "ClassA"));
-                Assert.IsTrue(tree.Childs.Any(x => x.Name == "ClassB"));
-            }
-        }*/
-
 
         [TestMethod]
         [TestCategory("ModelBuilder")]
@@ -90,6 +57,36 @@ namespace Tests.Units.Logic
             var newRoot = ModelFilterer.FindSiblingDependencies(root);
             var newA = newRoot.Childs.WithName("A");
             Assert.IsNotNull(newA.SiblingDependencies.WithName("B"));
+        }
+
+
+        [TestMethod]
+        public void FindsIndirectSiblingDependencies()
+        {
+            var siblings = OrderingTestFactory.CreateNodeList(@"
+            A -> B
+            B -> C
+            C -> D
+            D ->            
+            ");
+
+            ModelFilterer.SetupIndirectSiblingDeps(siblings);
+            var A = siblings.WithName("A");
+            var B = siblings.WithName("B");
+            var C = siblings.WithName("C");
+            var D = siblings.WithName("D");
+
+            Assert.IsTrue(A.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                B,C,D
+            }));
+            
+            Assert.IsTrue(B.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                C,D
+            }));
+            
+            Assert.IsTrue(C.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+                D
+            }));
         }
     }
 }

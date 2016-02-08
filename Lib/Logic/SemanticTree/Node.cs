@@ -30,6 +30,8 @@ namespace Logic.SemanticTree
         public Node Parent;
         public OrientationKind Orientation = OrientationKind.Vertical;
 
+        public HashSet<Node> IndirectSiblingDependencies = null; 
+
         private List<Node> ChildsList { get; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;
 
