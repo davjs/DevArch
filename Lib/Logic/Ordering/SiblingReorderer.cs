@@ -43,7 +43,7 @@ namespace Logic.Ordering
             var noOneDependantOn =  targets.Where(n => !allDependencies.Contains(n)).ToList();
             if (noOneDependantOn.Any())
                 return noOneDependantOn;
-            var indirectDepsCount = targets.ToDictionary(x => x, x => x.IndirectSiblingDependencies.Count());
+            var indirectDepsCount = targets.ToDictionary(x => x, x => x.IndirectSiblingDependencies().Count());
             var maxDeps = indirectDepsCount.Values.Max();
             return targets.Where(x => indirectDepsCount[x] == maxDeps).ToList();
         }
@@ -113,10 +113,10 @@ namespace Logic.Ordering
                                     var newList = new List<Node> {depNode, referenceNode};
                                     //Get ALL the possible candidates for the vertical layer
                                     var verticalCandidates =
-                                        referencers.SelectMany(x => x.IndirectSiblingDependencies)
+                                        referencers.SelectMany(x => x.IndirectSiblingDependencies())
                                             .Except(dependants)
                                             .Union(
-                                                dependants.SelectMany(x => x.IndirectSiblingDependencies))
+                                                dependants.SelectMany(x => x.IndirectSiblingDependencies()))
                                             .Distinct()
                                             .Except(hasBeenAdded).Intersect(toBeGrouped)
                                             .ToHashSet();

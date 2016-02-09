@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Logic.Filtering;
 using MoreLinq;
 
 namespace Logic.SemanticTree
@@ -30,7 +31,7 @@ namespace Logic.SemanticTree
 
         public static bool IndirectlyDependsOn(this Node node,Node dependency)
         {
-            return node.IndirectSiblingDependencies.Contains(dependency);
+            return node.IndirectSiblingDependencies().Contains(dependency);
         }
 
         /*public static int TotalReferences(this IEnumerable<Node> nodes)

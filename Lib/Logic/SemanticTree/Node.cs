@@ -33,9 +33,6 @@ namespace Logic.SemanticTree
         public HashSet<Node> SiblingDependencies = new HashSet<Node>();
         public Node Parent;
         public OrientationKind Orientation = OrientationKind.Vertical;
-
-        public HashSet<Node> IndirectSiblingDependencies => IndirectSiblingBuilder.BuildDepsFor(this);
-        
         //TODO:
         //_indirectSiblingDependencies ?? (_indirectSiblingDependencies = IndirectSiblingBuilder.BuildDepsFor(this));//IndirectSiblingBuilder.BuildDepsFor(this));
 

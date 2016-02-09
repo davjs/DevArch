@@ -75,15 +75,15 @@ namespace Tests.Units.Logic
             var C = root.WithName("C");
             var D = root.WithName("D");
 
-            Assert.IsTrue(A.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(A.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 B,C,D
             }));
             
-            Assert.IsTrue( B.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue( B.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 C,D
             }));
             
-            Assert.IsTrue(C.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(C.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 D
             }));
         }
@@ -104,19 +104,19 @@ namespace Tests.Units.Logic
             var C = nodes.WithName("C");
             var D = nodes.WithName("D");
 
-            Assert.IsTrue(A.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(A.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 B,C,D
             }));
 
-            Assert.IsTrue(B.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(B.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 C,D
             }));
 
-            Assert.IsTrue(C.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(C.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 D
             }));
 
-            Assert.IsTrue(D.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(D.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 C
             }));
         }
@@ -135,15 +135,15 @@ namespace Tests.Units.Logic
             var B = nodes.WithName("B");
             var C = nodes.WithName("C");
             
-            Assert.IsTrue(A.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(A.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 B,C
             }));
 
-            Assert.IsTrue(B.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(B.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 A,C
             }));
 
-            Assert.IsTrue(C.IndirectSiblingDependencies.SetEquals(new HashSet<Node>{
+            Assert.IsTrue(C.IndirectSiblingDependencies().SetEquals(new HashSet<Node>{
                 A,B
             }));
         }
