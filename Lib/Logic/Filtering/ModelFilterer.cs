@@ -121,14 +121,6 @@ namespace Logic.Filtering
             }
         }
 
-        public static void FindIndirectSiblingDeps(Node node)
-        {
-            foreach (var descendantNode in node.DescendantNodes())
-            {
-                descendantNode.IndirectSiblingDependencies = IndirectSiblingBuilder.BuildDepsFor(descendantNode);
-            }
-        }
-
 
         public static void RemoveNodesWithMoreDepthThan(Node tree, int maxDepth, int currDepth = -1)
         {

@@ -6,39 +6,42 @@ using MoreLinq;
 
 namespace Logic.Filtering
 {
-    public class IndirectSiblingBuilder
+    public class IndirectSiblingBuilderAsync
     {
         readonly Dictionary<Node, Task<HashSet<Node>>> _indirectSiblingDeps = new Dictionary<Node, Task<HashSet<Node>>>();
 
-        public IndirectSiblingBuilder(IEnumerable<Node> toBuildDepsFor)
+        public IndirectSiblingBuilderAsync(IEnumerable<Node> toBuildDepsFor)
         {
             foreach (var node in toBuildDepsFor)
             {
                 _indirectSiblingDeps[node] = BuildDepsForAsync(node);
             }
         }
-
-        public void Build()
-        {
-            foreach (var pair in _indirectSiblingDeps)
-            {
-                pair.Key.IndirectSiblingDependencies = pair.Value.Result;
-            }
-        }
-
-        private async Task<HashSet<Node>> BuildDepsForAsync(Node n,Node exclude = null)
+        
+        private async Task<HashSet<Node>> BuildDepsForAsync(Node n, Node exclude = null)
         {
             var sibDeps = n.SiblingDependencies.Where(dependency => dependency != exclude).ToHashSet();
             foreach (var dependency in sibDeps.ToHashSet())
             {
-                if(!_indirectSiblingDeps.ContainsKey(dependency))
-                    sibDeps.UnionWith(await BuildDepsForAsync(dependency,n));
+                if (!_indirectSiblingDeps.ContainsKey(dependency))
+                    sibDeps.UnionWith(await BuildDepsForAsync(dependency, n));
                 else
                     sibDeps.UnionWith((await _indirectSiblingDeps[dependency]).Where(x => x != n));
             }
             return sibDeps;
         }
+        public void Build()
+        {
+            foreach (var pair in _indirectSiblingDeps)
+            {
+                //pair.Key.IndirectSiblingDependencies = pair.Value.Result;
+            }
+        }
+    }
 
+
+    public class IndirectSiblingBuilder
+    {
         public static HashSet<Node> BuildDepsFor(Node n, ISet<Node> exclude = null)
         {
             if (exclude == null)
@@ -53,7 +56,15 @@ namespace Logic.Filtering
             return sibDeps;
         }
 
-        /*public static void FindIndirectSiblingDeps(Node node)
+        public static void BuildDepsFor(IEnumerable<Node> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                //node.IndirectSiblingDependencies = BuildDepsFor(node);
+            }
+        }
+
+        /*public static void FindIndirectSiblingDependencies(Node node)
             {
                 //var builder = new IndirectSiblingBuilder(node.DescendantNodes().ToHashSet());
                 //builder.Build();

@@ -37,11 +37,13 @@ namespace Logic.Ordering
 
         public static List<Node> GetFacadeNodes(ISet<Node> targets)
         {
+            if(!targets.Any())
+                return new List<Node>();
             var allDependencies = targets.SiblingDependencies().ToList();
             var noOneDependantOn =  targets.Where(n => !allDependencies.Contains(n)).ToList();
             if (noOneDependantOn.Any())
                 return noOneDependantOn;
-            var indirectDepsCount = targets.ToDictionary(x => x, x => x.IndirectSiblingDependencies().Count());
+            var indirectDepsCount = targets.ToDictionary(x => x, x => x.IndirectSiblingDependencies.Count());
             var maxDeps = indirectDepsCount.Values.Max();
             return targets.Where(x => indirectDepsCount[x] == maxDeps).ToList();
         }
@@ -51,7 +53,6 @@ namespace Logic.Ordering
         {
             if (toBeGrouped.Count <= 1)
                 return toBeGrouped.ToList();
-
             var groupedNodes = new List<Node>();
             var hasBeenAdded = new HashSet<Node>();
             var nextGroupTarget = toBeGrouped;
@@ -112,12 +113,12 @@ namespace Logic.Ordering
                                     var newList = new List<Node> {depNode, referenceNode};
                                     //Get ALL the possible candidates for the vertical layer
                                     var verticalCandidates =
-                                        referencers.SelectMany(x => x.IndirectSiblingDependencies())
+                                        referencers.SelectMany(x => x.IndirectSiblingDependencies)
                                             .Except(dependants)
                                             .Union(
-                                                dependants.SelectMany(x => x.IndirectSiblingDependencies()))
+                                                dependants.SelectMany(x => x.IndirectSiblingDependencies))
                                             .Distinct()
-                                            .Except(hasBeenAdded)
+                                            .Except(hasBeenAdded).Intersect(toBeGrouped)
                                             .ToHashSet();
 
                                     //Get all the nodes in this current call depth
@@ -129,7 +130,6 @@ namespace Logic.Ordering
                                             .Union(nodesInOtherGroups)
                                             .Except(verticalCandidates)
                                             .ToHashSet();
-
 
                                     var siblingDepsRelevantForNewNode = new HashSet<Node>();
                                     //If any of the other nodes depends on the vertical candidate the candidate is removed and will be placed in a later iteration of this call (it is still left in toBeGrouped)

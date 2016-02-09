@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Logic;
 using Logic.Filtering;
 using Logic.Ordering;
@@ -8,6 +9,7 @@ using Presentation;
 
 namespace Tests.Units.Logic.Ordering
 {
+
     [TestClass]
     public class Scenarios
     {
@@ -48,6 +50,7 @@ namespace Tests.Units.Logic.Ordering
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings {Path= TestExtesions.SlnDir + "SEM.png"},false);
         }
 
+        
         [TestCategory("Scenarios")]
         [TestMethod]
         public void CmdModel1()

@@ -1,11 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EnvDTE;
+using Logic.Filtering;
 using Logic.Integration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
+using MoreLinq;
 using Document = Microsoft.CodeAnalysis.Document;
 using Project = Microsoft.CodeAnalysis.Project;
 
@@ -31,9 +34,10 @@ namespace Logic.SemanticTree
         public Node Parent;
         public OrientationKind Orientation = OrientationKind.Vertical;
 
-        public HashSet<Node> IndirectSiblingDependencies = null;
-
-        //public Task<HashSet<Node>> IndirectSiblingDependencies = null; 
+        public HashSet<Node> IndirectSiblingDependencies => IndirectSiblingBuilder.BuildDepsFor(this);
+        
+        //TODO:
+        //_indirectSiblingDependencies ?? (_indirectSiblingDependencies = IndirectSiblingBuilder.BuildDepsFor(this));//IndirectSiblingBuilder.BuildDepsFor(this));
 
         private List<Node> ChildsList { get; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;

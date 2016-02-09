@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Logic.Filtering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.String;
@@ -40,8 +41,9 @@ namespace Tests
                 }
                 i++;
             }
-                
-            return new HashSet<Node>(nodes);
+
+            var nodeSet = new HashSet<Node>(nodes);
+            return nodeSet;
         }
 
         public static void AssertLayout(Node expected, Node actual)
