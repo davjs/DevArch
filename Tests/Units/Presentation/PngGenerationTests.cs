@@ -25,7 +25,7 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void GenerateAllArchDiagrams()
         {
-            DevArch.RenderAllArchDiagramsToFiles(Dte);
+            DevArch.RenderAllArchDiagramsToFiles(Dte).Wait();
         }
 
 

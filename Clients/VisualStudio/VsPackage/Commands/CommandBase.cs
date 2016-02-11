@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DevArch.Commands
+namespace ToolsMenu.Commands
 {
     abstract class CommandBase
     {

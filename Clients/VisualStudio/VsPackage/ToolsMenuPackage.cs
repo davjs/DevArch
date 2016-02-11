@@ -8,8 +8,8 @@ using System;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using DevArch.Commands;
 using Microsoft.VisualStudio.Shell;
+using ToolsMenu.Commands;
 
 namespace DevArch
 {

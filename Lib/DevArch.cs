@@ -13,7 +13,7 @@ namespace Lib
 {
     public static class DevArch
     {
-        public static void RenderAllArchDiagramsToFiles(_DTE enivorment)
+        public static async Task RenderAllArchDiagramsToFiles(_DTE enivorment)
         {
             var solution = new AdvancedSolution(enivorment);
             var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
@@ -27,7 +27,7 @@ namespace Lib
                 var tree = modelGen.GenerateDiagram(modelDef);
                 if (!tree.Childs.Any())
                     throw new NoClassesFoundException();
-                BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output, modelDef.HideAnonymousLayers);
+                await BitmapRenderer.RenderTreeToBitmapAsync(tree,modelDef.DependencyDown, modelDef.Output, modelDef.HideAnonymousLayers);
                 resultLogger.PrintCreated(modelDef.Output.Path);
             }
            resultLogger.PrintSuccess();

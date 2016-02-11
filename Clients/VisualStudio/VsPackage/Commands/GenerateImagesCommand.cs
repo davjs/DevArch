@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Globalization;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
-namespace DevArch.Commands
+namespace ToolsMenu.Commands
 {
     internal sealed class GenerateImagesCommand : CommandBase
     {
@@ -13,12 +12,9 @@ namespace DevArch.Commands
         public override async void OnClick(object sender, EventArgs e)
         {
             var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
-//#if DEBUG
-            await Task.Run(() => Lib.DevArch.RenderAllArchDiagramsToFiles(dte));
-/*#else
             try
             {
-                await Task.Run(() => Lib.DevArch.RenderAllArchDiagramsToFiles(dte));
+                await Lib.DevArch.RenderAllArchDiagramsToFiles(dte);
             }
             catch (Exception exception)
             {
@@ -30,36 +26,12 @@ namespace DevArch.Commands
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
-#endif*/
         }
 
 
         public GenerateImagesCommand(IServiceProvider serviceProvider) : base(serviceProvider)
         {
 
-        }
-    }
-
-    internal sealed class ViewDiagramsCommand : CommandBase
-    {
-
-        /// On Press
-        public override void OnClick(object sender, EventArgs e)
-        {
-            var message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.OnClick()", GetType().FullName);
-            const string title = "View Diagrams";
-
-            VsShellUtilities.ShowMessageBox(
-                ServiceProvider,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-        }
-
-        public ViewDiagramsCommand(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
         }
     }
 }

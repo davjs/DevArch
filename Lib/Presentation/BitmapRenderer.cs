@@ -3,12 +3,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using JetBrains.Annotations;
 using Logic;
 using Logic.SemanticTree;
+using Microsoft.VisualStudio.Threading;
 using Presentation.ViewModels;
 using Thread = System.Threading.Thread;
 
@@ -17,7 +19,7 @@ namespace Presentation
     public static class BitmapRenderer
     {
 
-        public static void RenderTreeToBitmap(Node tree, bool dependencyDown, OutputSettings outputSettings, bool hideAnonymousNodes = true, bool overWrite = true)
+        public static async Task RenderTreeToBitmapAsync(Node tree, bool dependencyDown, OutputSettings outputSettings, bool hideAnonymousNodes = true, bool overWrite = true)
         {
             if (!tree.HasChildren())
                 throw new Exception("Empty diagram");
@@ -29,15 +31,33 @@ namespace Presentation
             }
             
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree,dependencyDown,hideAnonymousNodes);
+            await StartStaTask(() => RenderViewModelToBitmap(viewModel, outputSettings.Path, outputSettings.Size));
+        }
 
-            
+        public static void RenderTreeToBitmap(Node tree, bool dependencyDown, OutputSettings outputSettings, bool hideAnonymousNodes = true, bool overWrite = true)
+        {
+            RenderTreeToBitmapAsync(tree, dependencyDown, outputSettings, hideAnonymousNodes, overWrite).Wait();
+        }
+
+
+        private static Task StartStaTask(Action func)
+        {
+            var tcs = new TaskCompletionSource<object>();
             var thread = new Thread(() =>
             {
-                RenderViewModelToBitmap(viewModel, outputSettings.Path, outputSettings.Size);
+                try
+                {
+                    func();
+                    tcs.SetResult(null);
+                }
+                catch (Exception e)
+                {
+                    tcs.SetException(e);
+                }
             });
-            thread.SetApartmentState(ApartmentState.STA); //Make the thread a ui thread
+            thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
-            thread.Join();
+            return tcs.Task;
         }
 
         private static void RenderViewModelToBitmap(ArchViewModel viewModel,[NotNull] string path, int scale = 1, double maxWidth = double.PositiveInfinity, double maxheight = double.PositiveInfinity)

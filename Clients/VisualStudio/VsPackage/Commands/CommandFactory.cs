@@ -2,7 +2,7 @@
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 
-namespace DevArch.Commands
+namespace ToolsMenu.Commands
 {
     class CommandFactory
     {
