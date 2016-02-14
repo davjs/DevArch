@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using EnvDTE;
@@ -6,6 +7,7 @@ using Lib;
 using Logic;
 using Logic.Building;
 using Logic.Filtering;
+using Logic.Filtering.Filters;
 using Logic.Integration;
 using Logic.Scopes;
 using Logic.SemanticTree;
@@ -37,7 +39,7 @@ namespace Tests.Integration
         {
             var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic\\SemanticTree");
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
-            ModelFilterer.ApplyFilter(ref tree, new Filters());
+            tree.RelayoutBasedOnDependencies();
             Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
         }
 
@@ -48,7 +50,7 @@ namespace Tests.Integration
             var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic");
             tree = tree.Childs.First(); tree = tree.Childs.First();
             tree.RemoveChild("DiagramDefinition");
-            tree.RemoveChild("Filters");
+            tree.RemoveChild("Filtering");
             tree.RemoveChild("DiagramFromDiagramDefinitionGenerator");
             tree.RemoveChild("DiagramDefinitionParser");
             tree.RemoveChild("Common");
@@ -61,7 +63,7 @@ namespace Tests.Integration
                 child.Dependencies =
                     child.Dependencies.Intersect(tree.Childs).ToList();
             }
-            ModelFilterer.ApplyFilter(ref tree, new Filters());
+            tree.RelayoutBasedOnDependencies();
             Assert.AreEqual(OrientationKind.Vertical,tree.Orientation);
         }
 
@@ -69,9 +71,11 @@ namespace Tests.Integration
         [TestMethod]
         public void GeneratesWholeSolutionDiagramWithoutNamespacesWithoutCausingDuplicates()
         {
+            var filters = DiagramDefinition.DefaultFilters;
+            filters.Add(new RemoveContainers(true));
             var diagramGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var diagramDef = new DiagramDefinition("",
-                new RootScope(), new OutputSettings {Path = SlnDir + "IntegrationTests\\NoContainers.png"}, new Filters { RemoveContainers = true }, true, false);
+                new RootScope(), new OutputSettings {Path = SlnDir + "IntegrationTests\\NoContainers.png"}, filters, true, false);
             var tree = diagramGen.GenerateDiagram(diagramDef);
             BitmapRenderer.RenderTreeToBitmap(tree, diagramDef.DependencyDown, diagramDef.Output, diagramDef.HideAnonymousLayers);
             TreeAssert.DoesNotContainDuplicates(tree);

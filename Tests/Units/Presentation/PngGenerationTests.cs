@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using Lib;
 using Logic;
 using Logic.Building;
 using Logic.Filtering;
+using Logic.Filtering.Filters;
 using Logic.Integration;
 using Logic.Scopes;
 using Logic.SemanticTree;
@@ -37,7 +39,7 @@ namespace Tests.Units.Presentation
             var modelDef = new DiagramDefinition("",
                 new NamespaceScope {Name = @"Tests\Integration\Samples"},
                 new OutputSettings {Path = SlnDir + @"IntegrationTests\VerticalAnonymousLayer.png" },
-                new Filters {RemoveTests = false}
+                new List<Filter> {new TestFilter(true) }
                 );
             var tree =modelGen.GenerateDiagram(modelDef);
             BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);

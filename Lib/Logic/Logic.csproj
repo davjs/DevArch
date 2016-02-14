@@ -108,6 +108,19 @@
   <ItemGroup>
     <Compile Include="Building\SemanticTreeBuilder.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
+    <Compile Include="Filtering\Filters\ClassNodeFilter.cs" />
+    <Compile Include="Filtering\Filters\ExceptionsFilter.cs" />
+    <Compile Include="Filtering\Filters\Filter.cs" />
+    <Compile Include="Filtering\Filters\FindNamingPatterns.cs" />
+    <Compile Include="Filtering\Filters\IntegralFilter.cs" />
+    <Compile Include="Filtering\Filters\MaxDepth.cs" />
+    <Compile Include="Filtering\Filters\MinMethods.cs" />
+    <Compile Include="Filtering\Filters\MinReferences.cs" />
+    <Compile Include="Filtering\Filters\NodeFilter.cs" />
+    <Compile Include="Filtering\Filters\RemoveContainers.cs" />
+    <Compile Include="Filtering\Filters\DefaultNamespaces.cs" />
+    <Compile Include="Filtering\Filters\RemoveSinglePaths.cs" />
+    <Compile Include="Filtering\Filters\TestFilter.cs" />
     <Compile Include="Filtering\IndirectSiblingBuilder.cs" />
     <Compile Include="Ordering\CircularReferenceFinder.cs" />
     <Compile Include="Integration\AdvancedSolution.cs" />
@@ -118,7 +131,9 @@
     <Compile Include="DiagramDefinitionParser.cs" />
     <Compile Include="Filtering\PatternFinder.cs" />
     <Compile Include="Filtering\ModelFilterer.cs" />
+    <Compile Include="OutputSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scopes\Scopes.cs" />
     <Compile Include="SemanticTree\OrientationKind.cs" />
     <Compile Include="Building\SemanticModelWalker.cs" />
     <Compile Include="SemanticTree\Node.cs" />

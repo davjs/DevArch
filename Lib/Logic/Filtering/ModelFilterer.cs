@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Logic.Filtering.Filters;
 using Logic.Ordering;
 using Logic.SemanticTree;
 using MoreLinq;
@@ -37,7 +38,7 @@ namespace Logic.Filtering
             || x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public class ModelFilterer
+    public static class ModelFilterer
     {
         public static void ApplyNodeFilter(Node t, Func<Node, bool> filter)
         {
@@ -54,73 +55,21 @@ namespace Logic.Filtering
         }
         //Everything that removes children of parent nodes needs to update their parent dependencies
         //Filters that pushes children upwards does not need to care
-        public static void ApplyFilter(ref Node tree, Filters filters)
+        public static Node ApplyFilters(this Node tree, IEnumerable<Filter> filters)
         {
-            if (filters.RemoveTests)
-                ApplyNodeFilter(tree, NodeFilters.Tests);
-            if (filters.RemoveDefaultNamespaces)
-                RemoveDefaultNamespaces(tree);
-
-            if (filters.RemoveContainers)
+            foreach (var filter in filters.Where(filter => filter.ShouldBeApplied))
             {
-                if (filters.MaxDepth > 0)
-                    RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
-                if (filters.MinReferences > 0)
-                    RemoveNodesReferencedLessThan(tree, filters.MinReferences);
-                RemoveContainers(ref tree);
+                filter.Apply(tree);
             }
-
-            if (filters.RemoveExceptions)
-                ApplyClassFilter(tree, ClassFilters.Exceptions);
-
-            tree.SetChildren(tree.Childs.Select(FindSiblingDependencies));
-            tree.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(tree.Childs));
-            
-            if (filters.MaxDepth > 0 && !filters.RemoveContainers)
-                RemoveNodesWithMoreDepthThan(tree, filters.MaxDepth);
-            if (filters.MinMethods > 0)
-                ApplyClassFilter(tree, new SmallClassFilter(filters.MinMethods));
-            if (filters.MinReferences > 0)
-                RemoveNodesReferencedLessThan(tree, filters.MinReferences);
-            if (filters.RemoveSinglePaths)
-                RemoveSinglePaths(tree);
-            RemoveSingleChildAnonymous(tree);
-            if (filters.FindNamingPatterns)
-                tree = FindSiblingPatterns(tree);
+            return tree;
         }
 
-        private static void RemoveContainers(ref Node tree)
+        public static Node RelayoutBasedOnDependencies(this Node n)
         {
-            tree.SetChildren(FindClasses(tree));
-            //tree.SetChildren(tree.DescendantNodes().Where(c => !c.HasChildren()));
+            n.SetChildren(n.Childs.Select(FindSiblingDependencies));
+            n.SetChildren(SiblingReorderer.OrderChildsBySiblingsDependencies(n.Childs));
+            return n;
         }
-
-        private static IEnumerable<ClassNode> FindClasses(Node tree)
-        {
-            foreach (var child in tree.Childs)
-            {
-                if (child is ClassNode)
-                    yield return child as ClassNode;
-                else
-                {
-                    foreach (var node in FindClasses(child))
-                        yield return node;
-                }
-            }
-        }
-
-        private static void RemoveDefaultNamespaces(Node tree)
-        {
-            var projects = tree.Projects();
-            var withDefaultNamespaces = projects.Where(p => p.Childs.Count() == 1 && p.Childs.First().Name == p.Name);
-            foreach (var projectNode in withDefaultNamespaces)
-            {
-                var childNode = projectNode.Childs.First();
-                projectNode.Orientation = childNode.Orientation;
-                projectNode.SetChildren(childNode.Childs);
-            }
-        }
-
 
         public static void RemoveNodesWithMoreDepthThan(Node tree, int maxDepth, int currDepth = -1)
         {
@@ -141,25 +90,8 @@ namespace Logic.Filtering
             }
         }
 
-        private static void RemoveNodesReferencedLessThan(Node tree, int byReference)
-        {
-            //tree.SetChildren(tree.Childs.Where(x => tree.Childs.SiblingDependencies().Contains(x)));
-            /*var allSubDependencies = tree.AllSubDependencies();
-            tree.SetChildren(tree.Childs.Where(x => allSubDependencies.Contains(x)));
-            foreach (var child in tree.Childs)
-            {
-                RemoveNodesReferencedLessThan(child, byReference);
-            }*/
 
-            /*tree.SetChildren(tree.Childs.Where(x => !(x is ClassNode) || (x as ClassNode).References.Count() >= byReference));
-            foreach (var child in tree.Childs)
-            {
-                RemoveNodesReferencedLessThan(child, byReference);
-            }*/
-        }
-
-
-        public static void RemoveSinglePaths(Node tree)
+        /*public static void RemoveSinglePaths(Node tree)
         {
             tree.Childs.ForEach(RemoveSinglePaths);
 
@@ -179,8 +111,8 @@ namespace Logic.Filtering
                 }
                 tree.ReplaceChild(oldChild,newChild);
             }
-        }
-
+        }*/
+        /*
         public static void RemoveSingleChildAnonymous(Node tree)
         {
             foreach (var oldChild in tree.Childs.ToList())
@@ -197,7 +129,7 @@ namespace Logic.Filtering
                     }
                 }
             }
-        }
+        }*/
 
         private static Node FindSiblingPatterns(Node tree)
         {

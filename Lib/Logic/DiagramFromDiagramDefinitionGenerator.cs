@@ -26,6 +26,7 @@ namespace Logic
         public Node GenerateDiagram(DiagramDefinition diagramDef)
         {
             Node tree = null;
+            // This boilerplate syntax will look better in C# 7, dont change untill then
             if (diagramDef.Scope is RootScope)
             {
                 tree = SemanticTreeBuilder.AnalyseSolution(_solution);
@@ -46,7 +47,9 @@ namespace Logic
             {
                 tree = SemanticTreeBuilder.AnalyseProject(_solution, ((ProjectScope) diagramDef.Scope).Name);
             }
-            ModelFilterer.ApplyFilter(ref tree,diagramDef.Filters);
+
+            tree = tree.ApplyFilters(diagramDef.Filters)
+                .RelayoutBasedOnDependencies();
 
             return diagramDef.DependencyDown ? ReverseChildren(tree) : tree;
         }

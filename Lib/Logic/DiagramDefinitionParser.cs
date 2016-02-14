@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using EnvDTE;
+using Logic.Filtering.Filters;
 using Logic.Integration;
 using Logic.Scopes;
 
@@ -53,36 +54,37 @@ namespace Logic
             var outputSettings = ParseOutputSettings(output);
 
             // Filters
-            var filters = new Filters();
+            IEnumerable<Filter> filters = DiagramDefinition.DefaultFilters;
             if (filtersNode?.ChildNodes != null)
             {
-                foreach (XmlNode filter in (filtersNode?.ChildNodes))
-                {
-                    ParseFilter(filter, ref filters);
-                }
-            }   
+                filters = filtersNode.ChildNodes.Cast<XmlNode>().Select(ParseFilter);
+            }
             var diagramDefinition = new DiagramDefinition(name, scope, outputSettings, filters, dependencyDown, hideAnonymous);
             return diagramDefinition;
         }
 
         // ReSharper disable once ConvertIfStatementToSwitchStatement
-        private static void ParseFilter(XmlNode filter,ref Filters filters)
+        private static Filter ParseFilter(XmlNode filterXml)
         {
-            var fname = filter.Name;
-            var on = filter.InnerText.Equals("on", StringComparison.CurrentCultureIgnoreCase);
-            int number;
-            int.TryParse(filter.InnerText, out number);
-            //Toggles
-            if (fname == "RemoveTests") filters.RemoveTests = on;
-            else if (fname == "RemoveSinglePaths") filters.RemoveSinglePaths = on;
-            else if (fname == "RemoveExceptions") filters.RemoveExceptions = on;
-            else if (fname == "FindNamingPatterns") filters.FindNamingPatterns = on;
-            else if (fname == "RemoveContainers") filters.RemoveContainers = on;
-            // Degrees
-            else if (fname == "MaxDepth") filters.MaxDepth = number;
-            else if (fname == "MinMethods") filters.MinMethods = number;
-            else if (fname == "MinReferences") filters.MinReferences = number;
-            else throw new Exception("Unrecognized filter: " + fname);
+            var fname = filterXml.Name;
+
+            var filter = DiagramDefinition.DefaultFilters.First(x => x.Name == fname);
+
+            if (filter == null)
+                throw new Exception($@"Unrecognized filter: {fname}
+                                      Availible filters are{string.Join(",",DiagramDefinition.DefaultFilters)}");
+
+            if (filter is IntegralFilter)
+            {
+                var integralFilter = filter as IntegralFilter;
+                int number;
+                if (int.TryParse(filterXml.InnerText, out number) && number >= 0)
+                    return integralFilter.WithParameter(number);
+                throw new Exception($@"Unrecognized parameter: {filterXml.InnerText}
+                                      Parameter for filter {fname} should be positive a number");
+            }
+            var on = filterXml.InnerText.Equals("on", StringComparison.CurrentCultureIgnoreCase);
+            return filter.WithParameter(@on);
         }
 
         private static OutputSettings ParseOutputSettings(XmlNode output)

@@ -44,8 +44,7 @@ namespace Tests.Units.Logic.Ordering
             
             var tree = new Node("tree");
             tree.SetChildren(nodesList);
-
-            ModelFilterer.ApplyFilter(ref tree, new Filters());
+            tree.RelayoutBasedOnDependencies();
             DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings {Path= TestExtesions.SlnDir + "SEM.png"},false);
         }
