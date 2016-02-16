@@ -5,12 +5,19 @@ namespace Logic.Filtering.Filters
 {
     public abstract class Filter
     {
+        private readonly FilterFunction _func;
         public bool ShouldBeApplied { get; }
         public string Name => GetType().Name;
-        public abstract void Apply(Node tree);
 
-        protected Filter(bool shouldBeApplied)
+        public void Apply(Node tree)
         {
+            _func(tree);
+        }
+
+        protected delegate void FilterFunction(Node n); 
+        protected Filter(bool shouldBeApplied, FilterFunction func)
+        {
+            _func = func;
             ShouldBeApplied = shouldBeApplied;
         }
 
