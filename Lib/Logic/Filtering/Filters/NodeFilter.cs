@@ -7,17 +7,18 @@ namespace Logic.Filtering.Filters
 {
     public abstract class NodeFilter : Filter
     {
-        public NodeFilter(bool shouldBeApplied) : base(shouldBeApplied)
+        public NodeFilter(bool shouldBeApplied, Func<Node, bool> filter) : base(shouldBeApplied,node => Apply(node,filter))
         {
+            Filter = filter;
         }
 
-        protected abstract Func<Node, bool> filter { get; }
+        protected Func<Node, bool> Filter { get; }
 
-        public override void Apply(Node tree)
+        public static void Apply(Node tree, Func<Node, bool> filter)
         {
             var toRemove = tree.Childs.Where(filter).ToList();
             toRemove.ForEach(tree.RemoveChild);
-            tree.Childs.ForEach(Apply);
+            tree.Childs.ForEach(x => Apply(x,filter));
         }
     }
 }

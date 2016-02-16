@@ -5,11 +5,11 @@ namespace Logic.Filtering.Filters
 {
     public class MinReferences : IntegralFilter
     {
-        public MinReferences(int i) : base(i)
+        public MinReferences(int i) : base(i, Apply)
         {
         }
 
-        public override void Apply(Node tree)
+        private static void Apply(Node tree, int i1)
         {
             throw new NotImplementedException();
         }

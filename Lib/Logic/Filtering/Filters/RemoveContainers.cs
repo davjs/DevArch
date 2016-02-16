@@ -6,7 +6,7 @@ namespace Logic.Filtering.Filters
 {
     public class RemoveContainers : Filter
     {
-        public RemoveContainers(bool i) : base(i)
+        public RemoveContainers(bool i) : base(i, Apply)
         {
         }
 
@@ -24,7 +24,7 @@ namespace Logic.Filtering.Filters
             }
         }
 
-        public override void Apply(Node tree)
+        private new static void Apply(Node tree)
         {
             tree.SetChildren(FindClasses(tree));
         }

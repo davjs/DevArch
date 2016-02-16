@@ -5,9 +5,9 @@ namespace Logic.Filtering.Filters
 {
     public class TestFilter : NodeFilter
     {
-        public TestFilter(bool shouldBeApplied) : base(shouldBeApplied){}
+        public TestFilter(bool shouldBeApplied) : base(shouldBeApplied, filter) {}
 
-        protected override Func<Node, bool> filter => x =>
+        private static Func<Node, bool> filter { get; } = x =>
             x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)
             || x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase);
     }

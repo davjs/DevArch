@@ -4,13 +4,13 @@ namespace Logic.Filtering.Filters
 {
     public class MaxDepth : IntegralFilter
     {
-        public MaxDepth(int i) : base(i)
+        public MaxDepth(int i) : base(i,Apply)
         {
         }
 
-        public override void Apply(Node tree)
+        private static void Apply(Node tree, int parameter)
         {
-            ModelFilterer.RemoveNodesWithMoreDepthThan(tree, Parameter);
+            ModelFilterer.RemoveNodesWithMoreDepthThan(tree, parameter);
         }
     }
 }

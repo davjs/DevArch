@@ -6,9 +6,9 @@ namespace Logic.Filtering.Filters
 {
     public class ExceptionsFilter : ClassNodeFilter
     {
-        public ExceptionsFilter(bool shouldBeApplied) : base(shouldBeApplied) { }
+        public ExceptionsFilter(bool shouldBeApplied) : base(shouldBeApplied,FilterFunc) { }
 
-        protected override Func<ClassNode, bool> filter => x 
+        private static Func<ClassNode, bool> FilterFunc => x 
             => x.BaseClasses.Any(y => y.ToString() == "Exception");
     }
 }
