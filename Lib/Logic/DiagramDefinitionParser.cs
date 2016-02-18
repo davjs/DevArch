@@ -8,6 +8,7 @@ using EnvDTE;
 using Logic.Filtering.Filters;
 using Logic.Integration;
 using Logic.Scopes;
+using MoreLinq;
 
 namespace Logic
 {
@@ -59,8 +60,18 @@ namespace Logic
             {
                 filters = filtersNode.ChildNodes.Cast<XmlNode>().Select(ParseFilter);
             }
+
+            filters = AddDefaultFilters(filters);
+
             var diagramDefinition = new DiagramDefinition(name, scope, outputSettings, filters, dependencyDown, hideAnonymous);
             return diagramDefinition;
+        }
+
+        private static IEnumerable<Filter> AddDefaultFilters(IEnumerable<Filter> filters)
+        {
+            return from defaultFilterSetting in DiagramDefinition.DefaultFilters
+                   let usedFilterSetting = filters.FirstOrDefault(x => x.Name == defaultFilterSetting.Name)
+                   select usedFilterSetting ?? defaultFilterSetting;
         }
 
         // ReSharper disable once ConvertIfStatementToSwitchStatement
@@ -68,7 +79,7 @@ namespace Logic
         {
             var fname = filterXml.Name;
 
-            var filter = DiagramDefinition.DefaultFilters.First(x => x.Name == fname);
+            var filter = DiagramDefinition.DefaultFilters.FirstOrDefault(x => x.Name == fname);
 
             if (filter == null)
                 throw new Exception($@"Unrecognized filter: {fname}
@@ -94,11 +105,7 @@ namespace Logic
             int.TryParse(output?.Attributes?.GetNamedItem("Scale")?.Value, out scale);
             if (scale == 0)
                 scale = 1;
-            var outputSettings = new OutputSettings()
-            {
-                Path = outputPath,
-                Size = scale
-            };
+            var outputSettings = new OutputSettings(outputPath, scale);
             return outputSettings;
         }
 

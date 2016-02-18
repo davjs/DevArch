@@ -38,8 +38,8 @@ namespace Tests.Units.Presentation
             var modelGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var modelDef = new DiagramDefinition("",
                 new NamespaceScope {Name = @"Tests\Integration\Samples"},
-                new OutputSettings {Path = SlnDir + @"IntegrationTests\VerticalAnonymousLayer.png" },
-                new List<Filter> {new TestFilter(true) }
+                new OutputSettings (SlnDir + @"IntegrationTests\VerticalAnonymousLayer.png"),
+                new List<Filter> {new RemoveTests(true) }
                 );
             var tree =modelGen.GenerateDiagram(modelDef);
             BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);

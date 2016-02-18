@@ -4,9 +4,9 @@ using Logic.SemanticTree;
 
 namespace Logic.Filtering.Filters
 {
-    public class DefaultNamespaces : Filter
+    public class RemoveDefaultNamespaces : Filter
     {
-        public DefaultNamespaces(bool i) : base(i, Apply)
+        public RemoveDefaultNamespaces(bool i) : base(i, Apply)
         {
         }
 

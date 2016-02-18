@@ -19,7 +19,6 @@
     <None Include="Samples\LayerDefaultOrder.diagramdefinition" />
     <None Include="Samples\LayerReverseOrder.diagramdefinition" />
     <None Include="Samples\NoPatterns.diagramdefinition" />
-    <None Include="Samples\Patterns.diagramdefinition" />
     <None Include="Tests\VerticalAnonymousLayer.modeldefinition" />
   </ItemGroup>
   <Import Project="$(CustomProjectExtensionsPath)CustomProjectCs.targets" />

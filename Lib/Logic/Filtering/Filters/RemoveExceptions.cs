@@ -4,9 +4,9 @@ using Logic.SemanticTree;
 
 namespace Logic.Filtering.Filters
 {
-    public class ExceptionsFilter : ClassNodeFilter
+    public class RemoveExceptions : BooleanClassPredicateFilter
     {
-        public ExceptionsFilter(bool shouldBeApplied) : base(shouldBeApplied,FilterFunc) { }
+        public RemoveExceptions(bool shouldBeApplied) : base(shouldBeApplied,FilterFunc) { }
 
         private static Func<ClassNode, bool> FilterFunc => x 
             => x.BaseClasses.Any(y => y.ToString() == "Exception");

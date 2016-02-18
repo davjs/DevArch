@@ -75,7 +75,7 @@ namespace Tests.Integration
             filters.Add(new RemoveContainers(true));
             var diagramGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var diagramDef = new DiagramDefinition("",
-                new RootScope(), new OutputSettings {Path = SlnDir + "IntegrationTests\\NoContainers.png"}, filters, true, false);
+                new RootScope(), new OutputSettings (SlnDir + "IntegrationTests\\NoContainers.png"), filters, true, false);
             var tree = diagramGen.GenerateDiagram(diagramDef);
             BitmapRenderer.RenderTreeToBitmap(tree, diagramDef.DependencyDown, diagramDef.Output, diagramDef.HideAnonymousLayers);
             TreeAssert.DoesNotContainDuplicates(tree);

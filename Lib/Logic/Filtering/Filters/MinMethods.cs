@@ -4,15 +4,15 @@ using Microsoft.CodeAnalysis;
 
 namespace Logic.Filtering.Filters
 {
-    public class MinMethods : IntegralFilter
+    public class MinMethods : IntegralClassPredicateFilter
     {
-        public MinMethods(int i) : base(i,Apply)
+        public MinMethods(int i) : base(i, MethodsLessThan)
         {
         }
 
-        private static void Apply(Node tree, int i1)
+        public static bool MethodsLessThan(ClassNode node,int x)
         {
-            throw new NotImplementedException();
+            return node.NrOfMethods < x;
         }
     }
 }

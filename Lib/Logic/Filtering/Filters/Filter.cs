@@ -3,11 +3,11 @@ using Logic.SemanticTree;
 
 namespace Logic.Filtering.Filters
 {
-    public abstract class Filter
+    public class Filter
     {
         private readonly FilterFunction _func;
         public bool ShouldBeApplied { get; }
-        public string Name => GetType().Name;
+        public string Name { get; }
 
         public void Apply(Node tree)
         {
@@ -15,15 +15,16 @@ namespace Logic.Filtering.Filters
         }
 
         protected delegate void FilterFunction(Node n); 
-        protected Filter(bool shouldBeApplied, FilterFunction func)
+        protected Filter(bool shouldBeApplied, FilterFunction func,string name = null)
         {
             _func = func;
             ShouldBeApplied = shouldBeApplied;
+            Name = name ?? GetType().Name;
         }
 
         public Filter WithParameter(bool b)
         {
-            return Activator.CreateInstance(GetType(), new[] { b }) as Filter;
+            return new Filter(b, _func,GetType().Name);
         }
     }
 }

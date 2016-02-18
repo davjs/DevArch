@@ -34,7 +34,7 @@ namespace Logic.Integration
                 {
                     var definition = DiagramDefinitionParser.ParseDiagramDefinition(_name, Content);
                     //Insert directory before output path
-                    definition.Output.Path = directory + definition.Output.Path;
+                    definition.Output = new OutputSettings(directory + definition.Output.Path,definition.Output.Size);
                     return new DiagramDefinitionParseResult(definition);
                 }
                 catch (Exception e)

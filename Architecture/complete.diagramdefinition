@@ -8,6 +8,5 @@
     <MaxDepth>3</MaxDepth>
     <MinMethods>1</MinMethods>
     <RemoveExceptions>On</RemoveExceptions>
-    <MinReferences>2</MinReferences>
   </Filters>
 </Diagram>
