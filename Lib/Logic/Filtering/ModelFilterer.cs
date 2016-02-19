@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Logic.Filtering.Filters;
 using Logic.Ordering;
@@ -8,59 +7,37 @@ using MoreLinq;
 
 namespace Logic.Filtering
 {
-    public abstract class ChildrenFilter
-    {
-        protected Func<ClassNode, bool> Predicate;
-
-        public static implicit operator Func<ClassNode, bool>(ChildrenFilter c)
-        {
-            return c.Predicate;
-        }
-    }
-
-    public class SmallClassFilter : ChildrenFilter
-    {
-        public SmallClassFilter(int nrOfMethodsMin)
-        {
-            Predicate = node => node.NrOfMethods < nrOfMethodsMin;
-        }
-    }
-
-    public static class ClassFilters
-    {
-        public static Func<ClassNode, bool> Exceptions = x => x.BaseClasses.Any(y => y.ToString() == "Exception");
-    }
-
-    public static class NodeFilters
-    {
-        public static Func<Node, bool> Tests = x =>
-            x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)
-            || x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase);
-    }
-
     public static class ModelFilterer
     {
-        public static void ApplyNodeFilter(Node t, Func<Node, bool> filter)
-        {
-            var toRemove = t.Childs.Where(filter).ToList();
-            toRemove.ForEach(t.RemoveChild);
-            t.Childs.ForEach(x => ApplyNodeFilter(x, filter));
-        }
-        public static void ApplyClassFilter(Node t, Func<ClassNode, bool> filter)
-        {
-            var classes = t.Childs.OfType<ClassNode>();
-            var toRemove = classes.Where(filter).ToList();
-            toRemove.ForEach(t.RemoveChild);
-            t.Childs.ForEach(x => ApplyClassFilter(x, filter));
-        }
         //Everything that removes children of parent nodes needs to update their parent dependencies
         //Filters that pushes children upwards does not need to care
         public static Node ApplyFilters(this Node tree, IEnumerable<Filter> filters)
         {
-            foreach (var filter in filters.Where(filter => filter.ShouldBeApplied))
+            var filterList = filters.ToList();
+            foreach (var filter in filterList.Where(filter => filter.ShouldBeApplied))
             {
                 filter.Apply(tree);
             }
+
+            //Remove filtered dependencies
+            var all = tree.DescendantNodes().ToHashSet();
+            foreach (var node in all)
+            {
+                foreach (var dependency in node.Dependencies.Where(dependency => !all.Contains(dependency)).ToHashSet())
+                {
+                    node.Dependencies.Remove(dependency);
+                    dependency.References.Remove(node);
+                    var it = dependency;
+                    while (it != null)
+                    {
+                        it = it.Parent;
+                        if (!all.Contains(it)) continue;
+                        node.Dependencies.Add(it);
+                        break;
+                    }
+                }
+            }
+
             return tree;
         }
 
@@ -78,8 +55,7 @@ namespace Logic.Filtering
 
             if (currDepth == maxDepth)
             {
-                tree.Dependencies.AddRange(tree.Childs.SelectMany(x => x.AllSubDependencies()).Distinct());
-                tree.SetChildren(new List<Node>());
+                tree.FilterAllChilds();
             }
             else
             {
@@ -90,28 +66,6 @@ namespace Logic.Filtering
             }
         }
 
-
-        /*public static void RemoveSinglePaths(Node tree)
-        {
-            tree.Childs.ForEach(RemoveSinglePaths);
-
-            foreach (var oldChild in tree.Childs.ToList())
-            {
-                if (tree.Childs.Count != 1) continue;
-                var node = tree;
-                var newChild = tree.Childs.First();
-                {
-                    newChild.SiblingDependencies.UnionWith(node.SiblingDependencies);
-                    var dependsOnNode = node.Parent.Childs.Where(x => x.SiblingDependencies.Contains(tree));
-                    foreach (var dependant in dependsOnNode)
-                    {
-                        dependant.SiblingDependencies.Remove(node);
-                        dependant.SiblingDependencies.Add(newChild);
-                    }
-                }
-                tree.ReplaceChild(oldChild,newChild);
-            }
-        }*/
         /*
         public static void RemoveSingleChildAnonymous(Node tree)
         {
@@ -159,7 +113,7 @@ namespace Logic.Filtering
                     }
                 }
             }
-            tree.SetChildren(tree.Childs.Select(FindSiblingPatterns).Cast<Node>());
+            tree.SetChildren(tree.Childs.Select(FindSiblingPatterns));
             return tree;
         }
 

@@ -46,7 +46,7 @@ namespace Tests.Units.Logic.Ordering
             tree.SetChildren(nodesList);
             tree.RelayoutBasedOnDependencies();
             DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
-            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings {Path= TestExtesions.SlnDir + "SEM.png"},false);
+            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings (TestExtesions.SlnDir + "SEM.png"),false);
         }
 
         
@@ -71,7 +71,7 @@ namespace Tests.Units.Logic.Ordering
             tree.SetChildren(newList);
 
             DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
-            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + "ArchTest.png" }, false);
+            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings (TestExtesions.SlnDir + "ArchTest.png" ), false);
             Assert.IsFalse(tree.Childs.Last().Childs.Any(x => x.Name == "CommandBase"));
         }
 
@@ -98,7 +98,7 @@ namespace Tests.Units.Logic.Ordering
             tree.SetChildren(newList);
 
             DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
-            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings { Path = TestExtesions.SlnDir + "ArchTest2.png" }, false);
+            BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings (TestExtesions.SlnDir + "ArchTest2.png" ), false);
             Assert.IsFalse(tree.Childs.Last().Childs.Any(x => x.Name == "CommandBase"));
         }
     }

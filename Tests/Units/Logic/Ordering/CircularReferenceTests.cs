@@ -5,7 +5,7 @@ using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests.Units.Logic.Filtering.Ordering
+namespace Tests.Units.Logic.Ordering
 {
     [TestClass]
     public class CircularReferenceTests
@@ -21,6 +21,22 @@ namespace Tests.Units.Logic.Filtering.Ordering
             b.SiblingDependencies.Add(a);
             
             var newList = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> { a , b });
+            Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
+        }
+
+        [TestCategory("SiblingOrder.Circular")]
+        [TestMethod]
+        public void ResolvesIndirectCircularReference()
+        {
+            var nodesList = OrderingTestFactory.CreateNodeList(
+            @"
+            Filtering -> SemanticTree
+            Integration -> DiagramDefinitionParser
+            DiagramDefinitionParser -> Filtering
+            SemanticTree -> Integration"
+            );
+
+            var newList = SiblingReorderer.OrderChildsBySiblingsDependencies(nodesList.ToList());
             Assert.IsTrue(newList.First() is CircularDependencyHolderNode);
         }
 
@@ -44,22 +60,21 @@ namespace Tests.Units.Logic.Filtering.Ordering
         [TestMethod]
         public void FindCircularReferenceWhenItsLast()
         {
-            var a = new Node("A");
-            var b = new Node("B");
-            var c = new Node("C");
-
-            a.SiblingDependencies.Add(b);
-            b.SiblingDependencies.Add(a);
-            b.SiblingDependencies.Add(c);
-            a.SiblingDependencies.Add(c);
-
-            var childList = new HashSet<Node> { a, b, c };
-            CircularReferenceFinder.FindCircularReferences(childList);
-            Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.Last().GetType());
+            var nodes = OrderingTestFactory.CreateNodeList(
+            @"
+            A -> B
+            B -> A
+            B -> C
+            A -> C
+            C ->
+            ");
+            
+            CircularReferenceFinder.FindCircularReferences(nodes);
+            Assert.AreEqual(typeof(CircularDependencyHolderNode), nodes.First().GetType());
         }
 
         //TODO: Undefined behavior
-        /*[TestCategory("SiblingOrder.Circular")]
+        [TestCategory("SiblingOrder.Circular")]
         [TestMethod]
         public void SolvesCircularReferenceInvolvingMoreThreeComponents()
         {
@@ -74,10 +89,10 @@ namespace Tests.Units.Logic.Filtering.Ordering
             left.SiblingDependencies.Add(top);
             top.SiblingDependencies.Add(right);
             
-            var childList = new List<Node> { top, left, right };
-            SiblingReorderer.FindCircularReferences(ref childList);
+            var childList = new HashSet<Node> { top, left, right };
+            CircularReferenceFinder.FindCircularReferences(childList);
             Assert.AreEqual(typeof(CircularDependencyHolderNode), childList.First().GetType());
             //TODO: Define wanted behaviour
-        }*/
+        }
     }
 }

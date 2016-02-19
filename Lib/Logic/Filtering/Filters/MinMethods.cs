@@ -1,17 +1,18 @@
 using System;
 using Logic.SemanticTree;
+using Microsoft.CodeAnalysis;
 
 namespace Logic.Filtering.Filters
 {
-    public class MinMethods : IntegralFilter
+    public class MinMethods : IntegralClassPredicateFilter
     {
-        public MinMethods(int i) : base(i)
+        public MinMethods(int i) : base(i, ShouldBeRemoved)
         {
         }
 
-        public override void Apply(Node tree)
+        public static bool ShouldBeRemoved(ClassNode node,int x)
         {
-            throw new NotImplementedException();
+            return node.NrOfMethods < x;
         }
     }
 }

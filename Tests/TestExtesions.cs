@@ -26,13 +26,6 @@ namespace Tests
             tree.RemoveChild(withName);
         }
 
-        public static Node AddToRoot(this IEnumerable<Node> nodelist)
-        {
-            var root = new Node("Root");
-            root.AddChilds(nodelist);
-            return root;
-        }
-
         internal class ChildNotFoundException : Exception
         {
             public ChildNotFoundException(string parent, string child) : base($"unable to find {child} in {parent}")
@@ -117,7 +110,7 @@ namespace Tests
 
             public static void DoesNotContainDuplicates(IEnumerable<Node> tree)
             {
-                var allNodes = tree.SelectMany(x => x.DescendantNodes()).Where(x => !String.IsNullOrEmpty(x.Name));
+                var allNodes = tree.SelectMany(x => x.DescendantNodes()).Where(x => !string.IsNullOrEmpty(x.Name));
 
                 var dups = allNodes.GroupBy(x => x)
                             .Where(x => x.Count() > 1)

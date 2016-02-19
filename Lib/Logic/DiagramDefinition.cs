@@ -7,12 +7,12 @@ namespace Logic
 {
     public class DiagramDefinition
     {
-        public string Name;
-        public IScope Scope;
+        public string Name { get; }
+        public IScope Scope { get; }
         public OutputSettings Output;
-        public readonly IEnumerable<Filter> Filters;
-        public readonly bool DependencyDown;
-        public readonly bool HideAnonymousLayers;
+        public IEnumerable<Filter> Filters { get; }
+        public bool DependencyDown { get; }
+        public bool HideAnonymousLayers { get; }
 
         public DiagramDefinition(string name, IScope scope, OutputSettings output, IEnumerable<Filter> filters, bool dependencyDown = true, bool hideAnonymousLayers = true)
         {
@@ -26,17 +26,22 @@ namespace Logic
 
 
         public static readonly DiagramDefinition RootDefault 
-            = new DiagramDefinition("", new RootScope(), new OutputSettings(),DefaultFilters);
+            = new DiagramDefinition("", new RootScope(), new OutputSettings(""),DefaultFilters);
 
 
         public static HashSet<Filter> DefaultFilters => new HashSet<Filter>()
         {
-            new TestFilter(true),
+            //On by default
+            new RemoveTests(true),
+            new RemoveDefaultNamespaces(true),
+            new RemoveExceptions(true),
+            new MinReferences(1),
+            
+            //Availible
+            new MaxDepth(0),
+            new MinMethods(0)
             //new MinReferences(1),
             //new RemoveSinglePaths (false),
-            new MaxDepth(0),
-            new DefaultNamespaces(true),
-            new ExceptionsFilter(true),
             //new FindNamingPatterns(false),
             //new MinMethods(0),
             //new RemoveContainers(false)

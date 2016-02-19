@@ -1,20 +1,23 @@
 using System;
-using System.Linq.Expressions;
+using Logic.SemanticTree;
 
 namespace Logic.Filtering.Filters
 {
-    public abstract class IntegralFilter : Filter
+    public class IntegralFilter : Filter
     {
-        protected int Parameter { get; }
+        private Action<Node, int> F { get; }
+        public int Parameter { get; }
 
-        protected IntegralFilter(int parameter) : base(parameter > 0)
+        protected IntegralFilter(int parameter,Action<Node,int> f, string name = null) :
+            base(parameter > 0,node => f(node,parameter),name)
         {
+            F = f;
             Parameter = parameter;
         }
 
         public IntegralFilter WithParameter(int newParameter)
         {
-            return Activator.CreateInstance(GetType(), new[] { newParameter }) as IntegralFilter;
+            return new IntegralFilter(newParameter,F,GetType().Name);
         }
     }
 }

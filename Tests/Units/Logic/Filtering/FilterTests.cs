@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Logic.Building;
 using Logic.Filtering;
+using Logic.Filtering.Filters;
 using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -15,17 +17,47 @@ namespace Tests.Units.Logic.Filtering
         public void RemoveNodesWithMoreDepthThanTest()
         {
             var t = new Node("ROOT");
-            var A = new Node("A");
-            var B = new Node("B");
-            var C = new Node("C");
-            var D = new Node("D");
-            t.AddChild(A);
-            A.AddChild(B);
-            B.AddChild(C);
-            C.AddChild(D);
-            Assert.IsTrue(B.Childs.Any());
+            var a = new Node("A");
+            var b = new Node("B");
+            var c = new Node("C");
+            var d = new Node("D");
+            t.AddChild(a);
+            a.AddChild(b);
+            b.AddChild(c);
+            c.AddChild(d);
+            Assert.IsTrue(b.Childs.Any());
             ModelFilterer.RemoveNodesWithMoreDepthThan(t,2);
-            Assert.IsTrue(!B.Childs.Any());
+            Assert.IsTrue(!b.Childs.Any());
+        }
+
+        [TestMethod]
+        public void ParentTakesOverFilteredDependencies()
+        {
+            var lib = new Node("Lib");
+            var logic = new Node("Logic");
+            var presentation = new Node("Presentation");
+            var windows = new Node("Windows");
+            var service = new Node("Service");
+            
+            var root = new Node("root");
+            root.AddChild(lib);
+            lib.AddChild(logic);
+            lib.AddChild(presentation);
+            presentation.AddChild(windows);
+            logic.AddChild(service);
+
+            windows.Dependencies.Add(service);
+
+            root.ApplyFilters(new List<Filter>
+            {
+                new MaxDepth(2)
+            });
+
+            var filtered = ModelFilterer.FindSiblingDependencies(root);
+            var lib2 = filtered.Childs.First();
+            var pres = lib2.Childs.WithName("Presentation");
+
+            Assert.IsTrue(pres.DependsOn(logic));
         }
         /*
         [TestMethod]

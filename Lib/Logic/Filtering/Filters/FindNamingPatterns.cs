@@ -5,13 +5,8 @@ namespace Logic.Filtering.Filters
 {
     public class FindNamingPatterns : Filter
     {
-        public FindNamingPatterns(bool i) : base(i)
+        public FindNamingPatterns(bool i) : base(i,null)
         {
-        }
-
-        public override void Apply(Node tree)
-        {
-            throw new NotImplementedException();
         }
     }
 }

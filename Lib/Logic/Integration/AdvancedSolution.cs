@@ -3,60 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EnvDTE;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using MoreLinq;
 using Project = EnvDTE.Project;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Logic.Integration
 {
-    public class ArchProject
-    {
-        private readonly Project _project;
-
-        public class DiagramDefinitionFile
-        {
-            private readonly string _path;
-            private readonly string _name;
-
-            public DiagramDefinitionFile(ProjectItem item)
-            {
-                _path = item.FileNames[0];
-                _name = item.Name;
-            }
-
-            public string Content => File.ReadAllText(_path);
-
-            public DiagramDefinitionParseResult Parse(string directory)
-            {
-                try
-                {
-                    var definition = DiagramDefinitionParser.ParseDiagramDefinition(_name, Content);
-                    //Insert directory before output path
-                    definition.Output.Path = directory + definition.Output.Path;
-                    return new DiagramDefinitionParseResult(definition);
-                }
-                catch (Exception e)
-                {
-                    return new DiagramDefinitionParseResult(new Exception(_name + "- " + e.Message));
-                }
-            }
-        }
-
-        public ArchProject(Project project)
-        {
-            _project = project;
-        }
-
-        public IEnumerable<DiagramDefinitionFile> GetDiagramDefinitionFiles()
-        {
-            var projectItems = _project.GetAllProjectItems();
-            var definitionItems = projectItems.Where(d => d.Name.EndsWith(".diagramdefinition"));
-            return definitionItems.Select(x => new DiagramDefinitionFile(x));
-        }
-    }
-
     public class AdvancedSolution
     {
         public readonly Solution RoslynSolution;

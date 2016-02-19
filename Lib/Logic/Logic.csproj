@@ -108,8 +108,8 @@
   <ItemGroup>
     <Compile Include="Building\SemanticTreeBuilder.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
-    <Compile Include="Filtering\Filters\ClassNodeFilter.cs" />
-    <Compile Include="Filtering\Filters\ExceptionsFilter.cs" />
+    <Compile Include="Filtering\Filters\BooleanClassPredicateFilter.cs" />
+    <Compile Include="Filtering\Filters\RemoveExceptions.cs" />
     <Compile Include="Filtering\Filters\Filter.cs" />
     <Compile Include="Filtering\Filters\FindNamingPatterns.cs" />
     <Compile Include="Filtering\Filters\IntegralFilter.cs" />
@@ -118,10 +118,11 @@
     <Compile Include="Filtering\Filters\MinReferences.cs" />
     <Compile Include="Filtering\Filters\NodeFilter.cs" />
     <Compile Include="Filtering\Filters\RemoveContainers.cs" />
-    <Compile Include="Filtering\Filters\DefaultNamespaces.cs" />
+    <Compile Include="Filtering\Filters\RemoveDefaultNamespaces.cs" />
     <Compile Include="Filtering\Filters\RemoveSinglePaths.cs" />
-    <Compile Include="Filtering\Filters\TestFilter.cs" />
+    <Compile Include="Filtering\Filters\RemoveTests.cs" />
     <Compile Include="Filtering\IndirectSiblingBuilder.cs" />
+    <Compile Include="Integration\ArchProject.cs" />
     <Compile Include="Ordering\CircularReferenceFinder.cs" />
     <Compile Include="Integration\AdvancedSolution.cs" />
     <Compile Include="DiagramDefinition.cs" />

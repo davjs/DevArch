@@ -3,11 +3,11 @@ using Logic.SemanticTree;
 
 namespace Logic.Filtering.Filters
 {
-    public class TestFilter : NodeFilter
+    public class RemoveTests : NodeFilter
     {
-        public TestFilter(bool shouldBeApplied) : base(shouldBeApplied){}
+        public RemoveTests(bool shouldBeApplied) : base(shouldBeApplied, filter) {}
 
-        protected override Func<Node, bool> filter => x =>
+        private static Func<Node, bool> filter { get; } = x =>
             x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)
             || x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase);
     }

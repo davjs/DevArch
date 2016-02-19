@@ -5,12 +5,12 @@ namespace Logic.Filtering.Filters
 {
     public class RemoveSinglePaths : Filter
     {
-        public RemoveSinglePaths(bool parameter) : base(parameter)
+        public RemoveSinglePaths(bool parameter) : base(parameter,Apply)
         {
             
         }
 
-        public override void Apply(Node tree)
+        public new static void Apply(Node tree)
         {
             throw new NotImplementedException();
         }

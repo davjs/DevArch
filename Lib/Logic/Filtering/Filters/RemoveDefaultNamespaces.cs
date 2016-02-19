@@ -4,13 +4,13 @@ using Logic.SemanticTree;
 
 namespace Logic.Filtering.Filters
 {
-    public class DefaultNamespaces : Filter
+    public class RemoveDefaultNamespaces : Filter
     {
-        public DefaultNamespaces(bool i) : base(i)
+        public RemoveDefaultNamespaces(bool i) : base(i, Apply)
         {
         }
 
-        public override void Apply(Node tree)
+        private new static void Apply(Node tree)
         {
             var projects = tree.Projects();
             var withDefaultNamespaces = projects.Where(p => p.Childs.Count() == 1 && p.Childs.First().Name == p.Name);

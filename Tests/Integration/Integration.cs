@@ -9,6 +9,7 @@ using Logic.Building;
 using Logic.Filtering;
 using Logic.Filtering.Filters;
 using Logic.Integration;
+using Logic.Ordering;
 using Logic.Scopes;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -57,12 +58,12 @@ namespace Tests.Integration
             tree.RemoveChild("OutputSettings");
             tree.RemoveChild("NoArchProjectsFound");
             
-            foreach (var child in tree.Childs)
+            /*foreach (var child in tree.Childs)
             {
                 //Remove those not in childs
                 child.Dependencies =
                     child.Dependencies.Intersect(tree.Childs).ToList();
-            }
+            }*/
             tree.RelayoutBasedOnDependencies();
             Assert.AreEqual(OrientationKind.Vertical,tree.Orientation);
         }
@@ -75,7 +76,7 @@ namespace Tests.Integration
             filters.Add(new RemoveContainers(true));
             var diagramGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var diagramDef = new DiagramDefinition("",
-                new RootScope(), new OutputSettings {Path = SlnDir + "IntegrationTests\\NoContainers.png"}, filters, true, false);
+                new RootScope(), new OutputSettings (SlnDir + "IntegrationTests\\NoContainers.png"), filters, true,false);
             var tree = diagramGen.GenerateDiagram(diagramDef);
             BitmapRenderer.RenderTreeToBitmap(tree, diagramDef.DependencyDown, diagramDef.Output, diagramDef.HideAnonymousLayers);
             TreeAssert.DoesNotContainDuplicates(tree);
