@@ -6,5 +6,6 @@
   <Output Path="Samples\ComplexFull.png" Scale="1"/>
   <Filters>
     <RemoveTests>Off</RemoveTests>
+    <MinReferences>0</MinReferences>
   </Filters>
 </Diagram>

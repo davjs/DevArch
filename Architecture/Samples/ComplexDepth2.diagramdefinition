@@ -7,5 +7,6 @@
   <Filters>
     <MaxDepth>2</MaxDepth>
     <RemoveTests>Off</RemoveTests>
+    <MinReferences>0</MinReferences>
   </Filters>
 </Diagram>

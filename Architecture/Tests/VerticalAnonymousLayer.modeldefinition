@@ -6,5 +6,6 @@
   <Output Path="IntegrationTests\VerticalAnonymousLayer.png" Scale="2"/>
   <Filters>
     <RemoveTests>Off</RemoveTests>
+    <MinReferences>0</MinReferences>
   </Filters>
 </Diagram>

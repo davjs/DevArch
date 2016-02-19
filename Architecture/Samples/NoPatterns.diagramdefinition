@@ -6,5 +6,6 @@
   <Output Path="Samples\NoPatterns.png" Scale="1"/>
   <Filters>
     <RemoveTests>Off</RemoveTests>
+    <MinReferences>0</MinReferences>
   </Filters>
 </Diagram>

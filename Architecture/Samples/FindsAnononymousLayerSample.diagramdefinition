@@ -6,5 +6,6 @@
   <Output Path="Samples\FindsAnononymousLayer.png" Scale="3"/>
   <Filters>
     <RemoveTests>Off</RemoveTests>
+    <MinReferences>0</MinReferences>
   </Filters>
 </Diagram>
