@@ -184,7 +184,9 @@ namespace Logic.Ordering
                             nextGroupTarget = toBeGrouped;
                         }
                         else
+                        {
                             toBeGrouped.ExceptWith(currentLayer);
+                        }
                     }
                     else
                         toBeGrouped.ExceptWith(currentLayer);

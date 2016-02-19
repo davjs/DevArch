@@ -3,6 +3,7 @@ using System.Linq;
 using Logic.Filtering.Filters;
 using Logic.Ordering;
 using Logic.SemanticTree;
+using MoreLinq;
 
 namespace Logic.Filtering
 {
@@ -12,10 +13,31 @@ namespace Logic.Filtering
         //Filters that pushes children upwards does not need to care
         public static Node ApplyFilters(this Node tree, IEnumerable<Filter> filters)
         {
-            foreach (var filter in filters.Where(filter => filter.ShouldBeApplied))
+            var filterList = filters.ToList();
+            foreach (var filter in filterList.Where(filter => filter.ShouldBeApplied))
             {
                 filter.Apply(tree);
             }
+
+            //Remove filtered dependencies
+            var all = tree.DescendantNodes().ToHashSet();
+            foreach (var node in all)
+            {
+                foreach (var dependency in node.Dependencies.Where(dependency => !all.Contains(dependency)).ToHashSet())
+                {
+                    node.Dependencies.Remove(dependency);
+                    dependency.References.Remove(node);
+                    var it = dependency;
+                    while (it != null)
+                    {
+                        it = it.Parent;
+                        if (!all.Contains(it)) continue;
+                        node.Dependencies.Add(it);
+                        break;
+                    }
+                }
+            }
+
             return tree;
         }
 
@@ -33,8 +55,7 @@ namespace Logic.Filtering
 
             if (currDepth == maxDepth)
             {
-                tree.Dependencies.AddRange(tree.Childs.SelectMany(x => x.AllSubDependencies()).Distinct());
-                tree.SetChildren(new List<Node>());
+                tree.FilterAllChilds();
             }
             else
             {
@@ -92,7 +113,7 @@ namespace Logic.Filtering
                     }
                 }
             }
-            tree.SetChildren(tree.Childs.Select(FindSiblingPatterns).Cast<Node>());
+            tree.SetChildren(tree.Childs.Select(FindSiblingPatterns));
             return tree;
         }
 

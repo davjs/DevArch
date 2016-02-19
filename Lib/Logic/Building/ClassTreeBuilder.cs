@@ -39,25 +39,34 @@ namespace Logic.Building
                 var classnodes = BuildTreeFromClasses(classes);
                 project.AddChilds(classnodes);
             }
-
-            foreach (var @class in allClassesBySymbol.Values)
+            
+            foreach (var dependor in allClassesBySymbol.Values)
             {
-                foreach (var dependency in @class.SymbolDependencies)
+                foreach (var dependency in dependor.SymbolDependencies)
                 {
-                    var contained =  allClassesBySymbol.ContainsKey(dependency);
-                    if (contained)
-                        @class.Dependencies.Add(allClassesBySymbol[dependency]);
+                    if (allClassesBySymbol.ContainsKey(dependency))
+                    {
+                        CreateDependency(allClassesBySymbol[dependency], dependor);
+                    }
                     else
                     {
                         var matchingSymbols = allClassesBySymbol.Keys.Where(x => SymbolsMatch(x,dependency)).ToList();
-                        if(matchingSymbols.Count() == 1)
-                            @class.Dependencies.Add(allClassesBySymbol[matchingSymbols.First()]);
-                        if (matchingSymbols.Count() > 1)
+                        if (matchingSymbols.Count == 1)
+                        {
+                            CreateDependency(allClassesBySymbol[matchingSymbols.First()], dependor);
+                        }
+                        if (matchingSymbols.Count > 1)
                             throw new NotImplementedException();
                     }
                 }
                 
             }
+        }
+
+        private static void CreateDependency(ClassNode nodeDependantOn, Node dependor)
+        {
+            nodeDependantOn.References.Add(dependor);
+            dependor.Dependencies.Add(nodeDependantOn);
         }
 
         private static bool SymbolsMatch(ISymbol symbol, ISymbol dependency)

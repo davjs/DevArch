@@ -1,18 +1,69 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Logic.Filtering;
 using Logic.SemanticTree;
+using MoreLinq;
 
-namespace Logic.Filtering
+namespace Logic.Ordering
 {
     public static class CircularReferenceFinder
     {
         public static void FindCircularReferences(ISet<Node> childList)
         {
-            FindCircularReferences(childList, childList);
+            //FindDirectCircularReferences(childList, childList);
+            FindIndirectCircularReferences(childList);
         }
 
-        private static void FindCircularReferences(ISet<Node> childList1, ISet<Node> childList2)
+        private static void FindIndirectCircularReferences(ISet<Node> childList)
+        {
+            var toIgnore = new HashSet<Node>();
+            foreach (var node in childList.ToHashSet())
+            {
+                if(toIgnore.Contains(node))
+                    continue;
+
+                var path = new HashSet<Node>();
+                if (IndirectlyDependsOnItself(node, node, ref path))
+                {
+                    path.Add(node);
+                    toIgnore.UnionWith(path);
+                    childList.ExceptWith(path);
+                    var dependantOnCircularDependencies = childList.Where(x => path.Any(x.DependsOn));
+                    var cirularHolder = new CircularDependencyHolderNode(path);
+                    foreach (var dependantOnCircularDependency in dependantOnCircularDependencies)
+                    {
+                        //Remove all dependencies on nodes in the path
+                        dependantOnCircularDependency.SiblingDependencies.RemoveWhere(x => path.Contains(x));
+                        //Add dependency on circular holder
+                        dependantOnCircularDependency.SiblingDependencies.Add(cirularHolder);
+                    }
+                    //Add all dependencies in the path to the new node
+                    cirularHolder.SiblingDependencies.UnionWith(path.SiblingDependencies().Except(path)); //Should not be dependant on themselves
+                    childList.Add(cirularHolder);
+                }
+            }
+        }
+
+        private static bool IndirectlyDependsOnItself(Node target,Node current,ref HashSet<Node> traveledPath)
+        {
+            foreach (var dependency in current.SiblingDependencies)
+            {
+                if(traveledPath.Contains(dependency))
+                    continue;
+                if (dependency == target)
+                    return true;
+                var newPath = traveledPath.Union(new[]{dependency}).ToHashSet();
+                if (IndirectlyDependsOnItself(target, dependency, ref newPath))
+                {
+                    traveledPath = newPath;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static void FindDirectCircularReferences(ISet<Node> childList1, ISet<Node> childList2)
         {
             while (true)
             {

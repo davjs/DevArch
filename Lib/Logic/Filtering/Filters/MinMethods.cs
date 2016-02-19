@@ -6,11 +6,11 @@ namespace Logic.Filtering.Filters
 {
     public class MinMethods : IntegralClassPredicateFilter
     {
-        public MinMethods(int i) : base(i, MethodsLessThan)
+        public MinMethods(int i) : base(i, ShouldBeRemoved)
         {
         }
 
-        public static bool MethodsLessThan(ClassNode node,int x)
+        public static bool ShouldBeRemoved(ClassNode node,int x)
         {
             return node.NrOfMethods < x;
         }

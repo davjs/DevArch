@@ -29,7 +29,8 @@ namespace Logic.SemanticTree
         public string Name => _name ?? Symbol.Name;
 
         public readonly ISymbol Symbol;
-        public List<Node> Dependencies = new List<Node>();
+        public readonly HashSet<Node> Dependencies = new HashSet<Node>();
+        public readonly HashSet<Node> References = new HashSet<Node>();
         public HashSet<Node> SiblingDependencies = new HashSet<Node>();
         public Node Parent;
         public OrientationKind Orientation = OrientationKind.Vertical;
@@ -69,11 +70,6 @@ namespace Logic.SemanticTree
             n.Parent = null;
             ChildsList.Remove(n);
         }
-        public void ReplaceChild(Node remove, Node insert)
-        {
-            var index = ChildsList.IndexOf(remove);
-            ChildsList[index] = insert;
-        }
 
         public int Height()
         {
@@ -81,11 +77,21 @@ namespace Logic.SemanticTree
                 return 0;
             return Childs.Max(x => x.Height()) + 1;
         }
+
+        public void FilterChild(Node child)
+        {
+            Dependencies.UnionWith(child.AllSubDependencies());
+            ChildsList.Remove(child);
+        }
+        public void FilterAllChilds()
+        {
+            Dependencies.UnionWith(ChildsList.SelectMany(x => x.AllSubDependencies()));
+            ChildsList.Clear();
+        }
     }
 
     public class ClassNode : Node
     {
-        public readonly IEnumerable<ReferencedSymbol> References;
         public readonly IEnumerable<TypeSyntax> BaseClasses;
         public readonly int NrOfMethods;
         public IEnumerable<INamedTypeSymbol> SymbolDependencies;
@@ -115,8 +121,8 @@ namespace Logic.SemanticTree
 
     public class SolutionNode : Node
     {
-        public SolutionNode(AdvancedSolution solution)
-            : base(solution.Name) { }
+        public SolutionNode(string name)
+            : base(name) { }
         public SolutionNode()
             : base("Unknown solution name")
         { }

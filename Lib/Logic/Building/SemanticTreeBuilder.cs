@@ -11,7 +11,7 @@ namespace Logic.Building
     {
         public static SolutionNode AnalyseSolution(AdvancedSolution solution)
         {
-            var tree = new SolutionNode(solution);
+            var tree = new SolutionNode(solution.Name);
             ProjectTreeBuilder.AddSolutionFoldersToTree(solution.DteProjects,ref tree);
             AddAllItemsInSolutionToTree(solution.RoslynSolution, ref tree);
             return tree;
@@ -28,7 +28,7 @@ namespace Logic.Building
 
         public static Node AnalyseDocument(AdvancedSolution solution, string documentName)
         {
-            var tree = new SolutionNode(solution);
+            var tree = new SolutionNode(solution.Name);
             var projectName = GetRootFolder(documentName);
             var fname = Path.GetFileName(documentName);
             ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, projectName);
@@ -40,7 +40,7 @@ namespace Logic.Building
 
         public static SolutionNode AnalyseProject(AdvancedSolution solution, string projectName)
         {
-            var tree = new SolutionNode(solution);
+            var tree = new SolutionNode(solution.Name);
             ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, projectName);
             ClassTreeBuilder.AddClassesToTree(tree);
             return tree;

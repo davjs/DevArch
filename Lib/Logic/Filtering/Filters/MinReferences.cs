@@ -3,15 +3,15 @@ using Logic.SemanticTree;
 
 namespace Logic.Filtering.Filters
 {
-    public class MinReferences : IntegralFilter
+    public class MinReferences : IntegralClassPredicateFilter
     {
-        public MinReferences(int i) : base(i, Apply)
+        public MinReferences(int i) : base(i, ShouldBeRemoved)
         {
         }
 
-        private static void Apply(Node tree, int i1)
+        private static bool ShouldBeRemoved(ClassNode arg1, int arg2)
         {
-            throw new NotImplementedException();
+            return arg1.References.Count < arg2;
         }
     }
 }

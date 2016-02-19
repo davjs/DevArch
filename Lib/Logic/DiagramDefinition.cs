@@ -35,6 +35,7 @@ namespace Logic
             new RemoveTests(true),
             new RemoveDefaultNamespaces(true),
             new RemoveExceptions(true),
+            new MinReferences(1),
             
             //Availible
             new MaxDepth(0),

@@ -16,7 +16,7 @@ namespace Logic.Filtering.Filters
         {
             var classes = tree.Childs.OfType<ClassNode>();
             var toRemove = classes.Where(predicate).ToList();
-            toRemove.ForEach(tree.RemoveChild);
+            toRemove.ForEach(tree.FilterChild);
             tree.Childs.ForEach(x => ApplyPredicate(x, predicate));
         }
     }
@@ -32,7 +32,7 @@ namespace Logic.Filtering.Filters
         {
             var classes = tree.Childs.OfType<ClassNode>();
             var toRemove = classes.Where(x => predicate(x, param)).ToList();
-            toRemove.ForEach(tree.RemoveChild);
+            toRemove.ForEach(tree.FilterChild);
             tree.Childs.ForEach(x => ApplyPredicate(x, param, predicate));
         }
     }
