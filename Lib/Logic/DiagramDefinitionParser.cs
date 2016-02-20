@@ -27,7 +27,15 @@ namespace Logic
             var dependencyAttributeValue = modelRoot.Attributes?.GetNamedItem(attributeName)?.Value;
             return dependencyAttributeValue;
         }
-        
+
+        private static string RequireAttribute(XmlNode modelRoot, string attributeName)
+        {
+            var value = modelRoot.Attributes?.GetNamedItem(attributeName)?.Value;
+            if(string.IsNullOrEmpty(value))
+                throw new Exception($"Unable to find {attributeName} under {modelRoot.Name}");
+            return value;
+        }
+
         public static DiagramDefinition ParseDiagramDefinition(string name,string content)
         {
             var reader = XmlReader.Create(new StringReader(content),new XmlReaderSettings {IgnoreComments = true});
@@ -82,8 +90,12 @@ namespace Logic
             var filter = DiagramDefinition.DefaultFilters.FirstOrDefault(x => x.Name == fname);
 
             if (filter == null)
-                throw new Exception($@"Unrecognized filter: {fname}
-                                      Availible filters are{string.Join(",",DiagramDefinition.DefaultFilters)}");
+            {
+                var defaultFilters = DiagramDefinition.DefaultFilters.Select(x => x.Name);
+                throw new Exception($"Unrecognized filter: {fname} \n" +
+                                    "Availible filters are:\n" +
+                                    $"{string.Join(",", defaultFilters)}");
+            }
 
             if (filter is IntegralFilter)
             {
@@ -91,8 +103,8 @@ namespace Logic
                 int number;
                 if (int.TryParse(filterXml.InnerText, out number) && number >= 0)
                     return integralFilter.WithParameter(number);
-                throw new Exception($@"Unrecognized parameter: {filterXml.InnerText}
-                                      Parameter for filter {fname} should be positive a number");
+                throw new Exception($"Unrecognized parameter: {filterXml.InnerText}\n" +
+                                    $"Parameter for filter {fname} should be positive a number");
             }
             var on = filterXml.InnerText.Equals("on", StringComparison.CurrentCultureIgnoreCase);
             return filter.WithParameter(@on);
@@ -100,9 +112,9 @@ namespace Logic
 
         private static OutputSettings ParseOutputSettings(XmlNode output)
         {
-            var outputPath = output?.Attributes?.GetNamedItem("Path").Value;
+            var outputPath = RequireAttribute(output, "Path");
             int scale;
-            int.TryParse(output?.Attributes?.GetNamedItem("Scale")?.Value, out scale);
+            int.TryParse(output.Attributes?.GetNamedItem("Scale")?.Value, out scale);
             if (scale == 0)
                 scale = 1;
             var outputSettings = new OutputSettings(outputPath, scale);
@@ -131,10 +143,11 @@ namespace Logic
                     scope = new NamespaceScope();
                     break;
                 default:
-                    throw new NotImplementedException();
+                    throw new Exception($"Unrecognized scope: {scopeNode?.Name}");
             }
-            if (scope is NamedScope)
-                (scope as NamedScope).Name = scopeNode?.Attributes?[0].Value;
+            var namedScope = scope as NamedScope;
+            if (namedScope != null)
+                namedScope.Name = scopeNode.Attributes?[0].Value;
             return scope;
         }
     }
@@ -157,9 +170,5 @@ namespace Logic
             Succeed = true;
             Exception = null;
         }
-    }
-
-    public class NoArchProjectsFound : Exception
-    {
     }
 }
