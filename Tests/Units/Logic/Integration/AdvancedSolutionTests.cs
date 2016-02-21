@@ -11,7 +11,7 @@ namespace Tests.Units.Logic.Integration
     public class AdvancedSolutionTests
     {
         [TestMethod]
-        [TestCategory("AdvancedSolution")]
+        [TestCategory("DevArchSolution")]
         public void FindArchProjectsTest()
         {
             var archProj = TestSolution.ArchProjects.First();

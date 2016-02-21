@@ -124,7 +124,7 @@
     <Compile Include="Filtering\IndirectSiblingBuilder.cs" />
     <Compile Include="Integration\ArchProject.cs" />
     <Compile Include="Ordering\CircularReferenceFinder.cs" />
-    <Compile Include="Integration\AdvancedSolution.cs" />
+    <Compile Include="Integration\DevArchSolution.cs" />
     <Compile Include="DiagramDefinition.cs" />
     <Compile Include="Building\ProjectTreeBuilder.cs" />
     <Compile Include="Building\ClassTreeBuilder.cs" />

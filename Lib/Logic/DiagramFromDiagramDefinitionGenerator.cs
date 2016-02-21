@@ -10,8 +10,8 @@ namespace Logic
 {
     public class DiagramFromDiagramDefinitionGenerator
     {
-        private readonly AdvancedSolution _solution;
-        public DiagramFromDiagramDefinitionGenerator(AdvancedSolution solution)
+        private readonly DevArchSolution _solution;
+        public DiagramFromDiagramDefinitionGenerator(DevArchSolution solution)
         {
             _solution = solution;
         }

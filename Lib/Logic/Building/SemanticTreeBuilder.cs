@@ -9,7 +9,7 @@ namespace Logic.Building
 {
     public static class SemanticTreeBuilder
     {
-        public static SolutionNode AnalyseSolution(AdvancedSolution solution)
+        public static SolutionNode AnalyseSolution(DevArchSolution solution)
         {
             var tree = new SolutionNode(solution.Name);
             ProjectTreeBuilder.AddSolutionFoldersToTree(solution.DteProjects,ref tree);
@@ -26,7 +26,7 @@ namespace Logic.Building
         }
 
 
-        public static Node AnalyseDocument(AdvancedSolution solution, string documentName)
+        public static Node AnalyseDocument(DevArchSolution solution, string documentName)
         {
             var tree = new SolutionNode(solution.Name);
             var projectName = GetRootFolder(documentName);
@@ -38,7 +38,7 @@ namespace Logic.Building
         }
 
 
-        public static SolutionNode AnalyseProject(AdvancedSolution solution, string projectName)
+        public static SolutionNode AnalyseProject(DevArchSolution solution, string projectName)
         {
             var tree = new SolutionNode(solution.Name);
             ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, projectName);
@@ -46,7 +46,7 @@ namespace Logic.Building
             return tree;
         }
         
-        public static Node AnalyseNamespace(AdvancedSolution solution, string name)
+        public static Node AnalyseNamespace(DevArchSolution solution, string name)
         {
             var projectName = GetRootFolder(name);
             var tree = AnalyseProject(solution, projectName) as Node;
@@ -65,7 +65,7 @@ namespace Logic.Building
             return tree;
         }
 
-        public static Node AnalyseClass(AdvancedSolution solution, string name)
+        public static Node AnalyseClass(DevArchSolution solution, string name)
         {
             throw new NotImplementedException();
         }

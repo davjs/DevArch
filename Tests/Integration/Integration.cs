@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using DevArch;
 using EnvDTE;
 using Lib;
 using Logic;
@@ -12,7 +13,9 @@ using Logic.Integration;
 using Logic.Ordering;
 using Logic.Scopes;
 using Logic.SemanticTree;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VSSDK.Tools.VsIdeTesting;
 using Presentation;
 using static Tests.TestExtesions;
 
@@ -21,6 +24,8 @@ namespace Tests.Integration
     [TestClass]
     public class Integration
     {
+        private readonly Package _package = new Package();
+
         [TestCategory("Integration")]
         [TestMethod]
         public void FindsDependencies()
@@ -56,7 +61,6 @@ namespace Tests.Integration
             tree.RemoveChild("DiagramDefinitionParser");
             tree.RemoveChild("Common");
             tree.RemoveChild("OutputSettings");
-            tree.RemoveChild("NoArchProjectsFound");
             
             /*foreach (var child in tree.Childs)
             {

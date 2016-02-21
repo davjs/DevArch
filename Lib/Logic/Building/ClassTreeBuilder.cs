@@ -25,7 +25,6 @@ namespace Logic.Building
                     if(!documents.Any())
                         throw new Exception("Unable to find document: " + documentName);
                 }
-
                 var semanticModels = documents.SelectList(d => d.GetSemanticModelAsync().Result);
                 var classes = SemanticModelWalker.GetClassesInModels(semanticModels);
                 if (!classes.Any())

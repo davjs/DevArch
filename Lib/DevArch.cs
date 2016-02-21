@@ -13,12 +13,11 @@ namespace Lib
 {
     public static class DevArch
     {
-        public static async Task RenderAllArchDiagramsToFiles(_DTE enivorment)
+        public static async Task RenderAllArchDiagramsToFiles(VisualStudio visualStudio)
         {
-            var solution = new AdvancedSolution(enivorment);
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(visualStudio.Solution);
             var parseResults = modelGen.GetDiagramDefinitions().ToList();
-            var resultLogger = new ParseResultLogger(enivorment,parseResults);
+            var resultLogger = new ParseResultLogger(visualStudio.DevArchOutputWindow(), parseResults);
             resultLogger.PrintErrors();
 
             var definitions = parseResults.Where(x => x.Succeed).SelectList(x => x.Definition);
@@ -33,10 +32,9 @@ namespace Lib
            resultLogger.PrintSuccess();
         }
 
-        public static void RenderCompleteDiagramToView(_DTE enivorment,ref ArchView view)
+        public static void RenderCompleteDiagramToView(VisualStudio visualStudio, ref ArchView view)
         {
-            var solution = new AdvancedSolution(enivorment);
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(solution);
+            var modelGen = new DiagramFromDiagramDefinitionGenerator(visualStudio.Solution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree,true,true);
             view.Diagram.RenderModel(viewModel);
@@ -48,26 +46,10 @@ namespace Lib
         private readonly IReadOnlyCollection<DiagramDefinitionParseResult> _results;
         private readonly OutputWindowPane _output;
 
-        public ParseResultLogger(_DTE environment,IReadOnlyCollection<DiagramDefinitionParseResult> results)
+        public ParseResultLogger(OutputWindowPane output,IReadOnlyCollection<DiagramDefinitionParseResult> results)
         {
             _results = results;
-            var dte2 = environment as DTE2;
-            if (dte2 == null)
-                return;
-
-            var outputWindow = dte2.ToolWindows.OutputWindow;
-            outputWindow.Parent.Activate();
-            try
-            {
-                _output = outputWindow.OutputWindowPanes.Item("DevArch");
-            }
-            catch (Exception)
-            {
-                _output = null;
-            }
-            if (_output == null)
-                 _output = outputWindow.OutputWindowPanes.Add("DevArch");
-            _output.Activate();
+            _output = output;
             PrintLine("Generating diagrams...");
         }
 

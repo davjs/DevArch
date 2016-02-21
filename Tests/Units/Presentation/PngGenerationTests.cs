@@ -1,21 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using EnvDTE;
-using Lib;
 using Logic;
-using Logic.Building;
-using Logic.Filtering;
 using Logic.Filtering.Filters;
-using Logic.Integration;
 using Logic.Scopes;
-using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Presentation;
-using Presentation.Coloring;
-using Presentation.Coloring.ColoringAlgorithms;
-using Presentation.ViewModels;
-using Presentation.Views;
 using static Tests.TestExtesions;
 
 namespace Tests.Units.Presentation
@@ -27,7 +15,7 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void GenerateAllArchDiagrams()
         {
-            DevArch.RenderAllArchDiagramsToFiles(Dte).Wait();
+            Lib.DevArch.RenderAllArchDiagramsToFiles(TestStudio).Wait();
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using EnvDTE;
+using Logic.Integration;
 using Window = System.Windows.Window;
 
 namespace Standalone
@@ -12,7 +13,7 @@ namespace Standalone
         public MainWindow()
         {
             InitializeComponent();
-            Lib.DevArch.RenderCompleteDiagramToView(GetDte(), ref ArchView);
+            Lib.DevArch.RenderCompleteDiagramToView(new VisualStudio(GetDte()), ref ArchView);
         }
 
 

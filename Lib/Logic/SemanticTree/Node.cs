@@ -130,6 +130,7 @@ namespace Logic.SemanticTree
 
     public class ProjectNode : Node
     {
+
         public ProjectNode(ProjectItem p) : base(p.Name)
         { }
         public IEnumerable<Document> Documents = new List<Document>();

@@ -3,22 +3,62 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.CodeAnalysis.MSBuild;
 using Project = EnvDTE.Project;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Logic.Integration
 {
-    public class AdvancedSolution
+    public class VisualStudio
+    {
+        public readonly DevArchSolution Solution;
+        private readonly DTE2 _automationObject;
+
+        public OutputWindowPane DevArchOutputWindow()
+        {
+            if (_automationObject == null)
+                return null;
+
+            var outputWindow = _automationObject.ToolWindows.OutputWindow;
+            outputWindow.Parent.Activate();
+            OutputWindowPane devArchOutput;
+            try
+            {
+                devArchOutput = outputWindow.OutputWindowPanes.Item("DevArch");
+            }
+            catch (Exception)
+            {
+                devArchOutput = null;
+            }
+            if (devArchOutput == null)
+                devArchOutput = outputWindow.OutputWindowPanes.Add("DevArch");
+            devArchOutput.Activate();
+            return devArchOutput;
+        }
+
+        public VisualStudio(DTE environment)
+        {
+            _automationObject = (DTE2) environment;
+            Solution = new DevArchSolution(environment);
+        }
+        public VisualStudio(DTE environment,Solution RoslynSolution)
+        {
+            _automationObject = (DTE2)environment;
+            Solution = new DevArchSolution(environment,RoslynSolution);
+        }
+    }
+
+    public class DevArchSolution
     {
         public readonly Solution RoslynSolution;
-        public readonly Projects DteProjects;
-        private readonly string _fullName;
-        public readonly string Name;
+        public Projects DteProjects;
+        private string _fullName;
+        public string Name;
 
         public string Directory;
 
-        public AdvancedSolution(_DTE dte)
+        /*public DevArchSolution(_DTE dte)
         {
             var build = MSBuildWorkspace.Create();
             var dteSolution = KeepTrying.ToGet(() => dte.Solution);
@@ -27,10 +67,36 @@ namespace Logic.Integration
                 throw new Exception("Unable to find opened solution");
             var sol = build.OpenSolutionAsync(_fullName);
             RoslynSolution = KeepTrying.ToGet(() => sol.Result);
+
             DteProjects = KeepTrying.ToGet(() =>dteSolution.Projects);
             Name = Path.GetFileName(_fullName);
             if (_fullName == null)
                 throw new NoSolutionOpenException();
+        }*/
+
+        public DevArchSolution(_DTE dte, Solution currentSolution = null)
+        {
+            GetDteProjects(dte);
+            if (currentSolution != null)
+            {
+                RoslynSolution = currentSolution;
+            }
+            else
+            {
+                var build = MSBuildWorkspace.Create();
+                var sol = build.OpenSolutionAsync(_fullName);
+                RoslynSolution = KeepTrying.ToGet(() => sol.Result);
+            }
+        }
+
+        private void GetDteProjects(_DTE dte)
+        {
+            var dteSolution = dte.Solution;
+            _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
+            if (string.IsNullOrEmpty(_fullName))
+                throw new Exception("Unable to find opened solution");
+            DteProjects = KeepTrying.ToGet(() => dteSolution.Projects);
+            Name = Path.GetFileName(_fullName);
             Directory = Path.GetDirectoryName(_fullName) + "\\";
         }
 

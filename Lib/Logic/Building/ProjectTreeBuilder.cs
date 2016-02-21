@@ -22,8 +22,8 @@ namespace Logic.Building
                 }
                 else
                 {
-                    existingProject = new ProjectNode(project);
-                    tree.AddChild(existingProject);
+                    var newProject = new ProjectNode(project);
+                    tree.AddChild(newProject);
                 }
             }
         }
