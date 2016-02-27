@@ -9,6 +9,7 @@ namespace Logic.Filtering.Filters
 
         private static Func<Node, bool> filter { get; } = x =>
             x.Name.EndsWith("test", StringComparison.InvariantCultureIgnoreCase)
-            || x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase);
+            || x.Name.EndsWith("tests", StringComparison.InvariantCultureIgnoreCase)
+            || x.Name.EndsWith("testing", StringComparison.InvariantCultureIgnoreCase);
     }
 }
