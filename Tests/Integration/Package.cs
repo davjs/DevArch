@@ -18,7 +18,7 @@ namespace Tests.Integration
     [TestClass]
     public class Package
     {
-        
+        /*
         [TestMethod]
         [HostType("VS IDE")]
         public void PackageLoadTest()
@@ -64,6 +64,6 @@ namespace Tests.Integration
             Lib.DevArch.RenderAllArchDiagramsToFiles(new VisualStudio(dte,menuPack.Workspace.CurrentSolution)).Wait();
             Assert.IsNotNull(dte);
             Assert.IsNotNull(menuPack.Workspace.CurrentSolution);
-        }
+        }*/
     }
 }
