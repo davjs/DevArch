@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using EnvDTE;
 using EnvDTE80;
+using Logic.Building;
 using Microsoft.CodeAnalysis.MSBuild;
 using Project = EnvDTE.Project;
 using Solution = Microsoft.CodeAnalysis.Solution;
@@ -85,7 +86,10 @@ namespace Logic.Integration
             {
                 var build = MSBuildWorkspace.Create();
                 var sol = build.OpenSolutionAsync(_fullName);
+                sol.Wait();
                 RoslynSolution = KeepTrying.ToGet(() => sol.Result);
+                if (!RoslynSolution.Projects.Any())
+                    throw new NoCsharpProjectsFoundException();
             }
         }
 

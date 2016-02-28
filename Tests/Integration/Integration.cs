@@ -24,8 +24,6 @@ namespace Tests.Integration
     [TestClass]
     public class Integration
     {
-        private readonly Package _package = new Package();
-
         [TestCategory("Integration")]
         [TestMethod]
         public void FindsDependencies()

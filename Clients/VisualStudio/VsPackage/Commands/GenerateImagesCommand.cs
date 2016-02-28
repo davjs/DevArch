@@ -19,9 +19,9 @@ namespace ToolsMenu.Commands
         {
             var dte = ServiceProvider.GetService(typeof(DTE)) as DTE;
             var solution = _vsWorkspace.CurrentSolution;
-            var vs = new VisualStudio(dte,solution);
             try
             {
+                var vs = new VisualStudio(dte, solution);
                 await Lib.DevArch.RenderAllArchDiagramsToFiles(vs);
             }
             catch (Exception exception)

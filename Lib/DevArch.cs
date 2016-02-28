@@ -32,6 +32,13 @@ namespace Lib
            resultLogger.PrintSuccess();
         }
 
+        public static void RenderDefaultDiagramDef(VisualStudio visualStudio)
+        {
+            var diagramGen = new DiagramFromDiagramDefinitionGenerator(visualStudio.Solution);
+            var diagramModel = diagramGen.GenerateDiagram(DiagramDefinition.RootDefault);
+            BitmapRenderer.RenderTreeToBitmapAsync(diagramModel, true, new OutputSettings(visualStudio.Solution.Directory + "Complete.png")).Wait();
+        }
+
         public static void RenderCompleteDiagramToView(VisualStudio visualStudio, ref ArchView view)
         {
             var modelGen = new DiagramFromDiagramDefinitionGenerator(visualStudio.Solution);
