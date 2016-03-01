@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Devarch.66fc4a30-5b22-465e-b2d1-a40e69b41d2a" Version="0.10430" Language="en-US" Publisher="David Jensen" />
+    <Identity Id="Devarch.66fc4a30-5b22-465e-b2d1-a40e69b41d2a" Version="0.1044" Language="en-US" Publisher="David Jensen" />
     <DisplayName>Devarch</DisplayName>
-    <Description xml:space="preserve">DevArch - Quick and easy auto-generation of layered diagrams</Description>
+    <Description xml:space="preserve">Quick and easy generation of abstracted layered diagrams that can be updated with one button press! Advanced filtering capabilities supported for the brave!</Description>
     <MoreInfo>https://github.com/davidkron/DevArch</MoreInfo>
     <GettingStartedGuide>https://github.com/davidkron/DevArch/tree/master/Samples</GettingStartedGuide>
     <Icon>Resources\devarch.png</Icon>
