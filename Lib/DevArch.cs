@@ -62,9 +62,8 @@ namespace Lib
 
         void PrintLine(string s)
         {
-#if !DEBUG
-            _output.OutputString(s + "\n");
-#endif
+            _output?.OutputString(s + "\n");
+//#endif
         }
 
         public void PrintErrors()
@@ -82,9 +81,14 @@ namespace Lib
         
         public void PrintSuccess()
         {
-            PrintLine("------------------");
-            PrintLine($"========== Diagrams: {_results.Count(x => x.Succeed)} Created, " +
+            if(_results.Any())
+            { 
+                PrintLine("------------------");
+                PrintLine($"========== Diagrams: {_results.Count(x => x.Succeed)} Created, " +
                       $"{ _results.Count(x => !x.Succeed)} not created ==========");
+            }
+            else
+                PrintLine("Could not find any diagram definitions, add a DevArch project to your solution from File->Add->New Project");
         }
     }
 

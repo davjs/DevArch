@@ -27,7 +27,7 @@ namespace Logic
             var dependencyAttributeValue = modelRoot.Attributes?.GetNamedItem(attributeName)?.Value;
             return dependencyAttributeValue;
         }
-
+        
         private static string RequireAttribute(XmlNode modelRoot, string attributeName)
         {
             var value = modelRoot.Attributes?.GetNamedItem(attributeName)?.Value;
@@ -124,30 +124,19 @@ namespace Logic
         private static IScope ParseScope(XmlNode scopeHolderNode)
         {
             var scopeNode = scopeHolderNode?.FirstChild;
-            IScope scope;
-            switch (scopeNode?.Name)
-            {
-                case "Class":
-                    scope = new ClassScope();
-                    break;
-                case "Document":
-                    scope = new DocumentScope();
-                    break;
-                case "Root":
-                    scope = new RootScope();
-                    break;
-                case "Project":
-                    scope = new ProjectScope();
-                    break;
-                case "Namespace":
-                    scope = new NamespaceScope();
-                    break;
-                default:
-                    throw new Exception($"Unrecognized scope: {scopeNode?.Name}");
-            }
-            var namedScope = scope as NamedScope;
-            if (namedScope != null)
-                namedScope.Name = scopeNode.Attributes?[0].Value;
+            var possibleScopes = new List<IScope> {new DocumentScope(),new RootScope(),new ProjectScope()};
+            var sname = scopeNode?.Name;
+            var scope = possibleScopes.FirstOrDefault(x => x.ParseName() == sname);
+            if(scope == null)
+            throw new Exception($@"Unrecognized scope: {sname}
+                Availible scopes are{string.Join(",", possibleScopes)}");
+            if (!(scope is NamedScope)) return scope;
+            
+            //Scope is NamedScope
+            var nameAttribute = scopeNode?.Attributes?[0].Value;
+            if(nameAttribute == null)
+                throw new Exception($@"Unable to find name attribute for scope: {sname}");
+            (scope as NamedScope).Name = nameAttribute;
             return scope;
         }
     }
