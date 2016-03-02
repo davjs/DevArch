@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Devarch.66fc4a30-5b22-465e-b2d1-a40e69b41d2a" Version="0.1044" Language="en-US" Publisher="David Jensen" />
+    <Identity Id="F2ADD208-DA6A-44A0-A7B1-2AFB40088CD5" Version="0.1046" Language="en-US" Publisher="David Jensen" />
     <DisplayName>Devarch</DisplayName>
     <Description xml:space="preserve">Quick and easy generation of abstracted layered diagrams that can be updated with one button press! Advanced filtering capabilities supported for the brave!</Description>
     <MoreInfo>https://github.com/davidkron/DevArch</MoreInfo>
