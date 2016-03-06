@@ -179,10 +179,18 @@
   final implementation, and provide the basic processing for handling rules in CPS.
   -->
   <ItemGroup>
-    <None Include="BuildSystem\DeployedBuildSystem\CustomProject.Default.props" />
-    <None Include="BuildSystem\DeployedBuildSystem\CustomProject.props" />
-    <None Include="BuildSystem\DeployedBuildSystem\CustomProject.targets" />
-    <None Include="BuildSystem\DeployedBuildSystem\CustomProjectCs.targets" />
+    <None Include="BuildSystem\DeployedBuildSystem\CustomProject.Default.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="BuildSystem\DeployedBuildSystem\CustomProject.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="BuildSystem\DeployedBuildSystem\CustomProject.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="BuildSystem\DeployedBuildSystem\CustomProjectCs.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <!--
   The XAML files provide buth compile-time implementations for CPS rules as well as
@@ -190,53 +198,66 @@
   final package.
   -->
   <ItemGroup>
-    <None Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
+    <Content Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="BuildSystem\Rules\csharp.browseobject.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\csharp.browseobject.xaml">
       <SubType>Designer</SubType>
-    </None>
-    <XamlPropertyRule Include="BuildSystem\Rules\general.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\general.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\CustomPropertyPage.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\CustomPropertyPage.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\general_file.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\general_file.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\folder.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\folder.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\none.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\none.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\scc.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\scc.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\debugger_general.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\debugger_general.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\csharp.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\csharp.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\EmbeddedResource.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\EmbeddedResource.xaml">
       <SubType>Designer</SubType>
-    </XamlPropertyRule>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="BuildSystem\Rules\general.browseobject.xaml">
+    <Content Include="BuildSystem\Rules\general.browseobject.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="BuildSystem\Rules\diagramdefinition.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BuildSystem\Rules\diagramdefinition.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\..\packages\Microsoft.VisualStudio.ProjectSystem.Analyzers.14.0.50721-pre\tools\Microsoft.VisualStudio.ProjectSystem.Analyzers.dll" />

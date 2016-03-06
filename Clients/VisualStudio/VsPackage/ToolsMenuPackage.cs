@@ -9,11 +9,15 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Runtime.InteropServices;
+using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using ToolsMenu.Commands;
+using static Microsoft.VisualBasic.FileIO.FileSystem;
 
 namespace DevArch
 {
@@ -23,6 +27,7 @@ namespace DevArch
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuidString)]
+    [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class ToolsMenuPackage : Package
     {
@@ -38,6 +43,7 @@ namespace DevArch
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         protected override void Initialize()
         {
+            EnsureDevArchProjectSupportExists();
             var serviceProvider = this;
             var commandFactory = new CommandFactory(serviceProvider);
             var guidDevarchToolsMenu = new Guid("d5a065b2-0a4e-4adc-ad08-2e4178f6ed21");
@@ -46,6 +52,19 @@ namespace DevArch
             commandFactory.AddCommand(new GenerateImagesCommand(serviceProvider, Workspace), new CommandID(guidDevarchToolsMenu, 0x0105));
             //commandFactory.AddCommand(new ViewDiagramsCommand(serviceProvider), new CommandID(guidDevarchToolsMenu, 0x0106) );
             base.Initialize();
+        }
+
+        private void EnsureDevArchProjectSupportExists()
+        {
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var targetDir = appdata + "\\CustomProjectSystems\\DevArchProject";
+            if (Directory.Exists(targetDir))
+                return;
+
+            var dir = Path.GetDirectoryName(new Uri(typeof(ToolsMenuPackage).Assembly.CodeBase).LocalPath) + "\\BuildSystem\\";
+            Directory.CreateDirectory(targetDir);
+            CopyDirectory(dir + "DeployedBuildSystem",targetDir,true);
+            CopyDirectory(dir + "DeployedBuildSystem\\Rules", targetDir + "Rules\\", true);
         }
 
         #endregion
