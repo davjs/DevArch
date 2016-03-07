@@ -5,6 +5,8 @@ using System.Linq;
 using EnvDTE;
 using EnvDTE80;
 using Logic.Building;
+using Logic.SemanticTree;
+using Microsoft.Build.Construction;
 using Microsoft.CodeAnalysis.MSBuild;
 using Project = EnvDTE.Project;
 using Solution = Microsoft.CodeAnalysis.Solution;
@@ -54,11 +56,11 @@ namespace Logic.Integration
     {
         public readonly Solution RoslynSolution;
         public Projects DteProjects;
-        private string _fullName;
+        public string _fullName;
         public string Name;
-
         public string Directory;
-
+        private IReadOnlyList<ProjectInSolution> projects;
+        public Node SolutionTree;
         /*public DevArchSolution(_DTE dte)
         {
             var build = MSBuildWorkspace.Create();
@@ -91,6 +93,31 @@ namespace Logic.Integration
                 if (!RoslynSolution.Projects.Any())
                     throw new NoCsharpProjectsFoundException();
             }
+        }
+
+        public static Node GetProjectTree(string path)
+        {
+            var x = SolutionFile.Parse(path);
+            var SlnNode = new SolutionNode("-");
+            var isFolder = x.ProjectsInOrder.ToLookup(pI => pI.ProjectType == SolutionProjectType.SolutionFolder);
+            var folders = isFolder[true].Select(f => new ProjectNode(f)).ToList();
+            var projects = isFolder[false].Select(p => new ProjectNode(p)).ToList();
+            var all = folders.Union(projects).ToList();
+            foreach (var project in x.ProjectsInOrder)
+            {
+                var currNode = all.First(p => p.ProjectId == new Guid(project.ProjectGuid));
+                if (project.ParentProjectGuid != null)
+                {
+                    var parentId = new Guid(project.ParentProjectGuid);
+                    var parent = folders.First(f => f.ProjectId == parentId);
+                    parent.AddChild(currNode);
+                }
+                else
+                {
+                    SlnNode.AddChild(currNode);
+                }
+            }
+            return SlnNode;
         }
 
         private void GetDteProjects(_DTE dte)

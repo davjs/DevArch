@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EnvDTE;
 using Logic.Filtering;
 using Logic.Integration;
+using Microsoft.Build.Construction;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
@@ -134,10 +135,17 @@ namespace Logic.SemanticTree
         public ProjectNode(ProjectItem p) : base(p.Name)
         { }
         public IEnumerable<Document> Documents = new List<Document>();
+        public readonly Guid ProjectId;
 
         public ProjectNode(Project project) : base(project.Name)
         {
+            ProjectId = project.Id.Id;
             Documents = project.Documents;
+        }
+
+        public ProjectNode(ProjectInSolution solItem) : base(solItem.ProjectName)
+        {
+            ProjectId = new Guid(solItem.ProjectGuid);
         }
     }
 
