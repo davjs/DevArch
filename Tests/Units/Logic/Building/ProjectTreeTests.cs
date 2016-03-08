@@ -14,13 +14,13 @@ namespace Tests.Units.Logic.Building
         {
             var testDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\TestSolutions\\";
             var sol = testDir + "WithSolFolders\\WithSolFolders.sln";
-            var tree = DevArchSolution.GetProjectTree(sol);
+            var projectItems = DevArchSolution.GetProjectTree(sol).ToList();
 
             // Assert
-            Assert.AreEqual(3,tree.Childs.Count);
-            tree.Childs.Should().ContainSingle(x => x.Name == "FolderA");
-            tree.Childs.Should().ContainSingle(x => x.Name == "FolderB");
-            tree.Childs.Should().ContainSingle(x => x.Name == "ClassLibrary1");
+            projectItems.Count().Should().Be(3);
+            projectItems.Should().ContainSingle(x => x.Name == "FolderA");
+            projectItems.Should().ContainSingle(x => x.Name == "FolderB");
+            projectItems.Should().ContainSingle(x => x.Name == "ClassLibrary1");
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace Tests.Units.Logic.Building
             var tree = DevArchSolution.GetProjectTree(sol);
 
             // Assert
-            var folderA = tree.Childs.First();
+            var folderA = tree.First();
             var folderAb = folderA.Childs.First();
             var classLibrary1 = folderAb.Childs.First();
             folderA.Name.Should().Be("FolderA");

@@ -59,7 +59,6 @@ namespace Logic.Integration
         public string _fullName;
         public string Name;
         public string Directory;
-        private IReadOnlyList<ProjectInSolution> projects;
         public Node SolutionTree;
         /*public DevArchSolution(_DTE dte)
         {
@@ -79,7 +78,7 @@ namespace Logic.Integration
 
         public DevArchSolution(_DTE dte, Solution currentSolution = null)
         {
-            GetDteProjects(dte);
+            SolutionTree = GetDteProjects(dte);
             if (currentSolution != null)
             {
                 RoslynSolution = currentSolution;
@@ -95,10 +94,22 @@ namespace Logic.Integration
             }
         }
 
-        public static Node GetProjectTree(string path)
+        public DevArchSolution(string path)
+        {
+            _fullName = path;
+            var SlnNode = new SolutionNode("-");
+            SlnNode.AddChilds(GetProjectTree(_fullName));
+            //
+            var build = MSBuildWorkspace.Create();
+            var sol = build.OpenSolutionAsync(_fullName);
+            sol.Wait();
+            RoslynSolution = KeepTrying.ToGet(() => sol.Result);
+            if (!RoslynSolution.Projects.Any())
+                throw new NoCsharpProjectsFoundException();
+        }
+        public static IEnumerable<Node> GetProjectTree(string path)
         {
             var x = SolutionFile.Parse(path);
-            var SlnNode = new SolutionNode("-");
             var isFolder = x.ProjectsInOrder.ToLookup(pI => pI.ProjectType == SolutionProjectType.SolutionFolder);
             var folders = isFolder[true].Select(f => new ProjectNode(f)).ToList();
             var projects = isFolder[false].Select(p => new ProjectNode(p)).ToList();
@@ -114,13 +125,12 @@ namespace Logic.Integration
                 }
                 else
                 {
-                    SlnNode.AddChild(currNode);
+                    yield return currNode;
                 }
             }
-            return SlnNode;
         }
 
-        private void GetDteProjects(_DTE dte)
+        private SolutionNode GetDteProjects(_DTE dte)
         {
             var dteSolution = dte.Solution;
             _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
@@ -129,6 +139,9 @@ namespace Logic.Integration
             DteProjects = KeepTrying.ToGet(() => dteSolution.Projects);
             Name = Path.GetFileName(_fullName);
             Directory = Path.GetDirectoryName(_fullName) + "\\";
+            var sln = new SolutionNode("-");
+            sln.AddChilds(ProjectTreeBuilder.AddSolutionFoldersToTree(DteProjects));
+            return sln;
         }
 
         public IList<ArchProject> ArchProjects

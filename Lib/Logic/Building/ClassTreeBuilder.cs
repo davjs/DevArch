@@ -12,7 +12,6 @@ namespace Logic.Building
         public static void AddClassesToTree(Node tree, string documentName = null)
         {
             var allClassesBySymbol = new Dictionary<ISymbol, ClassNode>();
-
             var projects = tree.DescendantNodes().OfType<ProjectNode>().ToList();
             
             foreach (var project in projects)
@@ -58,7 +57,6 @@ namespace Logic.Building
                             throw new NotImplementedException();
                     }
                 }
-                
             }
         }
 
