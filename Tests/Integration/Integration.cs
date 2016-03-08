@@ -94,8 +94,10 @@ namespace Tests.Integration
             Directory.Delete(projectFilesPath,true);
             File(projectFilesPath).Should().NotExist();
             ProjectDeployer.EnsureDevArchProjectSupportExists();
-            File(projectFilesPath).Should().Exist();
-            Directory.Delete(projectFilesPath);
+            Dir(projectFilesPath).Should().Exist();
+            Dir(projectFilesPath + "\\Rules").Should().Exist();
+            File(projectFilesPath + "\\CustomProject.Default.props").Should().Exist();
+            Directory.Delete(projectFilesPath,true);
         }
     }
 }
