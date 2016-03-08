@@ -1,5 +1,4 @@
 ﻿using System;
-using DevArch;
 using EnvDTE;
 using Logic.Integration;
 using Microsoft.CodeAnalysis.Host;

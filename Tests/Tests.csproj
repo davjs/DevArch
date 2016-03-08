@@ -228,6 +228,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssertionExtensions.cs" />
     <Compile Include="Integration\Package.cs" />
     <Compile Include="Integration\Samples\VerticalAnonymousLayer.cs" />
     <Compile Include="Integration\Testutils.cs" />

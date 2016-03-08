@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using DevArch;
 using EnvDTE;
+using FluentAssertions;
 using Lib;
 using Logic;
 using Logic.Building;
@@ -17,6 +18,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VSSDK.Tools.VsIdeTesting;
 using Presentation;
+using ToolsMenu;
+using static Tests.AssertionExtensions;
 using static Tests.TestExtesions;
 
 namespace Tests.Integration
@@ -82,6 +85,17 @@ namespace Tests.Integration
             var tree = diagramGen.GenerateDiagram(diagramDef);
             BitmapRenderer.RenderTreeToBitmap(tree, diagramDef.DependencyDown, diagramDef.Output, diagramDef.HideAnonymousLayers);
             TreeAssert.DoesNotContainDuplicates(tree);
+        }
+
+        [TestMethod]
+        public void DeploysProjectSystem()
+        {
+            var projectFilesPath = ProjectDeployer.LocalProjectFilesPath;
+            Directory.Delete(projectFilesPath,true);
+            File(projectFilesPath).Should().NotExist();
+            ProjectDeployer.EnsureDevArchProjectSupportExists();
+            File(projectFilesPath).Should().Exist();
+            Directory.Delete(projectFilesPath);
         }
     }
 }

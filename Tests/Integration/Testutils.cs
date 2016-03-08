@@ -306,7 +306,7 @@ namespace Microsoft.VsSDK.IntegrationTestLibrary
         /// <summary>
         /// Save an open document.
         /// </summary>
-        /// <param name="documentMoniker">for filebased documents this is the full path to the document</param>
+        /// <param name="documentMoniker">for filebased documents this is the full file to the document</param>
         public void SaveDocument(string documentMoniker)
         {
             // Get document cookie and hierarchy for the file
