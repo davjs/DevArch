@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Logic.Integration;
 using Logic.SemanticTree;
+using MoreLinq;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Logic.Building
@@ -11,8 +13,7 @@ namespace Logic.Building
     {
         public static SolutionNode AnalyseSolution(DevArchSolution solution)
         {
-            var tree = new SolutionNode(solution.Name);
-            ProjectTreeBuilder.AddSolutionFoldersToTree(solution.DteProjects,ref tree);
+            var tree = solution.SolutionTree;
             AddAllItemsInSolutionToTree(solution.RoslynSolution, ref tree);
             return tree;
         }
@@ -26,27 +27,34 @@ namespace Logic.Building
         }
 
 
-        public static Node AnalyseDocument(DevArchSolution solution, string documentName)
+        public static Node AnalyseDocument(SolutionNode solution, string documentName)
         {
-            var tree = new SolutionNode(solution.Name);
             var projectName = GetRootFolder(documentName);
             var fname = Path.GetFileName(documentName);
-            ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, projectName);
-            ClassTreeBuilder.AddClassesToTree(tree, fname);
+            var tree = AnalyseProject(solution, projectName);
+            var docsMatching = tree.Documents.Where(x => x.Name == documentName).ToList();
+            if (!docsMatching.Any())
+                throw new Exception("Unable to find document: " + documentName);
+            if(docsMatching.Count > 1)
+                throw new NotImplementedException($"Got {docsMatching.Count} matching documents, dont know which one to pick");
+            var doc = docsMatching.First();
+            ///////////////////////////////////////////////////////////////////////
+            throw new NotImplementedException();
             var nSpace = tree.DescendantNodes().First(x => x is ClassNode).Parent;
             return nSpace;
         }
 
 
-        public static SolutionNode AnalyseProject(DevArchSolution solution, string projectName)
+        public static ProjectNode AnalyseProject(SolutionNode solution, string projectName)
         {
-            var tree = new SolutionNode(solution.Name);
-            ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, projectName);
-            ClassTreeBuilder.AddClassesToTree(tree);
-            return tree;
+            var projects = solution.DescendantNodes().OfType<ProjectNode>().ToList();
+            var proj = projects.WithName(projectName);
+            if(proj == null)
+                throw new Exception($"Could not find project {projectName} among the following: {projects.Select(x => x.Name).ToDelimitedString()}");
+            return proj;
         }
         
-        public static Node AnalyseNamespace(DevArchSolution solution, string name)
+        public static Node AnalyseNamespace(SolutionNode solution, string name)
         {
             var projectName = GetRootFolder(name);
             var tree = AnalyseProject(solution, projectName) as Node;
@@ -65,7 +73,7 @@ namespace Logic.Building
             return tree;
         }
 
-        public static Node AnalyseClass(DevArchSolution solution, string name)
+        public static Node AnalyseClass(SolutionNode solution, string name)
         {
             throw new NotImplementedException();
         }

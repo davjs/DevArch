@@ -55,11 +55,11 @@ namespace Logic.Integration
     public class DevArchSolution
     {
         public readonly Solution RoslynSolution;
-        public Projects DteProjects;
+        private Projects DteProjects;
         public string _fullName;
         public string Name;
         public string Directory;
-        public Node SolutionTree;
+        public readonly SolutionNode SolutionTree;
         /*public DevArchSolution(_DTE dte)
         {
             var build = MSBuildWorkspace.Create();
@@ -97,8 +97,8 @@ namespace Logic.Integration
         public DevArchSolution(string path)
         {
             _fullName = path;
-            var SlnNode = new SolutionNode("-");
-            SlnNode.AddChilds(GetProjectTree(_fullName));
+            SolutionTree = new SolutionNode("-");
+            SolutionTree.AddChilds(GetProjectTree(_fullName));
             //
             var build = MSBuildWorkspace.Create();
             var sol = build.OpenSolutionAsync(_fullName);
@@ -114,6 +114,7 @@ namespace Logic.Integration
             var folders = isFolder[true].Select(f => new ProjectNode(f)).ToList();
             var projects = isFolder[false].Select(p => new ProjectNode(p)).ToList();
             var all = folders.Union(projects).ToList();
+            var nodes = new List<Node>();
             foreach (var project in x.ProjectsInOrder)
             {
                 var currNode = all.First(p => p.ProjectId == new Guid(project.ProjectGuid));
@@ -125,9 +126,10 @@ namespace Logic.Integration
                 }
                 else
                 {
-                    yield return currNode;
+                    nodes.Add(currNode);
                 }
             }
+            return nodes;
         }
 
         private SolutionNode GetDteProjects(_DTE dte)

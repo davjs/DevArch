@@ -11,6 +11,7 @@ namespace Logic
     public class DiagramFromDiagramDefinitionGenerator
     {
         private readonly DevArchSolution _solution;
+        private SolutionNode tree;
         public DiagramFromDiagramDefinitionGenerator(DevArchSolution solution)
         {
             _solution = solution;
@@ -25,33 +26,35 @@ namespace Logic
 
         public Node GenerateDiagram(DiagramDefinition diagramDef)
         {
-            Node tree = null;
+            if(tree == null)
+                tree = SemanticTreeBuilder.AnalyseSolution(_solution);
+            Node scoped = null;
             // This boilerplate syntax will look better in C# 7, dont change untill then
             if (diagramDef.Scope is RootScope)
             {
-                tree = SemanticTreeBuilder.AnalyseSolution(_solution);
+                scoped = tree;
             }
             if (diagramDef.Scope is DocumentScope)
             {
-                tree = SemanticTreeBuilder.AnalyseDocument(_solution, ((DocumentScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.AnalyseDocument(tree, ((DocumentScope) diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is ClassScope)
             {
-                tree = SemanticTreeBuilder.AnalyseClass(_solution, ((ClassScope)diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.AnalyseClass(tree, ((ClassScope)diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is NamespaceScope)
             {
-                tree = SemanticTreeBuilder.AnalyseNamespace(_solution, ((NamespaceScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.AnalyseNamespace(tree, ((NamespaceScope) diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is ProjectScope)
             {
-                tree = SemanticTreeBuilder.AnalyseProject(_solution, ((ProjectScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.AnalyseProject(tree, ((ProjectScope) diagramDef.Scope).Name);
             }
 
-            tree = tree.ApplyFilters(diagramDef.Filters)
+            scoped = scoped.ApplyFilters(diagramDef.Filters)
                 .RelayoutBasedOnDependencies();
 
-            return diagramDef.DependencyDown ? ReverseChildren(tree) : tree;
+            return diagramDef.DependencyDown ? ReverseChildren(scoped) : scoped;
         }
 
         public static Node ReverseChildren(Node tree)

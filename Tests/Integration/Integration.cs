@@ -44,18 +44,19 @@ namespace Tests.Integration
         [TestMethod]
         public void SemanticTreeDoesNotContainDoubles()
         {
-            var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic\\SemanticTree");
-            Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
+            var complete = SemanticTreeBuilder.AnalyseSolution(TestSolution);
+            var tree = SemanticTreeBuilder.AnalyseNamespace(complete, "Logic\\SemanticTree");
+            tree.DescendantNodes().Count(x => x.Name == "Node").Should().Be(1);
             tree.RelayoutBasedOnDependencies();
-            Assert.AreEqual(1, tree.DescendantNodes().Count(x => x.Name == "Node"));
+            tree.DescendantNodes().Count(x => x.Name == "Node").Should().Be(1);
         }
 
         [TestCategory("Integration")]
         [TestMethod]
         public void LogicLayerIsVertical()
         {
-            var tree = SemanticTreeBuilder.AnalyseNamespace(TestSolution, "Logic");
-            tree = tree.Childs.First(); tree = tree.Childs.First();
+            var complete = SemanticTreeBuilder.AnalyseSolution(TestSolution);
+            var tree = SemanticTreeBuilder.AnalyseNamespace(complete, "Logic\\Logic");
             tree.RemoveChild("DiagramDefinition");
             tree.RemoveChild("Filtering");
             tree.RemoveChild("DiagramFromDiagramDefinitionGenerator");
@@ -70,7 +71,7 @@ namespace Tests.Integration
                     child.Dependencies.Intersect(tree.Childs).ToList();
             }*/
             tree.RelayoutBasedOnDependencies();
-            Assert.AreEqual(OrientationKind.Vertical,tree.Orientation);
+            tree.Orientation.Should().Be(OrientationKind.Vertical);
         }
 
         [TestCategory("Integration")]
