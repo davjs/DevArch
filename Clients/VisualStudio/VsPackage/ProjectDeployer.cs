@@ -10,6 +10,7 @@ namespace ToolsMenu
         private static readonly string appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public static string LocalProjectFilesPath => appdata + "\\CustomProjectSystems\\DevArchProject\\";
 
+        // See #11
         public static void EnsureDevArchProjectSupportExists()
         {
             if (Directory.Exists(LocalProjectFilesPath))
