@@ -108,7 +108,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building\SemanticTreeBuilder.cs" />
+    <Compile Include="Common\ArrayExtensions.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
+    <Compile Include="Common\ObjectExtensions.cs" />
     <Compile Include="Filtering\Filters\BooleanClassPredicateFilter.cs" />
     <Compile Include="Filtering\Filters\RemoveExceptions.cs" />
     <Compile Include="Filtering\Filters\Filter.cs" />

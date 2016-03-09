@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Logic.Building;
+using Logic.Common;
 using Logic.Filtering;
 using Logic.Integration;
 using Logic.Scopes;
@@ -11,7 +12,7 @@ namespace Logic
     public class DiagramFromDiagramDefinitionGenerator
     {
         private readonly DevArchSolution _solution;
-        private SolutionNode tree;
+        private SolutionNode _tree;
         public DiagramFromDiagramDefinitionGenerator(DevArchSolution solution)
         {
             _solution = solution;
@@ -26,29 +27,31 @@ namespace Logic
 
         public Node GenerateDiagram(DiagramDefinition diagramDef)
         {
-            if(tree == null)
-                tree = SemanticTreeBuilder.AnalyseSolution(_solution);
+            if(_tree == null)
+                _tree = SemanticTreeBuilder.AnalyseSolution(_solution);
+
             Node scoped = null;
+            var toBeScoped = _tree.Copy();
             // This boilerplate syntax will look better in C# 7, dont change untill then
             if (diagramDef.Scope is RootScope)
             {
-                scoped = tree;
+                scoped = toBeScoped;
             }
             if (diagramDef.Scope is DocumentScope)
             {
-                scoped = SemanticTreeBuilder.AnalyseDocument(tree, ((DocumentScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.AnalyseDocument(toBeScoped, ((DocumentScope) diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is ClassScope)
             {
-                scoped = SemanticTreeBuilder.AnalyseClass(tree, ((ClassScope)diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.AnalyseClass(toBeScoped, ((ClassScope)diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is NamespaceScope)
             {
-                scoped = SemanticTreeBuilder.AnalyseNamespace(tree, ((NamespaceScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.AnalyseNamespace(toBeScoped, ((NamespaceScope) diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is ProjectScope)
             {
-                scoped = SemanticTreeBuilder.AnalyseProject(tree, ((ProjectScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.AnalyseProject(toBeScoped, ((ProjectScope) diagramDef.Scope).Name);
             }
 
             scoped = scoped.ApplyFilters(diagramDef.Filters)
