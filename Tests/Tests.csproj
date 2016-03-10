@@ -239,6 +239,7 @@
     <Compile Include="Units\Logic\Building\SemanticTreeBuilderTests.cs" />
     <Compile Include="Units\Logic\Building\DebugStringTests.cs" />
     <Compile Include="Units\Logic\Building\ProjectTreeTests.cs" />
+    <Compile Include="Units\Logic\Building\UnitTest1.cs" />
     <Compile Include="Units\Logic\Filtering\NotProduceDuplicateTests.cs" />
     <Compile Include="Units\Logic\Integration\AdvancedSolutionTests.cs" />
     <Compile Include="Integration\Integration.cs" />
