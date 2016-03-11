@@ -12,8 +12,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests
 {
-    static class TestExtesions
+    public static class TestExtesions
     {
+        public static class TestSolutions
+        {
+            static readonly string dir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\TestSolutions\\";
+            public static readonly string WithSolFolders = dir + "WithSolFolders\\WithSolFolders.sln";
+            public static readonly string WithNestedFolders = dir + "WithNestedFolders\\WithNestedFolders.sln";
+        }
+
         public static void RemoveChild(this Node tree, string name)
         {
             var withName = tree.Childs.WithName(name);

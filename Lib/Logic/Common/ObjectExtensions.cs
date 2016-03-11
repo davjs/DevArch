@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Logic.SemanticTree;
+using MoreLinq;
 
 namespace Logic.Common
 {
@@ -8,7 +11,32 @@ namespace Logic.Common
     {
         private static readonly MethodInfo CloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        public static bool IsPrimitive(this Type type)
+        public static T DeepClone<T>(this T original) where T : Node
+        {
+            var visited = new Dictionary<Node, Node>(new ReferenceEqualityComparer());
+            return InternalCopy(original, visited) as T;
+        }
+
+        public static Node InternalCopy(Node original,Dictionary<Node,Node> visited)
+        {
+            if (original == null)
+                return null;
+            if (visited.ContainsKey(original))
+                return visited[original];
+            //var cloneObject = Activator.CreateInstance(original.GetType()) as Node;
+            var cloneObject = CloneMethod.Invoke(original,null) as Node;
+            visited.Add(original,cloneObject);
+            if (cloneObject == null)
+                throw new Exception("Failed creating");
+            cloneObject.__SetChildrenWithoutNullingOld(original.Childs.ToList().Select(c => InternalCopy(c,visited)));
+            cloneObject.SiblingDependencies = new HashSet<Node>();
+            cloneObject.References = original.References.Select(c => InternalCopy(c, visited)).ToHashSet();
+            cloneObject.Dependencies = original.Dependencies.Select(c => InternalCopy(c, visited)).ToHashSet();
+            cloneObject.Parent = InternalCopy(original.Parent, visited);
+            return cloneObject;
+        }
+
+        /*public static bool IsPrimitive(this Type type)
         {
             if (type == typeof(string)) return true;
             return (type.IsValueType & type.IsPrimitive);
@@ -18,7 +46,7 @@ namespace Logic.Common
         {
             return InternalCopy(originalObject, new Dictionary<object, object>(new ReferenceEqualityComparer()));
         }
-        private static object InternalCopy(object originalObject, IDictionary<object, object> visited)
+        private static object InternalCopy(object originalObject, Dictionary<Node, Node> visited)
         {
             if (originalObject == null) return null;
             var typeToReflect = originalObject.GetType();
@@ -61,11 +89,11 @@ namespace Logic.Common
                 var clonedFieldValue = InternalCopy(originalFieldValue, visited);
                 fieldInfo.SetValue(cloneObject, clonedFieldValue);
             }
-        }
-        public static T Copy<T>(this T original)
+        }*/
+        /*public static T Copy<T>(this T original)
         {
             return (T)Copy((object)original);
-        }
+        }*/
     }
 
     public class ReferenceEqualityComparer : EqualityComparer<object>

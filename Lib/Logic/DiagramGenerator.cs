@@ -9,11 +9,11 @@ using Logic.SemanticTree;
 
 namespace Logic
 {
-    public class DiagramFromDiagramDefinitionGenerator
+    public class DiagramGenerator
     {
         private readonly DevArchSolution _solution;
         private SolutionNode _tree;
-        public DiagramFromDiagramDefinitionGenerator(DevArchSolution solution)
+        public DiagramGenerator(DevArchSolution solution)
         {
             _solution = solution;
         }
@@ -31,7 +31,7 @@ namespace Logic
                 _tree = SemanticTreeBuilder.AnalyseSolution(_solution);
 
             Node scoped = null;
-            var toBeScoped = _tree.Copy();
+            var toBeScoped = _tree.DeepClone();
             // This boilerplate syntax will look better in C# 7, dont change untill then
             if (diagramDef.Scope is RootScope)
             {
@@ -39,19 +39,19 @@ namespace Logic
             }
             if (diagramDef.Scope is DocumentScope)
             {
-                scoped = SemanticTreeBuilder.AnalyseDocument(toBeScoped, ((DocumentScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.FindDocument(toBeScoped, ((DocumentScope) diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is ClassScope)
             {
-                scoped = SemanticTreeBuilder.AnalyseClass(toBeScoped, ((ClassScope)diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.FindClass(toBeScoped, ((ClassScope)diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is NamespaceScope)
             {
-                scoped = SemanticTreeBuilder.AnalyseNamespace(toBeScoped, ((NamespaceScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.FindNamespace(toBeScoped, ((NamespaceScope) diagramDef.Scope).Name);
             }
             if (diagramDef.Scope is ProjectScope)
             {
-                scoped = SemanticTreeBuilder.AnalyseProject(toBeScoped, ((ProjectScope) diagramDef.Scope).Name);
+                scoped = SemanticTreeBuilder.FindProject(toBeScoped, ((ProjectScope) diagramDef.Scope).Name);
             }
 
             scoped = scoped.ApplyFilters(diagramDef.Filters)

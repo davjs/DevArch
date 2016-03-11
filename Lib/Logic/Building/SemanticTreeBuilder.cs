@@ -27,11 +27,11 @@ namespace Logic.Building
         }
 
 
-        public static Node AnalyseDocument(SolutionNode solution, string documentName)
+        public static Node FindDocument(SolutionNode solution, string documentName)
         {
             var projectName = GetRootFolder(documentName);
             var fname = Path.GetFileName(documentName);
-            var tree = AnalyseProject(solution, projectName);
+            var tree = FindProject(solution, projectName);
             var docsMatching = tree.Documents.Where(x => x.Name == documentName).ToList();
             if (!docsMatching.Any())
                 throw new Exception("Unable to find document: " + documentName);
@@ -45,7 +45,7 @@ namespace Logic.Building
         }
 
 
-        public static ProjectNode AnalyseProject(SolutionNode solution, string projectName)
+        public static ProjectNode FindProject(SolutionNode solution, string projectName)
         {
             var projects = solution.DescendantNodes().OfType<ProjectNode>().ToList();
             var proj = projects.WithName(projectName);
@@ -54,10 +54,10 @@ namespace Logic.Building
             return proj;
         }
         
-        public static Node AnalyseNamespace(SolutionNode solution, string name)
+        public static Node FindNamespace(SolutionNode solution, string name)
         {
             var projectName = GetRootFolder(name);
-            var tree = AnalyseProject(solution, projectName) as Node;
+            var tree = FindProject(solution, projectName) as Node;
             var names = name.Split('\\').ToList();
             names.RemoveAt(0);
 
@@ -73,7 +73,7 @@ namespace Logic.Building
             return tree;
         }
 
-        public static Node AnalyseClass(SolutionNode solution, string name)
+        public static Node FindClass(SolutionNode solution, string name)
         {
             throw new NotImplementedException();
         }

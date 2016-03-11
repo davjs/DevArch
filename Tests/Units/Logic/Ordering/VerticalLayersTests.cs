@@ -508,7 +508,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
             var tree = new Node("tree");
             tree.SetChildren(newChildOrder);
-            DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
+            DiagramGenerator.ReverseChildren(tree);
             TestExtesions.TreeAssert.DoesNotContainDuplicates(tree);
             OrderingTestFactory.AssertLayout(assertLayout,tree);
         }

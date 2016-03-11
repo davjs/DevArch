@@ -249,6 +249,7 @@
     <Compile Include="Units\Logic\Ordering\SiblingOrderTests.cs" />
     <Compile Include="Units\Logic\Ordering\VerticalLayersTests.cs" />
     <Compile Include="Units\Logic\Scoping\Scoping.cs" />
+    <Compile Include="Units\Logic\CloneTests.cs" />
     <Compile Include="Units\Presentation\ColorRangeTests.cs" />
     <Compile Include="Units\Logic\Filtering\FilterTests.cs" />
     <Compile Include="Units\Presentation\LayerMapperTests.cs" />

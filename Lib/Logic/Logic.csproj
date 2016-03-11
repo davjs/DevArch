@@ -131,7 +131,7 @@
     <Compile Include="DiagramDefinition.cs" />
     <Compile Include="Building\ProjectTreeBuilder.cs" />
     <Compile Include="Building\ClassTreeBuilder.cs" />
-    <Compile Include="DiagramFromDiagramDefinitionGenerator.cs" />
+    <Compile Include="DiagramGenerator.cs" />
     <Compile Include="DiagramDefinitionParser.cs" />
     <Compile Include="Filtering\PatternFinder.cs" />
     <Compile Include="Filtering\ModelFilterer.cs" />

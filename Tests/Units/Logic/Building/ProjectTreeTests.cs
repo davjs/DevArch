@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using Logic.Integration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Tests.TestExtesions;
 
 namespace Tests.Units.Logic.Building
 {
@@ -12,9 +13,8 @@ namespace Tests.Units.Logic.Building
         [TestMethod]
         public void ContainsTopLevelProjectItems()
         {
-            var testDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\TestSolutions\\";
-            var sol = testDir + "WithSolFolders\\WithSolFolders.sln";
-            var projectItems = DevArchSolution.GetProjectTree(sol).ToList();
+            var projectItems = DevArchSolution
+                .GetProjectTree(TestSolutions.WithSolFolders).ToList();
 
             // Assert
             projectItems.Count().Should().Be(3);
@@ -26,9 +26,8 @@ namespace Tests.Units.Logic.Building
         [TestMethod]
         public void ContainsNestedProjectItems()
         {
-            var testDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\TestSolutions\\";
-            var sol = testDir + "WithNestedFolders\\WithNestedFolders.sln";
-            var tree = DevArchSolution.GetProjectTree(sol);
+            var tree = DevArchSolution
+                .GetProjectTree(TestSolutions.WithNestedFolders);
 
             // Assert
             var folderA = tree.First();

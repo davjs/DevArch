@@ -15,6 +15,7 @@ using Project = Microsoft.CodeAnalysis.Project;
 
 namespace Logic.SemanticTree
 {
+    [Serializable]
     public class Node : UniqueEntity
     {
         public Node(ISymbol symbol)
@@ -29,9 +30,9 @@ namespace Logic.SemanticTree
         private readonly string _name;
         public string Name => _name ?? Symbol.Name;
 
-        public readonly ISymbol Symbol;
-        public readonly HashSet<Node> Dependencies = new HashSet<Node>();
-        public readonly HashSet<Node> References = new HashSet<Node>();
+        public ISymbol Symbol;
+        public HashSet<Node> Dependencies = new HashSet<Node>();
+        public HashSet<Node> References = new HashSet<Node>();
         public HashSet<Node> SiblingDependencies = new HashSet<Node>();
         public Node Parent;
         public OrientationKind Orientation = OrientationKind.Vertical;
@@ -64,6 +65,12 @@ namespace Logic.SemanticTree
             ChildsList.ForEach(n => n.Parent = null);
             ChildsList.Clear();
             AddChilds(newList);
+        }
+
+        public void __SetChildrenWithoutNullingOld(IEnumerable<Node> children)
+        {
+            ChildsList.Clear();
+            ChildsList.AddRange(children);
         }
 
         public void RemoveChild(Node n)

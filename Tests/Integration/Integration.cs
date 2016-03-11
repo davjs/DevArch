@@ -31,7 +31,7 @@ namespace Tests.Integration
         [TestMethod]
         public void FindsDependencies()
         {
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
+            var modelGen = new DiagramGenerator(TestSolution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
             Assert.AreEqual(1,lib.DescendantNodes().Count(x => x.Name == "Node"));
@@ -45,7 +45,7 @@ namespace Tests.Integration
         public void SemanticTreeDoesNotContainDoubles()
         {
             var complete = SemanticTreeBuilder.AnalyseSolution(TestSolution);
-            var tree = SemanticTreeBuilder.AnalyseNamespace(complete, "Logic\\SemanticTree");
+            var tree = SemanticTreeBuilder.FindNamespace(complete, "Logic\\SemanticTree");
             tree.DescendantNodes().Count(x => x.Name == "Node").Should().Be(1);
             tree.RelayoutBasedOnDependencies();
             tree.DescendantNodes().Count(x => x.Name == "Node").Should().Be(1);
@@ -56,10 +56,10 @@ namespace Tests.Integration
         public void LogicLayerIsVertical()
         {
             var complete = SemanticTreeBuilder.AnalyseSolution(TestSolution);
-            var tree = SemanticTreeBuilder.AnalyseNamespace(complete, "Logic\\Logic");
+            var tree = SemanticTreeBuilder.FindNamespace(complete, "Logic\\Logic");
             tree.RemoveChild("DiagramDefinition");
             tree.RemoveChild("Filtering");
-            tree.RemoveChild("DiagramFromDiagramDefinitionGenerator");
+            tree.RemoveChild("DiagramGenerator");
             tree.RemoveChild("DiagramDefinitionParser");
             tree.RemoveChild("Common");
             tree.RemoveChild("OutputSettings");
@@ -80,7 +80,7 @@ namespace Tests.Integration
         {
             var filters = DiagramDefinition.DefaultFilters;
             filters.Add(new RemoveContainers(true));
-            var diagramGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
+            var diagramGen = new DiagramGenerator(TestSolution);
             var diagramDef = new DiagramDefinition("",
                 new RootScope(), new OutputSettings (SlnDir + "IntegrationTests\\NoContainers.png"), filters, true,false);
             var tree = diagramGen.GenerateDiagram(diagramDef);
