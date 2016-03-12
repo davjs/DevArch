@@ -23,7 +23,7 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void GenerateAlignmentTest()
         {
-            var modelGen = new DiagramGenerator(TestSolution);
+            var modelGen = new DiagramGenerator(StandAloneSolution);
             var modelDef = new DiagramDefinition("",
                 new NamespaceScope {Name = @"Tests\Integration\Samples"},
                 new OutputSettings (SlnDir + @"IntegrationTests\VerticalAnonymousLayer.png"),

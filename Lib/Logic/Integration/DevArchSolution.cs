@@ -5,6 +5,7 @@ using System.Linq;
 using EnvDTE;
 using EnvDTE80;
 using Logic.Building;
+using Logic.Common;
 using Logic.SemanticTree;
 using Microsoft.Build.Construction;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -55,7 +56,7 @@ namespace Logic.Integration
     public class DevArchSolution
     {
         public readonly Solution RoslynSolution;
-        private Projects DteProjects;
+        //private Projects DteProjects;
         public string _fullName;
         public string Name;
         public string Directory;
@@ -107,21 +108,28 @@ namespace Logic.Integration
             if (!RoslynSolution.Projects.Any())
                 throw new NoCsharpProjectsFoundException();
         }
-        public static IEnumerable<Node> GetProjectTree(string path)
+        
+
+        public IEnumerable<Node> GetProjectTree(string path)
         {
-            var x = SolutionFile.Parse(path);
-            var isFolder = x.ProjectsInOrder.ToLookup(pI => pI.ProjectType == SolutionProjectType.SolutionFolder);
-            var folders = isFolder[true].Select(f => new ProjectNode(f)).ToList();
-            var projects = isFolder[false].Select(p => new ProjectNode(p)).ToList();
-            var all = folders.Union(projects).ToList();
+            var solFile = SolutionFile.Parse(path);
+            
+            var projects = solFile.ProjectsInOrder.ToList();
+            var archProjects = projects.Where(x => x.RelativePath.EndsWith(".archproj")).ToList();
+            projects.RemoveRange(archProjects);
+            ArchProjects = archProjects.Select(x => new ArchProject(x)).ToList();
+
+            var all = solFile.ProjectsInOrder.SelectList(x => new ProjectNode(x));
             var nodes = new List<Node>();
-            foreach (var project in x.ProjectsInOrder)
+            foreach (var project in solFile.ProjectsInOrder)
             {
-                var currNode = all.First(p => p.ProjectId == new Guid(project.ProjectGuid));
+                var currNode = all.FirstOrDefault(p => p.ProjectId == new Guid(project.ProjectGuid));
+                if (currNode == null)
+                    continue;
                 if (project.ParentProjectGuid != null)
                 {
                     var parentId = new Guid(project.ParentProjectGuid);
-                    var parent = folders.First(f => f.ProjectId == parentId);
+                    var parent = all.First(f => f.ProjectId == parentId);
                     parent.AddChild(currNode);
                 }
                 else
@@ -138,7 +146,7 @@ namespace Logic.Integration
             _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
             if (string.IsNullOrEmpty(_fullName))
                 throw new Exception("Unable to find opened solution");
-            DteProjects = KeepTrying.ToGet(() => dteSolution.Projects);
+            var DteProjects = KeepTrying.ToGet(() => dteSolution.Projects);
             Name = Path.GetFileName(_fullName);
             Directory = Path.GetDirectoryName(_fullName) + "\\";
             var sln = new SolutionNode("-");
@@ -146,31 +154,7 @@ namespace Logic.Integration
             return sln;
         }
 
-        public IList<ArchProject> ArchProjects
-        {
-            get
-            {
-                var projects = new List<ArchProject>();
-                foreach (Project project in DteProjects)
-                {
-                    try
-                    {
-                        var fullName = project.FullName;
-                        if (fullName.EndsWith(".archproj"))
-                            projects.Add(new ArchProject(project));
-                    }
-                    catch (Exception)
-                    {
-                        // ignored, happens when trying to access the full name of an unloaded project
-                    }
-                }
-                return projects;
-            }
-        }
-
-        private class NoSolutionOpenException : Exception
-        {
-        }
+        public List<ArchProject> ArchProjects;
     }
 
     public static class ProjectExtensions

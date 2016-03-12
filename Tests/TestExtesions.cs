@@ -16,9 +16,11 @@ namespace Tests
     {
         public static class TestSolutions
         {
-            static readonly string dir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\TestSolutions\\";
-            public static readonly string WithSolFolders = dir + "WithSolFolders\\WithSolFolders.sln";
-            public static readonly string WithNestedFolders = dir + "WithNestedFolders\\WithNestedFolders.sln";
+            private static readonly string RepoDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\..\\";
+            public static readonly string DevArchSln = RepoDir + "\\DevArch.sln";
+            private static readonly string SampleSolutions = RepoDir + "\\Tests\\TestSolutions\\";
+            public static readonly string WithSolFolders = SampleSolutions + "WithSolFolders\\WithSolFolders.sln";
+            public static readonly string WithNestedFolders = SampleSolutions + "WithNestedFolders\\WithNestedFolders.sln";
         }
 
         public static void RemoveChild(this Node tree, string name)
@@ -46,9 +48,10 @@ namespace Tests
         }
 
         public static DTE Dte => (DTE)Marshal.GetActiveObject("VisualStudio.DTE.14.0");
-        public static VisualStudio TestStudio { get; } = new VisualStudio(Dte);
-        public static DevArchSolution TestSolution { get; } = TestStudio.Solution;
-        public static string SlnDir { get; } = TestStudio.Solution.Directory;
+        public static readonly VisualStudio TestStudio = new VisualStudio(Dte);
+        public static readonly DevArchSolution TestSolution = TestStudio.Solution;
+        public static readonly DevArchSolution StandAloneSolution = new DevArchSolution(TestSolutions.DevArchSln);
+        public static readonly string SlnDir = TestStudio.Solution.Directory;
 
 
         public static Node BuildTree(this string text)

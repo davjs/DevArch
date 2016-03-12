@@ -13,8 +13,8 @@ namespace Tests.Units.Logic.Building
         [TestMethod]
         public void ContainsTopLevelProjectItems()
         {
-            var projectItems = DevArchSolution
-                .GetProjectTree(TestSolutions.WithSolFolders).ToList();
+            var projectItems = new DevArchSolution(TestSolutions.WithSolFolders)
+                .SolutionTree.Childs;
 
             // Assert
             projectItems.Count().Should().Be(3);
@@ -26,8 +26,8 @@ namespace Tests.Units.Logic.Building
         [TestMethod]
         public void ContainsNestedProjectItems()
         {
-            var tree = DevArchSolution
-                .GetProjectTree(TestSolutions.WithNestedFolders);
+            var tree = new DevArchSolution(TestSolutions.WithSolFolders)
+                .SolutionTree.Childs;
 
             // Assert
             var folderA = tree.First();

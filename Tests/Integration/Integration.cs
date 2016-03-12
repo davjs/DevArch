@@ -31,20 +31,21 @@ namespace Tests.Integration
         [TestMethod]
         public void FindsDependencies()
         {
-            var modelGen = new DiagramGenerator(TestSolution);
+            var modelGen = new DiagramGenerator(new DevArchSolution(TestSolutions.DevArchSln));
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
-            Assert.AreEqual(1,lib.DescendantNodes().Count(x => x.Name == "Node"));
             var clients = tree.Childs.WithName("Clients");
-            var dependency = clients.AllSubDependencies().Any(x => x.Name == "DevArch");
-            Assert.IsNotNull(dependency);
+
+            //Assert
+            lib.DescendantNodes().Should().ContainSingle(x => x.Name == "Node").Should();
+            clients.AllSubDependencies().Should().ContainSingle(x => x.Name == "DevArch");
         }
 
         [TestCategory("Integration")]
         [TestMethod]
         public void SemanticTreeDoesNotContainDoubles()
         {
-            var complete = SemanticTreeBuilder.AnalyseSolution(TestSolution);
+            var complete = SemanticTreeBuilder.AnalyseSolution(StandAloneSolution);
             var tree = SemanticTreeBuilder.FindNamespace(complete, "Logic\\SemanticTree");
             tree.DescendantNodes().Count(x => x.Name == "Node").Should().Be(1);
             tree.RelayoutBasedOnDependencies();
@@ -55,7 +56,7 @@ namespace Tests.Integration
         [TestMethod]
         public void LogicLayerIsVertical()
         {
-            var complete = SemanticTreeBuilder.AnalyseSolution(TestSolution);
+            var complete = SemanticTreeBuilder.AnalyseSolution(StandAloneSolution);
             var tree = SemanticTreeBuilder.FindNamespace(complete, "Logic\\Logic");
             tree.RemoveChild("DiagramDefinition");
             tree.RemoveChild("Filtering");
@@ -80,7 +81,7 @@ namespace Tests.Integration
         {
             var filters = DiagramDefinition.DefaultFilters;
             filters.Add(new RemoveContainers(true));
-            var diagramGen = new DiagramGenerator(TestSolution);
+            var diagramGen = new DiagramGenerator(StandAloneSolution);
             var diagramDef = new DiagramDefinition("",
                 new RootScope(), new OutputSettings (SlnDir + "IntegrationTests\\NoContainers.png"), filters, true,false);
             var tree = diagramGen.GenerateDiagram(diagramDef);

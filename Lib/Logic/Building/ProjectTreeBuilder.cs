@@ -39,12 +39,6 @@ namespace Logic.Building
             }
         }
 
-        public static void AddProjectToTree(Solution solution, ref SolutionNode tree, string name)
-        {
-            var project = solution.Projects.First(p => p.Name == name);
-            tree.AddChild(new ProjectNode(project));
-        }
-
         public static
             IEnumerable<Node> AddSolutionFoldersToTree(Projects projects)
         {

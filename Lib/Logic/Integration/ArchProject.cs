@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EnvDTE;
+using Microsoft.Build.Construction;
 
 namespace Logic.Integration
 {
     public class ArchProject
     {
         private readonly Project _project;
+        private IEnumerable<string> _projectItems;
 
         public class DiagramDefinitionFile
         {
@@ -19,6 +21,11 @@ namespace Logic.Integration
             {
                 _path = item.FileNames[0];
                 _name = item.Name;
+            }
+            public DiagramDefinitionFile(string name,string path)
+            {
+                _path = path;
+                _name = name;
             }
 
             private string Content => File.ReadAllText(_path);
@@ -44,10 +51,16 @@ namespace Logic.Integration
             _project = project;
         }
 
+        public ArchProject(ProjectInSolution project)
+        {
+            _projectItems = new Microsoft.Build.Evaluation.Project(project.AbsolutePath).Items.Select(x => x.EvaluatedInclude);
+            
+        }
+
         public IEnumerable<DiagramDefinitionFile> GetDiagramDefinitionFiles()
         {
-            var projectItems = _project.GetAllProjectItems();
-            var definitionItems = projectItems.Where(d => d.Name.EndsWith(".diagramdefinition"));
+            _projectItems = _project.GetAllProjectItems().Select(x => x.FileNames[0]);
+            var definitionItems = _projectItems.Where(d => d.EndsWith(".diagramdefinition"));
             return definitionItems.Select(x => new DiagramDefinitionFile(x));
         }
     }
