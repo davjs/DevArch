@@ -48,7 +48,6 @@ namespace Tests.Units.Logic
             // Assert:
             clonedParent.Childs.Should().BeEmpty();
             clonedParent2.Childs.Should().NotBeEmpty();
-
         }
 
         [TestMethod]

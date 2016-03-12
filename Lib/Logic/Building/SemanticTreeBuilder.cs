@@ -27,14 +27,14 @@ namespace Logic.Building
         }
 
 
-        public static Node FindDocument(SolutionNode solution, string documentName)
+        public static Node FindDocument(SolutionNode solution, string path)
         {
-            var projectName = GetRootFolder(documentName);
-            var fname = Path.GetFileName(documentName);
+            var projectName = GetRootFolder(path);
+            var documentName = Path.GetFileName(path);
             var tree = FindProject(solution, projectName);
             var docsMatching = tree.Documents.Where(x => x.Name == documentName).ToList();
             if (!docsMatching.Any())
-                throw new Exception("Unable to find document: " + documentName);
+                throw new Exception("Unable to find document: " + path);
             if(docsMatching.Count > 1)
                 throw new NotImplementedException($"Got {docsMatching.Count} matching documents, dont know which one to pick");
             var doc = docsMatching.First();
