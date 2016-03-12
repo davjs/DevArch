@@ -39,7 +39,7 @@ namespace Logic.SemanticTree
         //TODO, try to cash sibling dependencies
         //_indirectSiblingDependencies ?? (_indirectSiblingDependencies = IndirectSiblingBuilder.BuildDepsFor(this));//IndirectSiblingBuilder.BuildDepsFor(this));
 
-        private List<Node> ChildsList { get; } = new List<Node>();
+        private List<Node> ChildsList { get; set; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;
 
         public override string ToString()
@@ -69,8 +69,7 @@ namespace Logic.SemanticTree
 
         public void __SetChildrenWithoutNullingOld(IEnumerable<Node> children)
         {
-            ChildsList.Clear();
-            ChildsList.AddRange(children);
+            ChildsList = new List<Node>(children);
         }
 
         public void RemoveChild(Node n)

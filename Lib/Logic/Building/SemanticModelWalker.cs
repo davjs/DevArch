@@ -24,7 +24,6 @@ namespace Logic.Building
             var symbols = subnodes.Select(node => model.GetSymbolInfo(node).Symbol).ToList();
 
             var dependencies = symbols.OfType<INamedTypeSymbol>();
-
             var nrOfMethods = subnodes.OfType<MethodDeclarationSyntax>().Count();
 
             IEnumerable<TypeSyntax> basetypes = new List<TypeSyntax>();

@@ -28,9 +28,8 @@ namespace Tests.Units.Logic.Building
 
             //Assert
             diagram1.Should().NotBeSameAs(diagram2);
-            var c1 = diagram1.Childs.First().Childs.First();
-            var c2 = diagram2.Childs.First().Childs.First();
-
+            diagram1.Height().Should().Be(1);
+            diagram2.Height().Should().Be(2);
         }
     }
 }

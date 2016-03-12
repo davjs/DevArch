@@ -28,7 +28,7 @@ namespace Logic.Common
             visited.Add(original,cloneObject);
             if (cloneObject == null)
                 throw new Exception("Failed creating");
-            cloneObject.__SetChildrenWithoutNullingOld(original.Childs.ToList().Select(c => InternalCopy(c,visited)));
+            cloneObject.__SetChildrenWithoutNullingOld(original.Childs.ToList().Select(c => InternalCopy(c,visited)).ToList());
             cloneObject.SiblingDependencies = new HashSet<Node>();
             cloneObject.References = original.References.Select(c => InternalCopy(c, visited)).ToHashSet();
             cloneObject.Dependencies = original.Dependencies.Select(c => InternalCopy(c, visited)).ToHashSet();

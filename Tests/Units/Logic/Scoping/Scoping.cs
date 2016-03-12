@@ -4,6 +4,7 @@ using Logic.Building;
 using Logic.Integration;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Tests.TestExtesions;
 
 namespace Tests.Units.Logic.Scoping
 {
@@ -13,9 +14,7 @@ namespace Tests.Units.Logic.Scoping
         [TestMethod]
         public void TestScoping()
         {
-            var testDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\TestSolutions\\";
-            var sol = testDir + "WithSolFolders\\WithSolFolders.sln";
-            var tree = SemanticTreeBuilder.AnalyseSolution(new DevArchSolution(sol));
+            var tree = SemanticTreeBuilder.AnalyseSolution(new DevArchSolution(TestSolutions.WithSolFolders));
             var project = SemanticTreeBuilder.FindProject(tree, "ClassLibrary1");
             var fooSpace = SemanticTreeBuilder.FindNamespace(tree, "ConsoleApplication1\\Foo");
 
