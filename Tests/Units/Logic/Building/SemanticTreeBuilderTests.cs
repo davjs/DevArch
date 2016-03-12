@@ -24,7 +24,7 @@ namespace Tests.Units.Logic.Building
                         "namespace NamespaceA {namespace NamespaceAB {class ClassB {}}}"));
                 var tree = Substitute.For<SolutionNode>();
                 ProjectTreeBuilder.AddProjectsToTree(fakeWorkspace.CurrentSolution, ref tree);
-                ClassTreeBuilder.AddClassesToTree(tree);
+                ClassTreeBuilder.AddClassesInProjectsToTree(tree);
                 Assert.AreEqual(1,tree.Childs.First().Childs.Count);
             }
         }

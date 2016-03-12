@@ -107,6 +107,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Building\DependencyResolver.cs" />
     <Compile Include="Building\SemanticTreeBuilder.cs" />
     <Compile Include="Common\ArrayExtensions.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />

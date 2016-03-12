@@ -9,68 +9,36 @@ namespace Logic.Building
 {
     public static class ClassTreeBuilder
     {
-        public static void AddClassesToTree(Node tree, string documentName = null)
+        public static Node AddClassesInDocument(Document doc)
         {
-            var allClassesBySymbol = new Dictionary<ISymbol, ClassNode>();
+            var semanticModels = doc.GetSemanticModelAsync().Result;
+            var classes = SemanticModelWalker.GetClassesInModel(semanticModels).ToList();
+            DependencyResolver.ResolveDependencies(classes);
+            var docNode = new Node(doc.Name);
+            docNode.AddChilds(BuildTreeFromClasses(classes));
+            return docNode;
+        }
+
+        public static void AddClassesInProjectsToTree(SolutionNode tree)
+        {
             var projects = tree.DescendantNodes().OfType<ProjectNode>().ToList();
+            var allClasses = new List<ClassNode>();
             
             foreach (var project in projects)
             {
                 var documents = project.Documents.ToList();
                 if (!documents.Any()) continue;
-
-                if (documentName != null) { 
-                    documents = documents.Where(d => d.Name == documentName).ToList();
-                    if(!documents.Any())
-                        throw new Exception("Unable to find document: " + documentName);
-                }
+                
                 var semanticModels = documents.SelectList(d => d.GetSemanticModelAsync().Result);
                 var classes = SemanticModelWalker.GetClassesInModels(semanticModels);
                 if (!classes.Any())
                     continue;
-
-                foreach (var classNode in classes)
-                {
-                    allClassesBySymbol.Add(classNode.Symbol,classNode);
-                }
-                
+                allClasses.AddRange(classes);
                 var classnodes = BuildTreeFromClasses(classes);
                 project.AddChilds(classnodes);
             }
-            
-            foreach (var dependor in allClassesBySymbol.Values)
-            {
-                foreach (var dependency in dependor.SymbolDependencies)
-                {
-                    if (allClassesBySymbol.ContainsKey(dependency))
-                    {
-                        CreateDependency(allClassesBySymbol[dependency], dependor);
-                    }
-                    else
-                    {
-                        var matchingSymbols = allClassesBySymbol.Keys.Where(x => SymbolsMatch(x,dependency)).ToList();
-                        if (matchingSymbols.Count == 1)
-                        {
-                            CreateDependency(allClassesBySymbol[matchingSymbols.First()], dependor);
-                        }
-                        if (matchingSymbols.Count > 1)
-                            throw new NotImplementedException();
-                    }
-                }
-            }
-        }
 
-        private static void CreateDependency(ClassNode nodeDependantOn, Node dependor)
-        {
-            nodeDependantOn.References.Add(dependor);
-            dependor.Dependencies.Add(nodeDependantOn);
-        }
-
-        private static bool SymbolsMatch(ISymbol symbol, ISymbol dependency)
-        {
-            return Equals(symbol, dependency) ||
-                symbol.MetadataName == dependency.MetadataName
-                && SymbolsMatch(symbol.ContainingSymbol,dependency.ContainingSymbol);
+            DependencyResolver.ResolveDependencies(allClasses);
         }
 
         private static IEnumerable<Node> BuildTreeFromClasses(IEnumerable<ClassNode> classes)

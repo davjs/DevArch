@@ -53,6 +53,7 @@ namespace Logic.SemanticTree
             ChildsList.Add(childNode);
         }
 
+
         public void AddChilds(IEnumerable<Node> nodes)
         {
             foreach (var node in nodes)
@@ -66,6 +67,8 @@ namespace Logic.SemanticTree
             ChildsList.Clear();
             AddChilds(newList);
         }
+
+        
 
         public void __SetChildrenWithoutNullingOld(IEnumerable<Node> children)
         {

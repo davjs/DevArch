@@ -23,7 +23,7 @@ namespace Logic.Building
             ProjectTreeBuilder.AddProjectsToTree(solution, ref tree);
             if (!tree.Childs.Any())
                 throw new NoCsharpProjectsFoundException();
-            ClassTreeBuilder.AddClassesToTree(tree);
+            ClassTreeBuilder.AddClassesInProjectsToTree(tree);
         }
 
 
@@ -39,9 +39,7 @@ namespace Logic.Building
                 throw new NotImplementedException($"Got {docsMatching.Count} matching documents, dont know which one to pick");
             var doc = docsMatching.First();
             ///////////////////////////////////////////////////////////////////////
-            throw new NotImplementedException();
-            var nSpace = tree.DescendantNodes().First(x => x is ClassNode).Parent;
-            return nSpace;
+            return ClassTreeBuilder.AddClassesInDocument(doc);
         }
 
 
