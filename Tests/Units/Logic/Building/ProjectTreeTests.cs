@@ -13,7 +13,7 @@ namespace Tests.Units.Logic.Building
         [TestMethod]
         public void ContainsTopLevelProjectItems()
         {
-            var projectItems = new DevArchSolution(TestSolutions.WithSolFolders)
+            var projectItems = DevArchSolution.FromPath(TestSolutions.WithSolFolders)
                 .SolutionTree.Childs;
 
             // Assert
@@ -26,7 +26,7 @@ namespace Tests.Units.Logic.Building
         [TestMethod]
         public void ContainsNestedProjectItems()
         {
-            var tree = new DevArchSolution(TestSolutions.WithSolFolders)
+            var tree = DevArchSolution.FromPath(TestSolutions.WithSolFolders)
                 .SolutionTree.Childs;
 
             // Assert

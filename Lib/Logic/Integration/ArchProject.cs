@@ -9,23 +9,17 @@ namespace Logic.Integration
 {
     public class ArchProject
     {
-        private readonly Project _project;
-        private IEnumerable<string> _projectItems;
+        private readonly IEnumerable<string> _projectItems;
 
         public class DiagramDefinitionFile
         {
             private readonly string _path;
             private readonly string _name;
-
-            public DiagramDefinitionFile(ProjectItem item)
-            {
-                _path = item.FileNames[0];
-                _name = item.Name;
-            }
-            public DiagramDefinitionFile(string name,string path)
+            
+            public DiagramDefinitionFile(string path)
             {
                 _path = path;
-                _name = name;
+                _name = Path.GetFileNameWithoutExtension(path);
             }
 
             private string Content => File.ReadAllText(_path);
@@ -46,20 +40,13 @@ namespace Logic.Integration
             }
         }
 
-        public ArchProject(Project project)
+        public ArchProject(ProjectWrapper projectProperties)
         {
-            _project = project;
-        }
-
-        public ArchProject(ProjectInSolution project)
-        {
-            _projectItems = new Microsoft.Build.Evaluation.Project(project.AbsolutePath).Items.Select(x => x.EvaluatedInclude);
-            
+            _projectItems = projectProperties.Items.Value;
         }
 
         public IEnumerable<DiagramDefinitionFile> GetDiagramDefinitionFiles()
         {
-            _projectItems = _project.GetAllProjectItems().Select(x => x.FileNames[0]);
             var definitionItems = _projectItems.Where(d => d.EndsWith(".diagramdefinition"));
             return definitionItems.Select(x => new DiagramDefinitionFile(x));
         }

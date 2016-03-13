@@ -17,7 +17,7 @@ namespace Tests.Units.Logic.Building
         public void CreatesNewTreesForEachRequest()
         {
             var generator = 
-                new DiagramGenerator(new DevArchSolution(TestExtesions.TestSolutions.WithSolFolders));
+                new DiagramGenerator(DevArchSolution.FromPath(TestExtesions.TestSolutions.WithSolFolders));
             var def1 = new DiagramDefinition("",new RootScope(), new OutputSettings(""),
                 new List<Filter>{new MaxDepth(1)});
             var def2 = new DiagramDefinition("", new RootScope(), new OutputSettings(""),

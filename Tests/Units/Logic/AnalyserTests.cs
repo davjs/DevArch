@@ -2,6 +2,7 @@
 using System.Linq;
 using Logic.Building;
 using Logic.Filtering;
+using Logic.Integration;
 using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -13,20 +14,6 @@ namespace Tests.Units.Logic
     [TestClass]
     public class AnalyserTests
     {
-        [TestMethod]
-        [TestCategory("ModelBuilder")]
-        public void ContainsProjectNames()
-        {
-            using (var fakeWorkspace = new AdhocWorkspace())
-            {
-                fakeWorkspace.AddProject("A", LanguageNames.CSharp);
-                fakeWorkspace.AddProject("B", LanguageNames.CSharp);
-                var tree = new SolutionNode();
-                ProjectTreeBuilder.AddProjectsToTree(fakeWorkspace.CurrentSolution,ref tree);
-                Assert.IsTrue(tree.Childs.Any(x => x.Name == "A"));
-                Assert.IsTrue(tree.Childs.Any(x => x.Name == "B"));
-            }
-        }
 
         [TestMethod]
         [TestCategory("ModelBuilder")]
@@ -38,6 +25,7 @@ namespace Tests.Units.Logic
                 fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA { class ClassA { class ClassB {}}}" +
                                                                                       "namespace NamespaceA { class classC {} }"));
                 var tree = new SolutionNode();
+                tree.AddChild(new));
                 SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
                 Assert.IsTrue(tree.DescendantNodes().WithName("ClassA").Childs.First().Name == "ClassB");
             }

@@ -20,7 +20,7 @@ namespace Logic.Building
 
         public static void AddAllItemsInSolutionToTree(Solution solution, ref SolutionNode tree)
         {
-            ProjectTreeBuilder.AddProjectsToTree(solution, ref tree);
+            ProjectTreeBuilder.AddDocumentsToProjects(solution, ref tree);
             if (!tree.Childs.Any())
                 throw new NoCsharpProjectsFoundException();
             ClassTreeBuilder.AddClassesInProjectsToTree(tree);

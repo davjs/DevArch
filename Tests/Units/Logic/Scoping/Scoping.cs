@@ -14,7 +14,7 @@ namespace Tests.Units.Logic.Scoping
         [TestMethod]
         public void TestScoping()
         {
-            var tree = SemanticTreeBuilder.AnalyseSolution(new DevArchSolution(TestSolutions.WithSolFolders));
+            var tree = SemanticTreeBuilder.AnalyseSolution(DevArchSolution.FromPath(TestSolutions.WithSolFolders));
             var project = SemanticTreeBuilder.FindProject(tree, "ClassLibrary1");
             var fooSpace = SemanticTreeBuilder.FindNamespace(tree, "ConsoleApplication1\\Foo");
 

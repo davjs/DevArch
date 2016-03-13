@@ -127,6 +127,7 @@
     <Compile Include="Filtering\Filters\RemoveTests.cs" />
     <Compile Include="Filtering\IndirectSiblingBuilder.cs" />
     <Compile Include="Integration\ArchProject.cs" />
+    <Compile Include="Integration\ProjectWrapper.cs" />
     <Compile Include="Ordering\CircularReferenceFinder.cs" />
     <Compile Include="Integration\DevArchSolution.cs" />
     <Compile Include="DiagramDefinition.cs" />

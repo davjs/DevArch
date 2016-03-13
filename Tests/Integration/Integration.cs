@@ -31,7 +31,7 @@ namespace Tests.Integration
         [TestMethod]
         public void FindsDependencies()
         {
-            var modelGen = new DiagramGenerator(new DevArchSolution(TestSolutions.DevArchSln));
+            var modelGen = new DiagramGenerator(StandAloneSolution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
             var clients = tree.Childs.WithName("Clients");

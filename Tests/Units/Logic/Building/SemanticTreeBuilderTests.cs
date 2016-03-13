@@ -23,7 +23,7 @@ namespace Tests.Units.Logic.Building
                         "namespace NamespaceA {namespace NamespaceAA {class ClassA {}}}" +
                         "namespace NamespaceA {namespace NamespaceAB {class ClassB {}}}"));
                 var tree = Substitute.For<SolutionNode>();
-                ProjectTreeBuilder.AddProjectsToTree(fakeWorkspace.CurrentSolution, ref tree);
+                ProjectTreeBuilder.AddDocumentsToProjects(fakeWorkspace.CurrentSolution, ref tree);
                 ClassTreeBuilder.AddClassesInProjectsToTree(tree);
                 Assert.AreEqual(1,tree.Childs.First().Childs.Count);
             }

@@ -50,7 +50,7 @@ namespace Tests
         public static DTE Dte => (DTE)Marshal.GetActiveObject("VisualStudio.DTE.14.0");
         public static readonly VisualStudio TestStudio = new VisualStudio(Dte);
         public static readonly DevArchSolution TestSolution = TestStudio.Solution;
-        public static readonly DevArchSolution StandAloneSolution = new DevArchSolution(TestSolutions.DevArchSln);
+        public static readonly DevArchSolution StandAloneSolution = DevArchSolution.FromPath(TestSolutions.DevArchSln);
         public static readonly string SlnDir = TestStudio.Solution.Directory;
 
 
