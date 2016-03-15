@@ -16,7 +16,7 @@ namespace Tests
     {
         public static class TestSolutions
         {
-            private static readonly string RepoDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\..\\";
+            public static readonly string RepoDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\..\\";
             public static readonly string DevArchSln = RepoDir + "\\DevArch.sln";
             private static readonly string SampleSolutions = RepoDir + "\\Tests\\TestSolutions\\";
             public static readonly string WithSolFolders = SampleSolutions + "WithSolFolders\\WithSolFolders.sln";
@@ -49,9 +49,9 @@ namespace Tests
 
         public static DTE Dte => (DTE)Marshal.GetActiveObject("VisualStudio.DTE.14.0");
         public static readonly VisualStudio TestStudio = new VisualStudio(Dte);
-        public static readonly DevArchSolution TestSolution = TestStudio.Solution;
+        //public static readonly DevArchSolution TestSolution = TestStudio.Solution;
         public static readonly DevArchSolution StandAloneSolution = DevArchSolution.FromPath(TestSolutions.DevArchSln);
-        public static readonly string SlnDir = TestStudio.Solution.Directory;
+        public static readonly string SlnDir = TestSolutions.RepoDir;
 
 
         public static Node BuildTree(this string text)

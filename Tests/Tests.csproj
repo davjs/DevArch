@@ -58,6 +58,7 @@
       <HintPath>..\packages\FluentAssertions.4.2.2\lib\net45\FluentAssertions.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
       <Private>True</Private>
@@ -211,7 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clients\VisualStudio\VsPackage\ToolsMenu.csproj">
-      <Project>{4A3EA481-FE04-4734-BC19-F9D4C06D6D15}</Project>
+      <Project>{4a3ea481-fe04-4734-bc19-f9d4c06d6d15}</Project>
       <Name>ToolsMenu</Name>
     </ProjectReference>
     <ProjectReference Include="..\Lib\Lib.csproj">

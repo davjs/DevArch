@@ -71,11 +71,18 @@ namespace Logic.Integration
             
             SolutionTree = new SolutionNode(name);
             SolutionTree.AddChilds(tree);
+            var allProjects = SolutionTree.DescendantNodes().OfType<ProjectNode>();
 
-            var archProjects = SolutionTree.DescendantNodes().OfType<ProjectNode>()
-                .Where(x => x.ProjectProperties.Path.EndsWith(".archproj")).ToList();
+            // Remove unloaded projects from tree
+            var unloadedProjects = allProjects.Where(x => !x.ProjectProperties.isLoaded).ToList();
+            foreach (var project in unloadedProjects)
+                project.Parent.RemoveChild(project);
+
+            // Remove arch projects from tree
+            var archProjects = allProjects.Where(x => x.ProjectProperties.Path.EndsWith(".archproj")).ToList();
             foreach (var archProject in archProjects)
                 archProject.Parent.RemoveChild(archProject);
+            
             ArchProjects = archProjects.Select(x => new ArchProject(x.ProjectProperties)).ToList();
         }
 

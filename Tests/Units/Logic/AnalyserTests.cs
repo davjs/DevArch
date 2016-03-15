@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Logic.Building;
 using Logic.Filtering;
 using Logic.Integration;
@@ -22,12 +23,16 @@ namespace Tests.Units.Logic
             using (var fakeWorkspace = new AdhocWorkspace())
             {
                 var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
-                fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA { class ClassA { class ClassB {}}}" +
+                var doc = fakeWorkspace.AddDocument(project.Id, "DocumentB.cs", SourceText.From("namespace NamespaceA { class ClassA { class ClassB {}}}" +
                                                                                       "namespace NamespaceA { class classC {} }"));
+                var projectA = new ProjectNode(null);
+                projectA.Name.Returns("ProjectA");
+                projectA.Documents = new List<Document> {doc};
                 var tree = new SolutionNode();
-                tree.AddChild(new));
-                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
-                Assert.IsTrue(tree.DescendantNodes().WithName("ClassA").Childs.First().Name == "ClassB");
+                tree.AddChild(projectA);
+                ClassTreeBuilder.AddClassesInProjectsToTree(tree);
+                tree.DescendantNodes().WithName("ClassA")
+                    .Childs.Should().ContainSingle(x => x.Name == "ClassB");
             }
         }
 

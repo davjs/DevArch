@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using Logic.Integration;
@@ -14,10 +15,13 @@ namespace Tests.Units.Logic.Integration
         [TestCategory("DevArchSolution")]
         public void FindArchProjectsTest()
         {
-            var archProj = StandAloneSolution.ArchProjects.First();
-            var projectItems = archProj.GetDiagramDefinitionFiles();
-            Assert.IsTrue(projectItems.Count() > 6);
+            var dte = (DTE)Marshal.GetActiveObject("VisualStudio.DTE.14.0");
+            var testStudio = new VisualStudio(dte);
+
+        /*var standalone = DevArchSolution.FromPath(TestSolutions.DevArchSln);
+        var archProj = standalone.ArchProjects.First();
+        var projectItems = archProj.GetDiagramDefinitionFiles();
+        Assert.IsTrue(projectItems.Count() > 6);*/
         }
-        
     }
 }

@@ -141,7 +141,12 @@ namespace Logic.SemanticTree
     public class ProjectNode : Node
     {
         public readonly ProjectWrapper ProjectProperties;
-        
+
+        public ProjectNode() : base("")
+        {
+            
+        }
+
         public ProjectNode(ProjectWrapper wrapper) : base(wrapper.Name)
         {
             ProjectProperties = wrapper;

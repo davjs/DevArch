@@ -26,14 +26,17 @@ namespace Tests.Units.Logic
                     "public static void Main(){};" +
                     "}"
                     ));
-                fakeWorkspace.AddDocument(project.Id, "DocumentB.cs",
+                var doc = fakeWorkspace.AddDocument(project.Id, "DocumentB.cs",
                     SourceText.From("class Button {public void Bar(){}}"));
-                var tree = Substitute.For<SolutionNode>();
-                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
-                var compile = project.GetCompilationAsync().Result;
-                var diagnostics = compile.GetParseDiagnostics();
-                Assert.IsTrue(!diagnostics.Any());
-                var projectA = tree.Childs.First();
+
+                var projectA = Substitute.For<ProjectNode>();
+                projectA.Name.Returns("ProjectA");
+                projectA.Documents = new List<Document> { doc };
+
+                var tree = new SolutionNode();
+                tree.AddChild(projectA);
+                ClassTreeBuilder.AddClassesInProjectsToTree(tree);
+                
                 var button = projectA.Childs.FirstOrDefault(x => x.Name == "Button") as ClassNode;
                 Assert.IsNotNull(button);
                 Assert.IsTrue(button.References.Any());
@@ -53,11 +56,17 @@ namespace Tests.Units.Logic
                     "public static void Main(){};" +
                     "}"
                     ));
-                fakeWorkspace.AddDocument(project.Id, "DocumentB.cs",
+                var doc = fakeWorkspace.AddDocument(project.Id, "DocumentB.cs",
                     SourceText.From("class Button {public void Bar(){}}"));
-                var tree = Substitute.For<SolutionNode>();
-                SemanticTreeBuilder.AddAllItemsInSolutionToTree(fakeWorkspace.CurrentSolution, ref tree);
-                var projectA = tree.Childs.First();
+                
+                var projectA = Substitute.For<ProjectNode>();
+                projectA.Name.Returns("ProjectA");
+                projectA.Documents = new List<Document> { doc };
+
+                var tree = new SolutionNode();
+                tree.AddChild(projectA);
+                ClassTreeBuilder.AddClassesInProjectsToTree(tree);
+                
                 var button = projectA.Childs.WithName("Button") as ClassNode;
                 var guiFacade = projectA.Childs.WithName("GuiFacade");
                 Assert.IsNotNull(button);

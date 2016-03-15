@@ -15,16 +15,23 @@ namespace Logic.Integration
         public readonly string Path ;
         public Lazy<IEnumerable<string>> Items { get; }
         public readonly Guid? Id;
+        public bool isLoaded = true;
 
         //Constructor for EnvDte project
 
         public ProjectWrapper(EnvDTE.Project project)
         {
             Name = project.Name;
-            Path = project.FullName;
-            Items = new Lazy<IEnumerable<string>>
-                (() => project.GetAllProjectItems().Select(x => x.FileNames[0]));
-            
+            try
+            {
+                Path = project.FullName;
+                Items = new Lazy<IEnumerable<string>>
+                    (() => project.GetAllProjectItems().Select(x => x.FileNames[0]));
+            }catch (Exception) //TODO: Handle
+            {
+                isLoaded = false;
+                // Ignored, happens when trying to access the full name of an unloaded project
+            }
             // Unsupported
             //ProjectId = null;
         }
