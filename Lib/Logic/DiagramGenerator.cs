@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Logic.Building;
 using Logic.Common;
@@ -12,10 +13,14 @@ namespace Logic
     public class DiagramGenerator
     {
         private readonly DevArchSolution _solution;
-        private SolutionNode _tree;
+        private readonly Lazy<SolutionNode> _cachedTree;
+        public SolutionNode CachedTree => _cachedTree.Value;
+
+
         public DiagramGenerator(DevArchSolution solution)
         {
             _solution = solution;
+            _cachedTree = new Lazy<SolutionNode>(() => SemanticTreeBuilder.AnalyseSolution(_solution));
         }
 
         public IEnumerable<DiagramDefinitionParseResult> GetDiagramDefinitions()
@@ -27,11 +32,8 @@ namespace Logic
 
         public Node GenerateDiagram(DiagramDefinition diagramDef)
         {
-            if(_tree == null)
-                _tree = SemanticTreeBuilder.AnalyseSolution(_solution);
-
             Node scoped = null;
-            var toBeScoped = _tree.DeepClone();
+            var toBeScoped = CachedTree.DeepClone();
             // This boilerplate syntax will look better in C# 7, dont change untill then
             if (diagramDef.Scope is RootScope)
             {

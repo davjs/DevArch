@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -69,7 +70,7 @@ namespace Tests.Units.Logic.Ordering
             ");
             
             CircularReferenceFinder.FindCircularReferences(nodes);
-            Assert.AreEqual(typeof(CircularDependencyHolderNode), nodes.First().GetType());
+            nodes.First().Should().BeOfType<CircularDependencyHolderNode>();
         }
 
         //TODO: Undefined behavior

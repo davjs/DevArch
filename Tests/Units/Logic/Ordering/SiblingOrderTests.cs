@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -136,7 +137,7 @@ namespace Tests.Units.Logic.Ordering
             {
                 semanticTreeBuilder,classTreeBuilder,projectTreeBuilder,semanticModelWalker
             });
-            Assert.AreEqual(newList.Count(),2);
+            newList.Count().Should().Be(2);
         }
     }
 }

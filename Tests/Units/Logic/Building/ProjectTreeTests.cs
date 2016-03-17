@@ -25,7 +25,7 @@ namespace Tests.Units.Logic.Building
         [TestMethod]
         public void ContainsNestedProjectItems()
         {
-            var tree = DevArchSolution.FromPath(TestSolutions.WithSolFolders)
+            var tree = DevArchSolution.FromPath(TestSolutions.WithNestedFolders)
                 .SolutionTree.Childs;
 
             // Assert

@@ -12,7 +12,7 @@ namespace Tests.Units.Logic.Integration
         [TestCategory("DevArchSolution")]
         public void FindArchProjectsTest()
         {
-            var standalone = ThisSolution;
+            var standalone = ThisDevArchSolution;
             var archProj = standalone.ArchProjects.First();
             var projectItems = archProj.GetDiagramDefinitionFiles();
             projectItems.Count().Should().BeGreaterThan(6);

@@ -51,8 +51,10 @@ namespace Tests
 
         public static DTE Dte => (DTE)Marshal.GetActiveObject("VisualStudio.DTE.14.0");
         public static readonly VisualStudio TestStudio = new VisualStudio(Dte);
-        public static DevArchSolution ThisSolution => DevArchSolution.FromPath(TestSolutions.DevArchSln);
-        public static readonly DiagramGenerator GeneratorForThisSolution = new DiagramGenerator(ThisSolution);
+        // Should not be used to get a tree of the current solution
+        public static readonly DevArchSolution ThisDevArchSolution = DevArchSolution.FromPath(TestSolutions.DevArchSln);
+        public static readonly DiagramGenerator GeneratorForThisSolution = new DiagramGenerator(ThisDevArchSolution);
+        public static readonly SolutionNode CurrentSolutionTree = GeneratorForThisSolution.CachedTree;
         public static readonly string SlnDir = TestSolutions.RepoDir;
 
 

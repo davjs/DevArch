@@ -36,8 +36,7 @@ namespace Tests.Integration
         [TestMethod]
         public void SemanticTreeDoesNotContainDoubles()
         {
-            var complete = SemanticTreeBuilder.AnalyseSolution(ThisSolution);
-            var tree = SemanticTreeBuilder.FindNamespace(complete, "Logic\\SemanticTree");
+            var tree = SemanticTreeBuilder.FindNamespace(CurrentSolutionTree, "Logic\\SemanticTree");
             tree.DescendantNodes().Count(x => x.Name == "Node").Should().Be(1);
             tree.RelayoutBasedOnDependencies();
             tree.DescendantNodes().Count(x => x.Name == "Node").Should().Be(1);
@@ -47,8 +46,7 @@ namespace Tests.Integration
         [TestMethod]
         public void LogicLayerIsVertical()
         {
-            var complete = SemanticTreeBuilder.AnalyseSolution(ThisSolution);
-            var tree = SemanticTreeBuilder.FindNamespace(complete, "Logic\\Logic");
+            var tree = SemanticTreeBuilder.FindNamespace(CurrentSolutionTree, "Logic\\Logic");
             tree.RemoveChild("DiagramDefinition");
             tree.RemoveChild("Filtering");
             tree.RemoveChild("DiagramGenerator");

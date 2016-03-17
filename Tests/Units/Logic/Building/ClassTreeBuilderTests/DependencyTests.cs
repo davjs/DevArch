@@ -85,14 +85,16 @@ namespace Tests.Units.Logic.Building.ClassTreeBuilderTests
             .AddProject(pidB, "ProjectB", "B.dll", LanguageNames.CSharp)
             .AddDocument(didB, "B.cs", docB)
             .AddProjectReference(pidB, new ProjectReference(pidA));
-
-            var tree = Substitute.For<SolutionNode>();
-            SemanticTreeBuilder.AddAllItemsInSolutionToTree(solution, ref tree);
+            
+            var tree = new SolutionNode();
+            tree.AddChild(new ProjectNode {Documents = solution.GetProject(pidA).Documents });
+            tree.AddChild(new ProjectNode { Documents = solution.GetProject(pidB).Documents });
+            ClassTreeBuilder.AddClassesInProjectsToTree(tree);
             var button = tree.DescendantNodes().WithName("Button") as ClassNode;
             var guiFacade = tree.DescendantNodes().WithName("GuiFacade");
-            Assert.IsNotNull(button);
-            Assert.IsNotNull(guiFacade);
-            Assert.IsTrue(guiFacade.Dependencies.Any());
+            button.Should().NotBeNull();
+            guiFacade.Should().NotBeNull();
+            guiFacade.Dependencies.Should().NotBeEmpty();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Logic;
 using Logic.Ordering;
 using Logic.SemanticTree;
@@ -32,10 +33,10 @@ namespace Tests.Units.Logic.Ordering
             // B   C
             //   D
 
-            Assert.AreEqual(newList.Count, 2);
-            Assert.AreEqual(newList.Last(), D);
+            newList.Count.Should().Be(2);
+            newList.Last().Should().Be(D);
             var hor = newList.First();
-            Assert.AreEqual(C,hor.Childs.Last());
+            hor.Childs.Last().Should().Be(C);
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -67,8 +68,8 @@ namespace Tests.Units.Logic.Ordering
             // B   C
             //   D
 
-            Assert.AreEqual(newChildOrder.Count, 3);
-            Assert.AreEqual(newChildOrder.Last(), D);
+            newChildOrder.Count.Should().Be(3);
+            newChildOrder.Last().Should().Be(D);
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -99,15 +100,15 @@ namespace Tests.Units.Logic.Ordering
             //0.  C   D
             //1.    E
 
-            Assert.AreEqual(2, newChildOrder.Count);
+            newChildOrder.Count.Should().Be(2);
             var hor = newChildOrder.First();
             Assert.IsTrue(hor is SiblingHolderNode);
             var left = hor.Childs.First();
             var right = hor.Childs.Last();
             Assert.AreEqual(D, right);
             Assert.IsTrue(left is VerticalSiblingHolderNode);
-            Assert.AreEqual(2,hor.Childs.Count);
-            Assert.AreEqual(E,newChildOrder.Last());
+            hor.Childs.Count.Should().Be(2);
+            Assert.AreEqual(E, newChildOrder.Last());
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -128,13 +129,13 @@ namespace Tests.Units.Logic.Ordering
 
             D.SiblingDependencies.Add(B);
             F.SiblingDependencies.Add(D);
-            
+
             G.SiblingDependencies.Add(E);
             G.SiblingDependencies.Add(F);
 
             var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
-                A,B,C,D,E,F,G
+                A, B, C, D, E, F, G
             });
 
             //0.  A     B
@@ -142,16 +143,15 @@ namespace Tests.Units.Logic.Ordering
             //0.  E     F
             //1.     G
 
-            Assert.AreEqual(2, newChildOrder.Count);
+            newChildOrder.Count.Should().Be(2);
             var hor = newChildOrder.First();
             Assert.IsTrue(hor is HorizontalSiblingHolderNode);
             var left = hor.Childs.First();
-            Assert.AreEqual(3,left.Childs.Count);
+            left.Childs.Count.Should().Be(3);
 
-            var ACE = new List<Node>{A,C,E};
-            var BDF = new List<Node> { B,D,F};
-            Assert.IsTrue(left.Childs.SequenceEqual(ACE) ||
-                left.Childs.SequenceEqual(BDF));
+            var ACE = new List<Node> {A, C, E};
+            var BDF = new List<Node> {B, D, F};
+            Assert.IsTrue(left.Childs.SequenceEqual(ACE) || left.Childs.SequenceEqual(BDF));
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -174,11 +174,11 @@ namespace Tests.Units.Logic.Ordering
 
             D.SiblingDependencies.Add(B);
             F.SiblingDependencies.Add(D);
-            
+
 
             var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
-                A,B,C,D,E,F,X
+                A, B, C, D, E, F, X
             });
 
             //0.     X
@@ -186,18 +186,18 @@ namespace Tests.Units.Logic.Ordering
             //0.  C     D 
             //0.  E     F 
 
-            Assert.AreEqual(2, newChildOrder.Count);
+            newChildOrder.Count.Should().Be(2);
             var hor = newChildOrder.Last();
             Assert.IsTrue(hor is SiblingHolderNode && !(hor is VerticalSiblingHolderNode));
-            Assert.AreEqual(2, hor.Childs.Count);
+            hor.Childs.Count.Should().Be(2);
             var left = hor.Childs.First();
             var right = hor.Childs.Last();
-            Assert.IsTrue(left is VerticalSiblingHolderNode);
-            Assert.IsTrue(right is VerticalSiblingHolderNode);
-            Assert.IsFalse(left.Childs.Contains(X));
-            Assert.IsFalse(right.Childs.Contains(X));
-            Assert.AreEqual(3, left.Childs.Count);
-            Assert.AreEqual(3, right.Childs.Count);
+            left.Should().BeOfType<VerticalSiblingHolderNode>();
+            right.Should().BeOfType<VerticalSiblingHolderNode>();
+            left.Childs.Count.Should().Be(3);
+            right.Childs.Count.Should().Be(3);
+            left.Childs.Should().NotContain(X);
+            right.Childs.Should().NotContain(X);
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -219,31 +219,27 @@ namespace Tests.Units.Logic.Ordering
 
             var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
-                A,
-                B,
-                C,
-                D,
-                E
+                A, B, C, D, E
             });
 
             //0.  A    B X
             //0.  C     D 
             //1.     E
 
-            Assert.AreEqual(2, newChildOrder.Count);
+            newChildOrder.Count.Should().Be(2);
             var hor = newChildOrder.First();
             Assert.IsTrue(hor is SiblingHolderNode && !(hor is VerticalSiblingHolderNode));
-            Assert.AreEqual(2, hor.Childs.Count);
+            hor.Childs.Count.Should().Be(2);
             var left = hor.Childs.First();
             var right = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
             Assert.IsTrue(right is VerticalSiblingHolderNode);
-            Assert.AreEqual(A,left.Childs.First());
-            Assert.AreEqual(C, left.Childs.Last());
+            left.Childs.First().Should().Be(A);
+            left.Childs.Last().Should().Be(C);
             var topRight = right.Childs.First();
-            Assert.IsTrue(topRight is SiblingHolderNode);
-            Assert.AreEqual(D, right.Childs.Last());
-            Assert.AreEqual(E, newChildOrder.Last());
+            topRight.Should().BeOfType<HorizontalSiblingHolderNode>();
+            right.Childs.Last().Should().Be(D);
+            newChildOrder.Last().Should().Be(E);
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -266,36 +262,31 @@ namespace Tests.Units.Logic.Ordering
 
             var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
-                A,
-                B,
-                C,
-                D,
-                E,
-                F
+                A, B, C, D, E, F
             });
 
             //0.  A      B 
             //0.  C     D-E
             //1.     F
 
-            Assert.AreEqual(2, newChildOrder.Count);
+            newChildOrder.Count.Should().Be(2);
             //0
             var hor = newChildOrder.First();
             Assert.AreEqual(OrientationKind.Horizontal, hor.Orientation);
-            Assert.AreEqual(2, hor.Childs.Count);
+            hor.Childs.Count.Should().Be(2);
             var right = hor.Childs.First();
             var left = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
             Assert.AreEqual(A, left.Childs.First());
             Assert.AreEqual(C, left.Childs.Last());
             Assert.IsTrue(right is VerticalSiblingHolderNode);
-            Assert.AreEqual(B, right.Childs.First());
+            right.Childs.First().Should().Be(B);
             var rightBot = right.Childs.Last();
-            Assert.AreEqual(OrientationKind.Horizontal, rightBot.Orientation);
+            rightBot.Orientation.Should().Be(OrientationKind.Horizontal);
             CollectionAssert.Contains(rightBot.Childs.ToArray(), D);
             CollectionAssert.Contains(rightBot.Childs.ToArray(), E);
             //1
-            Assert.AreEqual(F, newChildOrder.Last());
+            newChildOrder.Last().Should().Be(F);
         }
 
         [TestCategory("SiblingOrder.VerticalLayers")]
@@ -322,24 +313,18 @@ namespace Tests.Units.Logic.Ordering
 
             var newChildOrder = SiblingReorderer.LayOutSiblingNodes(new HashSet<Node>
             {
-                A,
-                B,
-                C,
-                D,
-                E,
-                F,
-                G
+                A, B, C, D, E, F, G
             });
 
             //0.  A     B C 
             //0.  D     F-E
             //1.     G
 
-            Assert.AreEqual(2, newChildOrder.Count);
+            newChildOrder.Count.Should().Be(2);
             //0
             var hor = newChildOrder.First();
             Assert.IsTrue(hor is HorizontalSiblingHolderNode);
-            Assert.AreEqual(2, hor.Childs.Count);
+            hor.Childs.Count.Should().Be(2);
             var left = hor.Childs.First();
             var right = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
@@ -350,8 +335,8 @@ namespace Tests.Units.Logic.Ordering
             var rightBot = right.Childs.Last();
             Assert.IsTrue(rightTop is HorizontalSiblingHolderNode);
             Assert.IsTrue(rightBot is HorizontalSiblingHolderNode);
-            Assert.AreEqual(2, rightTop.Childs.Count);
-            Assert.AreEqual(2, rightBot.Childs.Count);
+            rightTop.Childs.Count.Should().Be(2);
+            rightBot.Childs.Count.Should().Be(2);
             CollectionAssert.Contains(rightBot.Childs.ToArray(),E);
             CollectionAssert.Contains(rightBot.Childs.ToArray(), F);
             //1
@@ -386,9 +371,9 @@ namespace Tests.Units.Logic.Ordering
             //         Node
             //      Sib   NodeExt
             //      Circ
-            Assert.AreEqual(1,
-                newChildOrder.Count(x => x.Name == "Node") +
-                newChildOrder.Count(x => x.DescendantNodes().WithName("Node") != null));
+
+            (newChildOrder.Count(x => x.Name == "Node") +
+                newChildOrder.Count(x => x.DescendantNodes().WithName("Node") != null)).Should().Be(1);
         }
 
 
@@ -417,9 +402,8 @@ namespace Tests.Units.Logic.Ordering
             //    DiagramDefinition        Filters
             //  DiagramDefinitionParser ModelFilterer
 
-            Assert.AreEqual(1,
-                newChildOrder.Count(x => x.Name == "RootScope") +
-                newChildOrder.Count(x => x.DescendantNodes().WithName("RootScope") != null));
+            (newChildOrder.Count(x => x.Name == "RootScope") +
+                newChildOrder.Count(x => x.DescendantNodes().WithName("RootScope") != null)).Should().Be(1);
         }
 
 
@@ -443,16 +427,16 @@ namespace Tests.Units.Logic.Ordering
             //1.  C     D E
             //2.     F
 
-            Assert.AreEqual(3, newChildOrder.Count);
+            newChildOrder.Count.Should().Be(3);
             //0
             Assert.AreEqual("X", newChildOrder.First().Name);
             var hor = newChildOrder.ElementAt(1);
             Assert.AreEqual(OrientationKind.Horizontal, hor.Orientation);
-            Assert.AreEqual(2, hor.Childs.Count);
+            hor.Childs.Count.Should().Be(2);
             var left = hor.Childs.First();
             var right = hor.Childs.Last();
             Assert.IsTrue(left is VerticalSiblingHolderNode);
-            Assert.AreEqual("A", left.Childs.First().Name);
+            left.Childs.First().Name.Should().Be("A");
             Assert.AreEqual("C", left.Childs.Last().Name);
             Assert.IsTrue(right is VerticalSiblingHolderNode);
             Assert.AreEqual("B", right.Childs.First().Name);
