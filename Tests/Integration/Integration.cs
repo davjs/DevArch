@@ -22,8 +22,8 @@ namespace Tests.Integration
         [TestMethod]
         public void FindsDependencies()
         {
-            var modelGen = new DiagramGenerator(ThisSolution);
-            var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
+            var tree = GeneratorForThisSolution
+                .GenerateDiagram(DiagramDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
             var clients = tree.Childs.WithName("Clients");
 
@@ -55,13 +55,6 @@ namespace Tests.Integration
             tree.RemoveChild("DiagramDefinitionParser");
             tree.RemoveChild("Common");
             tree.RemoveChild("OutputSettings");
-            
-            /*foreach (var child in tree.Childs)
-            {
-                //Remove those not in childs
-                child.Dependencies =
-                    child.Dependencies.Intersect(tree.Childs).ToList();
-            }*/
             tree.RelayoutBasedOnDependencies();
             tree.Orientation.Should().Be(OrientationKind.Vertical);
         }
@@ -72,11 +65,9 @@ namespace Tests.Integration
         {
             var filters = DiagramDefinition.DefaultFilters;
             filters.Add(new RemoveContainers(true));
-            var diagramGen = new DiagramGenerator(ThisSolution);
             var diagramDef = new DiagramDefinition("",
                 new RootScope(), new OutputSettings (SlnDir + "IntegrationTests\\NoContainers.png"), filters, true,false);
-            var tree = diagramGen.GenerateDiagram(diagramDef);
-            BitmapRenderer.RenderTreeToBitmap(tree, diagramDef.DependencyDown, diagramDef.Output, diagramDef.HideAnonymousLayers);
+            var tree = GeneratorForThisSolution.GenerateDiagram(diagramDef);
             TreeAssert.DoesNotContainDuplicates(tree);
         }
 

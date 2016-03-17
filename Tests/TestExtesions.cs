@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using EnvDTE;
+using Logic;
 using Logic.Building;
 using Logic.Integration;
 using Logic.SemanticTree;
@@ -50,7 +51,8 @@ namespace Tests
 
         public static DTE Dte => (DTE)Marshal.GetActiveObject("VisualStudio.DTE.14.0");
         public static readonly VisualStudio TestStudio = new VisualStudio(Dte);
-        public static readonly DevArchSolution ThisSolution = DevArchSolution.FromPath(TestSolutions.DevArchSln);
+        public static DevArchSolution ThisSolution => DevArchSolution.FromPath(TestSolutions.DevArchSln);
+        public static readonly DiagramGenerator GeneratorForThisSolution = new DiagramGenerator(ThisSolution);
         public static readonly string SlnDir = TestSolutions.RepoDir;
 
 
