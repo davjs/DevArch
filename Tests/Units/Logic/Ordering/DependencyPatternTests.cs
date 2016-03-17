@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic;
-using Logic.Filtering;
 using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Presentation;
 
-namespace Tests.Units.Logic.Filtering.Ordering
+namespace Tests.Units.Logic.Ordering
 {
     [TestClass]
     public class DependencyPatternTests

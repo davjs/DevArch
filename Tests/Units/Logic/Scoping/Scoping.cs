@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Logic.Building;
 using Logic.Integration;
 using Logic.SemanticTree;

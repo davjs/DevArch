@@ -236,11 +236,12 @@
     <Compile Include="OrderingTestFactory.cs" />
     <Compile Include="Sample\Patterns.cs" />
     <Compile Include="TestExtesions.cs" />
-    <Compile Include="Units\Logic\AnalyserTests.cs" />
-    <Compile Include="Units\Logic\Building\SemanticTreeBuilderTests.cs" />
+    <Compile Include="Units\Logic\Ordering\SiblindDependencyTests.cs" />
+    <Compile Include="DisposableResult.cs" />
+    <Compile Include="Units\Logic\Building\ClassTreeBuilderTests\SemanticTreeBuilderTests.cs" />
     <Compile Include="Units\Logic\Building\DebugStringTests.cs" />
     <Compile Include="Units\Logic\Building\ProjectTreeTests.cs" />
-    <Compile Include="Units\Logic\Building\UnitTest1.cs" />
+    <Compile Include="Units\Logic\Building\DiagramGeneratorTest.cs" />
     <Compile Include="Units\Logic\Filtering\NotProduceDuplicateTests.cs" />
     <Compile Include="Units\Logic\Integration\AdvancedSolutionTests.cs" />
     <Compile Include="Integration\Integration.cs" />
@@ -258,7 +259,7 @@
     <Compile Include="Units\Presentation\PngGenerationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\PexAssemblyInfo.cs" />
-    <Compile Include="Units\Logic\DependencyTests.cs" />
+    <Compile Include="Units\Logic\Building\ClassTreeBuilderTests\DependencyTests.cs" />
     <Compile Include="Sample\Complex.cs" />
     <Compile Include="Sample\FindsAnononymousLayer.cs" />
     <Compile Include="Sample\Layers.cs" />

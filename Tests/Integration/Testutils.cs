@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VSSDK.Tools.VsIdeTesting;
 
-namespace Microsoft.VsSDK.IntegrationTestLibrary
+namespace Tests.Integration
 {
     /// <summary>
     /// </summary>

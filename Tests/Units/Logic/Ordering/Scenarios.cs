@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Logic;
 using Logic.Filtering;
 using Logic.Ordering;

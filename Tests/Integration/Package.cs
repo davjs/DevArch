@@ -1,16 +1,4 @@
-﻿using System;
-using EnvDTE;
-using Logic.Integration;
-using Microsoft.CodeAnalysis.Host;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Design;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VsSDK.IntegrationTestLibrary;
-using Microsoft.VSSDK.Tools.VsIdeTesting;
-using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Integration
 {

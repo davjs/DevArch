@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic.Building;
-using Logic.Filtering;
 using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Logic.SemanticTree.OrientationKind;
 
-namespace Tests.Units.Logic.Filtering.Ordering
+namespace Tests.Units.Logic.Ordering
 {
 
     [TestClass]
@@ -101,7 +98,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
 
             var newSiblings = SiblingReorderer.OrderChildsBySiblingsDependencies(new List<Node> {a});
             var newRoot = newSiblings.First();
-            Assert.AreEqual(Horizontal,newRoot.Orientation);
+            Assert.AreEqual(OrientationKind.Horizontal,newRoot.Orientation);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), b);
             CollectionAssert.Contains(newRoot.Childs.ToArray(), c);
         }

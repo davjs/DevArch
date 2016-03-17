@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using EnvDTE;
 using FluentAssertions;
-using Lib;
 using Logic;
 using Logic.Building;
 using Logic.Filtering;
 using Logic.Filtering.Filters;
-using Logic.Integration;
-using Logic.Ordering;
 using Logic.Scopes;
 using Logic.SemanticTree;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VSSDK.Tools.VsIdeTesting;
 using Presentation;
 using ToolsMenu;
 using static Tests.AssertionExtensions;
@@ -31,7 +22,7 @@ namespace Tests.Integration
         [TestMethod]
         public void FindsDependencies()
         {
-            var modelGen = new DiagramGenerator(StandAloneSolution);
+            var modelGen = new DiagramGenerator(ThisSolution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var lib = tree.Childs.WithName("Lib");
             var clients = tree.Childs.WithName("Clients");
@@ -45,7 +36,7 @@ namespace Tests.Integration
         [TestMethod]
         public void SemanticTreeDoesNotContainDoubles()
         {
-            var complete = SemanticTreeBuilder.AnalyseSolution(StandAloneSolution);
+            var complete = SemanticTreeBuilder.AnalyseSolution(ThisSolution);
             var tree = SemanticTreeBuilder.FindNamespace(complete, "Logic\\SemanticTree");
             tree.DescendantNodes().Count(x => x.Name == "Node").Should().Be(1);
             tree.RelayoutBasedOnDependencies();
@@ -56,7 +47,7 @@ namespace Tests.Integration
         [TestMethod]
         public void LogicLayerIsVertical()
         {
-            var complete = SemanticTreeBuilder.AnalyseSolution(StandAloneSolution);
+            var complete = SemanticTreeBuilder.AnalyseSolution(ThisSolution);
             var tree = SemanticTreeBuilder.FindNamespace(complete, "Logic\\Logic");
             tree.RemoveChild("DiagramDefinition");
             tree.RemoveChild("Filtering");
@@ -81,7 +72,7 @@ namespace Tests.Integration
         {
             var filters = DiagramDefinition.DefaultFilters;
             filters.Add(new RemoveContainers(true));
-            var diagramGen = new DiagramGenerator(StandAloneSolution);
+            var diagramGen = new DiagramGenerator(ThisSolution);
             var diagramDef = new DiagramDefinition("",
                 new RootScope(), new OutputSettings (SlnDir + "IntegrationTests\\NoContainers.png"), filters, true,false);
             var tree = diagramGen.GenerateDiagram(diagramDef);

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Logic.Building;
 using Logic.SemanticTree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 
-namespace Tests.Units.Logic
+namespace Tests.Units.Logic.Building.ClassTreeBuilderTests
 {
     [TestClass]
     public class DependencyTests
@@ -16,28 +16,16 @@ namespace Tests.Units.Logic
         [TestMethod]
         public void ContainsReferences()
         {
-            using (var fakeWorkspace = new AdhocWorkspace())
-            {
-                var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
-                fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From(
-                    "class GuiFacade " +
+            using (var disposable = TestExtesions.BuildProjectTreeFromDocuments("class GuiFacade " +
                     "{" +
                     "public void Foo(){new Button().Bar();}" +
                     "public static void Main(){};" +
-                    "}"
-                    ));
-                var doc = fakeWorkspace.AddDocument(project.Id, "DocumentB.cs",
-                    SourceText.From("class Button {public void Bar(){}}"));
+                    "}",
 
-                var projectA = Substitute.For<ProjectNode>();
-                projectA.Name.Returns("ProjectA");
-                projectA.Documents = new List<Document> { doc };
-
-                var tree = new SolutionNode();
-                tree.AddChild(projectA);
-                ClassTreeBuilder.AddClassesInProjectsToTree(tree);
-                
-                var button = projectA.Childs.FirstOrDefault(x => x.Name == "Button") as ClassNode;
+                    "class Button {public void Bar(){}}"))
+            {
+                var projectA = disposable.result;
+                var button = projectA.Childs.WithName("Button") as ClassNode;
                 Assert.IsNotNull(button);
                 Assert.IsTrue(button.References.Any());
             }
@@ -46,33 +34,22 @@ namespace Tests.Units.Logic
         [TestMethod]
         public void ContainsDependencies()
         {
-            using (var fakeWorkspace = new AdhocWorkspace())
-            {
-                var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
-                fakeWorkspace.AddDocument(project.Id, "DocumentA.cs", SourceText.From(
-                    "class GuiFacade " +
+            using (var fakeWorkspace = TestExtesions.BuildProjectTreeFromDocuments(
+                "class GuiFacade " +
                     "{" +
                     "public void Foo(){new Button().Bar();}" +
                     "public static void Main(){};" +
                     "}"
-                    ));
-                var doc = fakeWorkspace.AddDocument(project.Id, "DocumentB.cs",
-                    SourceText.From("class Button {public void Bar(){}}"));
-                
-                var projectA = Substitute.For<ProjectNode>();
-                projectA.Name.Returns("ProjectA");
-                projectA.Documents = new List<Document> { doc };
-
-                var tree = new SolutionNode();
-                tree.AddChild(projectA);
-                ClassTreeBuilder.AddClassesInProjectsToTree(tree);
-                
+                    ,
+                    "class Button {public void Bar(){}}"))
+            {
+                var projectA = fakeWorkspace.result;
                 var button = projectA.Childs.WithName("Button") as ClassNode;
                 var guiFacade = projectA.Childs.WithName("GuiFacade");
-                Assert.IsNotNull(button);
-                Assert.IsNotNull(guiFacade);
+                button.Should().NotBeNull();
+                guiFacade.Should().NotBeNull();
+                guiFacade.Dependencies.Should().NotBeEmpty();
                 //Assert.IsTrue(button.References.Any());
-                Assert.IsTrue(guiFacade.Dependencies.Any());
             }
         }
 

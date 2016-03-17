@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Logic;
-using Logic.Filtering;
-using Logic.Integration;
 using Logic.Ordering;
 using Logic.SemanticTree;
-using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Presentation;
 
 // ReSharper disable InconsistentNaming
 

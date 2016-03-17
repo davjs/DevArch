@@ -1,16 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Logic;
-using Logic.Filtering;
-using Logic.Integration;
 using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Presentation;
 
-namespace Tests.Units.Logic.Filtering.Ordering
+namespace Tests.Units.Logic.Ordering
 {
     [TestClass]
     public class VerticalLayersTests
