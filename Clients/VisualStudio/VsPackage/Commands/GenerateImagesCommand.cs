@@ -1,4 +1,9 @@
-﻿using System;
+﻿#if DEBUG 
+#else
+    #define RELEASE
+#endif
+
+using System;
 using System.Linq;
 using DevArch;
 using EnvDTE;
@@ -19,10 +24,28 @@ namespace ToolsMenu.Commands
         {
             var dte = ServiceProvider.GetService(typeof(DTE)) as DTE;
             var solution = _vsWorkspace.CurrentSolution;
-            try
+            Action action = async () =>
             {
                 var vs = new VisualStudio(dte, solution);
                 await Lib.DevArch.RenderAllArchDiagramsToFiles(vs);
+            };
+
+//#if DEBUG
+            action();
+//#else
+            RunSafe(action);
+//#endif
+        }
+        public GenerateImagesCommand(ToolsMenuPackage serviceProvider, VisualStudioWorkspace vsWorkspace) : base(serviceProvider)
+        {
+            _vsWorkspace = vsWorkspace;
+        }
+
+        private void RunSafe(Action toDo)
+        {
+            try
+            {
+                toDo();
             }
             catch (Exception exception)
             {
@@ -34,10 +57,6 @@ namespace ToolsMenu.Commands
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
-        }
-        public GenerateImagesCommand(ToolsMenuPackage serviceProvider, VisualStudioWorkspace vsWorkspace) : base(serviceProvider)
-        {
-            _vsWorkspace = vsWorkspace;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Logic.SemanticTree;
+﻿using FluentAssertions;
+using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Units.Logic.Building
@@ -15,7 +16,9 @@ namespace Tests.Units.Logic.Building
 
             top.AddChild(left);
             top.AddChild(right);
-            Assert.AreEqual("Top = (Left,Right)", top.ToString());
+
+            // Assert
+            top.ToString().Should().Be("Top = (Left,Right)");
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using EnvDTE;
 using EnvDTE80;
 using Logic.Building;
+using Logic.Common;
 using Logic.SemanticTree;
 using Microsoft.Build.Construction;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -43,119 +44,109 @@ namespace Logic.Integration
         public VisualStudio(DTE environment)
         {
             _automationObject = (DTE2) environment;
-            Solution = new DevArchSolution(environment);
+            Solution = DevArchSolution.FromCurrentInstance(environment);
         }
-        public VisualStudio(DTE environment,Solution RoslynSolution)
+        public VisualStudio(DTE environment,Solution roslynSolution)
         {
             _automationObject = (DTE2)environment;
-            Solution = new DevArchSolution(environment,RoslynSolution);
+            Solution = DevArchSolution.FromCurrentInstanceWithSolution(environment,roslynSolution);
         }
     }
 
     public class DevArchSolution
     {
         public readonly Solution RoslynSolution;
-        public Projects DteProjects;
-        public string _fullName;
-        public string Name;
-        public string Directory;
-        private IReadOnlyList<ProjectInSolution> projects;
-        public Node SolutionTree;
-        /*public DevArchSolution(_DTE dte)
-        {
-            var build = MSBuildWorkspace.Create();
-            var dteSolution = KeepTrying.ToGet(() => dte.Solution);
-            _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
-            if (string.IsNullOrEmpty(_fullName))
-                throw new Exception("Unable to find opened solution");
-            var sol = build.OpenSolutionAsync(_fullName);
-            RoslynSolution = KeepTrying.ToGet(() => sol.Result);
+        public readonly string Directory;
+        public readonly SolutionNode SolutionTree;
 
-            DteProjects = KeepTrying.ToGet(() =>dteSolution.Projects);
-            Name = Path.GetFileName(_fullName);
-            if (_fullName == null)
-                throw new NoSolutionOpenException();
-        }*/
-
-        public DevArchSolution(_DTE dte, Solution currentSolution = null)
+        private DevArchSolution(IEnumerable<Node> tree,Solution roslynSolution)
         {
-            GetDteProjects(dte);
-            if (currentSolution != null)
-            {
-                RoslynSolution = currentSolution;
-            }
-            else
-            {
-                var build = MSBuildWorkspace.Create();
-                var sol = build.OpenSolutionAsync(_fullName);
-                sol.Wait();
-                RoslynSolution = KeepTrying.ToGet(() => sol.Result);
-                if (!RoslynSolution.Projects.Any())
-                    throw new NoCsharpProjectsFoundException();
-            }
+            if (!roslynSolution.Projects.Any())
+                throw new NoCsharpProjectsFoundException();
+
+            RoslynSolution = roslynSolution;
+            var fullName = roslynSolution.FilePath;
+            var name = Path.GetFileName(fullName);
+            Directory = Path.GetDirectoryName(fullName) + "\\";
+            
+            SolutionTree = new SolutionNode(name);
+            SolutionTree.AddChilds(tree);
+            var allProjects = SolutionTree.DescendantNodes().OfType<ProjectNode>();
+
+            // Remove unloaded projects from tree
+            var unloadedProjects = allProjects.Where(x => !x.ProjectProperties.isLoaded).ToList();
+            foreach (var project in unloadedProjects)
+                project.Parent.RemoveChild(project);
+
+            // Remove arch projects from tree
+            var archProjects = allProjects.Where(x => x.ProjectProperties.Path.EndsWith(".archproj")).ToList();
+            foreach (var archProject in archProjects)
+                archProject.Parent.RemoveChild(archProject);
+            
+            ArchProjects = archProjects.Select(x => new ArchProject(x.ProjectProperties)).ToList();
         }
 
-        public static Node GetProjectTree(string path)
+        public static DevArchSolution FromCurrentInstance(_DTE dte)
         {
-            var x = SolutionFile.Parse(path);
-            var SlnNode = new SolutionNode("-");
-            var isFolder = x.ProjectsInOrder.ToLookup(pI => pI.ProjectType == SolutionProjectType.SolutionFolder);
-            var folders = isFolder[true].Select(f => new ProjectNode(f)).ToList();
-            var projects = isFolder[false].Select(p => new ProjectNode(p)).ToList();
-            var all = folders.Union(projects).ToList();
-            foreach (var project in x.ProjectsInOrder)
+            var dteSolution = dte.Solution;
+            var _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
+            return new DevArchSolution(GetProjectTreeFromDte(dte),GetRoslynSolutionFromPath(_fullName));
+        }
+
+        public static DevArchSolution FromCurrentInstanceWithSolution(_DTE dte,Solution currentSolution) =>
+            new DevArchSolution(GetProjectTreeFromDte(dte), currentSolution);
+
+        public static DevArchSolution FromPath(string path)
+        {
+            return new DevArchSolution(GetProjectTreeFromPath(path), GetRoslynSolutionFromPath(path));
+        }
+
+        private static Solution GetRoslynSolutionFromPath(string path)
+        {
+            var build = MSBuildWorkspace.Create();
+            var sol = build.OpenSolutionAsync(path);
+            sol.Wait();
+            return KeepTrying.ToGet(() => sol.Result);
+        }
+        
+        // Slower but doesn't require a visual studio instance
+        private static IEnumerable<Node> GetProjectTreeFromPath(string path)
+        {
+            var solFile = SolutionFile.Parse(path);
+            
+            var projects = solFile.ProjectsInOrder.ToList();
+            var all = projects.SelectList(ProjectNode.FromMsBuildProject);
+            var nodes = new List<Node>();
+            foreach (var project in solFile.ProjectsInOrder)
             {
-                var currNode = all.First(p => p.ProjectId == new Guid(project.ProjectGuid));
+                var currNode = all.FirstOrDefault(p => p.ProjectProperties.Id == new Guid(project.ProjectGuid));
+                if (currNode == null)
+                    continue;
                 if (project.ParentProjectGuid != null)
                 {
                     var parentId = new Guid(project.ParentProjectGuid);
-                    var parent = folders.First(f => f.ProjectId == parentId);
+                    var parent = all.First(f => f.ProjectProperties.Id == parentId);
                     parent.AddChild(currNode);
                 }
                 else
                 {
-                    SlnNode.AddChild(currNode);
+                    nodes.Add(currNode);
                 }
             }
-            return SlnNode;
+            return nodes;
         }
-
-        private void GetDteProjects(_DTE dte)
+        
+        private static IEnumerable<Node> GetProjectTreeFromDte(_DTE dte)
         {
             var dteSolution = dte.Solution;
-            _fullName = KeepTrying.ToGet(() => dteSolution.FullName);
-            if (string.IsNullOrEmpty(_fullName))
+            var fullName = KeepTrying.ToGet(() => dteSolution.FullName);
+            if (string.IsNullOrEmpty(fullName))
                 throw new Exception("Unable to find opened solution");
-            DteProjects = KeepTrying.ToGet(() => dteSolution.Projects);
-            Name = Path.GetFileName(_fullName);
-            Directory = Path.GetDirectoryName(_fullName) + "\\";
+            var dteProjects = KeepTrying.ToGet(() => dteSolution.Projects);
+            return ProjectTreeBuilder.BuildProjectTree(dteProjects);
         }
 
-        public IList<ArchProject> ArchProjects
-        {
-            get
-            {
-                var projects = new List<ArchProject>();
-                foreach (Project project in DteProjects)
-                {
-                    try
-                    {
-                        var fullName = project.FullName;
-                        if (fullName.EndsWith(".archproj"))
-                            projects.Add(new ArchProject(project));
-                    }
-                    catch (Exception)
-                    {
-                        // ignored, happens when trying to access the full name of an unloaded project
-                    }
-                }
-                return projects;
-            }
-        }
-
-        private class NoSolutionOpenException : Exception
-        {
-        }
+        public readonly List<ArchProject> ArchProjects;
     }
 
     public static class ProjectExtensions

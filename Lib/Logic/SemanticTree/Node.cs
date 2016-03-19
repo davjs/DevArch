@@ -15,6 +15,7 @@ using Project = Microsoft.CodeAnalysis.Project;
 
 namespace Logic.SemanticTree
 {
+    [Serializable]
     public class Node : UniqueEntity
     {
         public Node(ISymbol symbol)
@@ -29,16 +30,16 @@ namespace Logic.SemanticTree
         private readonly string _name;
         public string Name => _name ?? Symbol.Name;
 
-        public readonly ISymbol Symbol;
-        public readonly HashSet<Node> Dependencies = new HashSet<Node>();
-        public readonly HashSet<Node> References = new HashSet<Node>();
+        public ISymbol Symbol;
+        public HashSet<Node> Dependencies = new HashSet<Node>();
+        public HashSet<Node> References = new HashSet<Node>();
         public HashSet<Node> SiblingDependencies = new HashSet<Node>();
         public Node Parent;
         public OrientationKind Orientation = OrientationKind.Vertical;
-        //TODO:
+        //TODO, try to cash sibling dependencies
         //_indirectSiblingDependencies ?? (_indirectSiblingDependencies = IndirectSiblingBuilder.BuildDepsFor(this));//IndirectSiblingBuilder.BuildDepsFor(this));
 
-        private List<Node> ChildsList { get; } = new List<Node>();
+        private List<Node> ChildsList { get; set; } = new List<Node>();
         public IReadOnlyList<Node> Childs => ChildsList;
 
         public override string ToString()
@@ -52,6 +53,7 @@ namespace Logic.SemanticTree
             ChildsList.Add(childNode);
         }
 
+
         public void AddChilds(IEnumerable<Node> nodes)
         {
             foreach (var node in nodes)
@@ -64,6 +66,13 @@ namespace Logic.SemanticTree
             ChildsList.ForEach(n => n.Parent = null);
             ChildsList.Clear();
             AddChilds(newList);
+        }
+
+        
+
+        public void __SetChildrenWithoutNullingOld(IEnumerable<Node> children)
+        {
+            ChildsList = new List<Node>(children);
         }
 
         public void RemoveChild(Node n)
@@ -131,22 +140,24 @@ namespace Logic.SemanticTree
 
     public class ProjectNode : Node
     {
+        public readonly ProjectWrapper ProjectProperties;
 
-        public ProjectNode(ProjectItem p) : base(p.Name)
-        { }
+        public ProjectNode() : base("")
+        {
+            
+        }
+
+        public ProjectNode(ProjectWrapper wrapper) : base(wrapper.Name)
+        {
+            ProjectProperties = wrapper;
+        }
+
+        public static ProjectNode FromEnvDteProject(EnvDTE.Project proj) =>
+            new ProjectNode(new ProjectWrapper(proj));
+        public static ProjectNode FromMsBuildProject(ProjectInSolution proj) =>
+            new ProjectNode(new ProjectWrapper(proj));
+
         public IEnumerable<Document> Documents = new List<Document>();
-        public readonly Guid ProjectId;
-
-        public ProjectNode(Project project) : base(project.Name)
-        {
-            ProjectId = project.Id.Id;
-            Documents = project.Documents;
-        }
-
-        public ProjectNode(ProjectInSolution solItem) : base(solItem.ProjectName)
-        {
-            ProjectId = new Guid(solItem.ProjectGuid);
-        }
     }
 
     public class SiblingHolderNode : Node

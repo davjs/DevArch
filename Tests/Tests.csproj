@@ -58,6 +58,7 @@
       <HintPath>..\packages\FluentAssertions.4.2.2\lib\net45\FluentAssertions.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
       <Private>True</Private>
@@ -211,7 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clients\VisualStudio\VsPackage\ToolsMenu.csproj">
-      <Project>{4A3EA481-FE04-4734-BC19-F9D4C06D6D15}</Project>
+      <Project>{4a3ea481-fe04-4734-bc19-f9d4c06d6d15}</Project>
       <Name>ToolsMenu</Name>
     </ProjectReference>
     <ProjectReference Include="..\Lib\Lib.csproj">
@@ -235,10 +236,12 @@
     <Compile Include="OrderingTestFactory.cs" />
     <Compile Include="Sample\Patterns.cs" />
     <Compile Include="TestExtesions.cs" />
-    <Compile Include="Units\Logic\AnalyserTests.cs" />
-    <Compile Include="Units\Logic\Building\SemanticTreeBuilderTests.cs" />
+    <Compile Include="Units\Logic\Ordering\SiblindDependencyTests.cs" />
+    <Compile Include="DisposableResult.cs" />
+    <Compile Include="Units\Logic\Building\ClassTreeBuilderTests\SemanticTreeBuilderTests.cs" />
     <Compile Include="Units\Logic\Building\DebugStringTests.cs" />
     <Compile Include="Units\Logic\Building\ProjectTreeTests.cs" />
+    <Compile Include="Units\Logic\Building\DiagramGeneratorTest.cs" />
     <Compile Include="Units\Logic\Filtering\NotProduceDuplicateTests.cs" />
     <Compile Include="Units\Logic\Integration\AdvancedSolutionTests.cs" />
     <Compile Include="Integration\Integration.cs" />
@@ -247,6 +250,8 @@
     <Compile Include="Units\Logic\Ordering\DependencyPatternTests.cs" />
     <Compile Include="Units\Logic\Ordering\SiblingOrderTests.cs" />
     <Compile Include="Units\Logic\Ordering\VerticalLayersTests.cs" />
+    <Compile Include="Units\Logic\Scoping\Scoping.cs" />
+    <Compile Include="Units\Logic\CloneTests.cs" />
     <Compile Include="Units\Presentation\ColorRangeTests.cs" />
     <Compile Include="Units\Logic\Filtering\FilterTests.cs" />
     <Compile Include="Units\Presentation\LayerMapperTests.cs" />
@@ -254,19 +259,15 @@
     <Compile Include="Units\Presentation\PngGenerationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\PexAssemblyInfo.cs" />
-    <Compile Include="Units\Logic\DependencyTests.cs" />
+    <Compile Include="Units\Logic\Building\ClassTreeBuilderTests\DependencyTests.cs" />
     <Compile Include="Sample\Complex.cs" />
     <Compile Include="Sample\FindsAnononymousLayer.cs" />
     <Compile Include="Sample\Layers.cs" />
-    <Compile Include="Units\Logic\SolutionDirectoryTests.cs" />
     <Compile Include="Units\Logic\Ordering\Scenarios.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="keys.snk" />
-    <None Include="OrderedTest1.orderedtest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

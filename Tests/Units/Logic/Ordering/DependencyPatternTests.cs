@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using Logic;
-using Logic.Filtering;
+using FluentAssertions;
 using Logic.Ordering;
 using Logic.SemanticTree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Presentation;
 
-namespace Tests.Units.Logic.Filtering.Ordering
+namespace Tests.Units.Logic.Ordering
 {
     [TestClass]
     public class DependencyPatternTests
@@ -34,7 +32,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var firstLayer = new List<Node> {C,D,E};
             var nextLayer = new List<Node> { A,X,B };
             var groups = SiblingReorderer.FindDependencies(firstLayer, nextLayer);
-            Assert.AreEqual(5,groups.Count());
+            groups.Count().Should().Be(5);
             // {C -> A}
             // {C -> X}
             // {D -> X}
@@ -65,7 +63,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var nextLayer = new List<Node> { A, X, B };
             var dependencies = SiblingReorderer.FindDependencies(firstLayer, nextLayer).ToList();
             var groups = SiblingReorderer.FindPotentialDependencyGroups(dependencies);
-            Assert.AreEqual(9, groups.Count());
+            groups.Count().Should().Be(9);
             Assert.IsTrue(groups.Any(x => x.Referencers.SetEquals(new []{D , E})));
             //1 {C -> A , X} 
             //2 {C -> A}     SELECT
@@ -99,7 +97,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var firstLayer = new List<Node> { C, D, E };
             var nextLayer = new List<Node> { A, X, B };
             var groups = SiblingReorderer.FindDependencyPatterns(firstLayer, nextLayer);
-            Assert.AreEqual(2, groups.Count());
+            groups.Count().Should().Be(2);
             //1 {C -> A , X} Cant choose, would hide D -> X dependency
             //2 {C -> A}
             //3 {C -> X}
@@ -127,7 +125,7 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var nextLayer = new List<Node> { A, B, C };
             var dependencies = SiblingReorderer.FindDependencies(firstLayer, nextLayer).ToList();
             var groups = SiblingReorderer.FindPotentialDependencyGroups(dependencies);
-            Assert.AreEqual(3, groups.Count());
+            groups.Count().Should().Be(3);
             Assert.IsTrue(groups.Last().Dependants.SetEquals(new List<Node>{B,C}));
             //1 {A -> B , C} 
             //2 {A -> B}
@@ -151,8 +149,8 @@ namespace Tests.Units.Logic.Filtering.Ordering
             var nextLayer = SiblingReorderer.GetFacadeNodes(new HashSet<Node>(nodesList.Except(firstLayer)));
             var pattern = SiblingReorderer.FindDependencyPatterns(firstLayer, nextLayer);
             // Nodes depending on commandbase should be merged before those dependant on devarch, because the former is a subset of the latter
-            Assert.AreEqual("CommandBase", pattern.First().Dependants.First().Name);
-            Assert.AreEqual(1, pattern.Count);
+            pattern.First().Dependants.First().Name.Should().Be("CommandBase");
+            pattern.Count.Should().Be(1);
         }
 
         [TestMethod]
@@ -187,14 +185,14 @@ namespace Tests.Units.Logic.Filtering.Ordering
             while (toIterate != null)
             {
                 var right = toIterate.Childs.Last();
-                Assert.AreEqual("Right" + i, right.Name);
+                right.Name.Should().Be("Right" + i);
 
                 var container = toIterate?.Childs?.First();
                 if (!container.Childs.Any())
                     break;
                 var down = container.Childs.First();
                 toIterate = container.Childs.Last();
-                Assert.AreEqual("Down" + i, down.Name);
+                down.Name.Should().Be("Down" + i);
                 i--;
             }
         }

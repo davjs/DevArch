@@ -23,13 +23,12 @@ namespace Tests.Units.Presentation
         [TestMethod]
         public void GenerateAlignmentTest()
         {
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(TestSolution);
             var modelDef = new DiagramDefinition("",
                 new NamespaceScope {Name = @"Tests\Integration\Samples"},
                 new OutputSettings (SlnDir + @"IntegrationTests\VerticalAnonymousLayer.png"),
                 new List<Filter> {new RemoveTests(true) }
                 );
-            var tree =modelGen.GenerateDiagram(modelDef);
+            var tree = GeneratorForThisSolution.GenerateDiagram(modelDef);
             BitmapRenderer.RenderTreeToBitmap(tree,modelDef.DependencyDown, modelDef.Output);
         }
     }

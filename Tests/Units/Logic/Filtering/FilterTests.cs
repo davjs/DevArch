@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Logic.Building;
 using Logic.Filtering;
 using Logic.Filtering.Filters;
 using Logic.SemanticTree;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Units.Logic.Filtering

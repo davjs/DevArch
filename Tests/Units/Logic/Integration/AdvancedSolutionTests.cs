@@ -1,7 +1,5 @@
 ﻿using System.Linq;
-using System.Runtime.InteropServices;
-using EnvDTE;
-using Logic.Integration;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Tests.TestExtesions;
 
@@ -14,10 +12,10 @@ namespace Tests.Units.Logic.Integration
         [TestCategory("DevArchSolution")]
         public void FindArchProjectsTest()
         {
-            var archProj = TestSolution.ArchProjects.First();
+            var standalone = ThisDevArchSolution;
+            var archProj = standalone.ArchProjects.First();
             var projectItems = archProj.GetDiagramDefinitionFiles();
-            Assert.IsTrue(projectItems.Count() > 6);
+            projectItems.Count().Should().BeGreaterThan(6);
         }
-        
     }
 }

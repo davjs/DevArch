@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Logic.Integration;
 using Logic.SemanticTree;
+using MoreLinq;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
 namespace Logic.Building
@@ -11,45 +13,49 @@ namespace Logic.Building
     {
         public static SolutionNode AnalyseSolution(DevArchSolution solution)
         {
-            var tree = new SolutionNode(solution.Name);
-            ProjectTreeBuilder.AddSolutionFoldersToTree(solution.DteProjects,ref tree);
+            var tree = solution.SolutionTree;
             AddAllItemsInSolutionToTree(solution.RoslynSolution, ref tree);
             return tree;
         }
 
         public static void AddAllItemsInSolutionToTree(Solution solution, ref SolutionNode tree)
         {
-            ProjectTreeBuilder.AddProjectsToTree(solution, ref tree);
+            ProjectTreeBuilder.AddDocumentsToProjects(solution, ref tree);
             if (!tree.Childs.Any())
                 throw new NoCsharpProjectsFoundException();
-            ClassTreeBuilder.AddClassesToTree(tree);
+            ClassTreeBuilder.AddClassesInProjectsToTree(tree);
         }
 
 
-        public static Node AnalyseDocument(DevArchSolution solution, string documentName)
+        public static Node FindDocument(SolutionNode solution, string path)
         {
-            var tree = new SolutionNode(solution.Name);
-            var projectName = GetRootFolder(documentName);
-            var fname = Path.GetFileName(documentName);
-            ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, projectName);
-            ClassTreeBuilder.AddClassesToTree(tree, fname);
-            var nSpace = tree.DescendantNodes().First(x => x is ClassNode).Parent;
-            return nSpace;
+            var projectName = GetRootFolder(path);
+            var documentName = Path.GetFileName(path);
+            var tree = FindProject(solution, projectName);
+            var docsMatching = tree.Documents.Where(x => x.Name == documentName).ToList();
+            if (!docsMatching.Any())
+                throw new Exception("Unable to find document: " + path);
+            if(docsMatching.Count > 1)
+                throw new NotImplementedException($"Got {docsMatching.Count} matching documents, dont know which one to pick");
+            var doc = docsMatching.First();
+            ///////////////////////////////////////////////////////////////////////
+            return ClassTreeBuilder.AddClassesInDocument(doc);
         }
 
 
-        public static SolutionNode AnalyseProject(DevArchSolution solution, string projectName)
+        public static ProjectNode FindProject(SolutionNode solution, string projectName)
         {
-            var tree = new SolutionNode(solution.Name);
-            ProjectTreeBuilder.AddProjectToTree(solution.RoslynSolution, ref tree, projectName);
-            ClassTreeBuilder.AddClassesToTree(tree);
-            return tree;
+            var projects = solution.DescendantNodes().OfType<ProjectNode>().ToList();
+            var proj = projects.WithName(projectName);
+            if(proj == null)
+                throw new Exception($"Could not find project {projectName} among the following: {projects.Select(x => x.Name).ToDelimitedString()}");
+            return proj;
         }
         
-        public static Node AnalyseNamespace(DevArchSolution solution, string name)
+        public static Node FindNamespace(SolutionNode solution, string name)
         {
             var projectName = GetRootFolder(name);
-            var tree = AnalyseProject(solution, projectName) as Node;
+            var tree = FindProject(solution, projectName) as Node;
             var names = name.Split('\\').ToList();
             names.RemoveAt(0);
 
@@ -65,7 +71,7 @@ namespace Logic.Building
             return tree;
         }
 
-        public static Node AnalyseClass(DevArchSolution solution, string name)
+        public static Node FindClass(SolutionNode solution, string name)
         {
             throw new NotImplementedException();
         }

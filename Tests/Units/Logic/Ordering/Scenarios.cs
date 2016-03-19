@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Logic;
 using Logic.Filtering;
 using Logic.Ordering;
@@ -45,7 +44,7 @@ namespace Tests.Units.Logic.Ordering
             var tree = new Node("tree");
             tree.SetChildren(nodesList);
             tree.RelayoutBasedOnDependencies();
-            DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
+            DiagramGenerator.ReverseChildren(tree);
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings (TestExtesions.SlnDir + "SEM.png"),false);
         }
 
@@ -70,7 +69,7 @@ namespace Tests.Units.Logic.Ordering
             var tree = new Node("tree");
             tree.SetChildren(newList);
 
-            DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
+            DiagramGenerator.ReverseChildren(tree);
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings (TestExtesions.SlnDir + "ArchTest.png" ), false);
             Assert.IsFalse(tree.Childs.Last().Childs.Any(x => x.Name == "CommandBase"));
         }
@@ -97,7 +96,7 @@ namespace Tests.Units.Logic.Ordering
             var tree = new Node("tree");
             tree.SetChildren(newList);
 
-            DiagramFromDiagramDefinitionGenerator.ReverseChildren(tree);
+            DiagramGenerator.ReverseChildren(tree);
             BitmapRenderer.RenderTreeToBitmap(tree, true, new OutputSettings (TestExtesions.SlnDir + "ArchTest2.png" ), false);
             Assert.IsFalse(tree.Childs.Last().Childs.Any(x => x.Name == "CommandBase"));
         }

@@ -2,18 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using EnvDTE;
+using Logic;
+using Logic.Building;
 using Logic.Integration;
 using Logic.SemanticTree;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests
 {
-    static class TestExtesions
+    public static class TestExtesions
     {
+        public static class TestSolutions
+        {
+            public static readonly string RepoDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\..\\";
+            public static readonly string DevArchSln = RepoDir + "\\DevArch.sln";
+            private static readonly string SampleSolutions = RepoDir + "\\Tests\\TestSolutions\\";
+            public static readonly string WithSolFolders = SampleSolutions + "WithSolFolders\\WithSolFolders.sln";
+            public static readonly string WithNestedFolders = SampleSolutions + "WithNestedFolders\\WithNestedFolders.sln";
+        }
+
         public static void RemoveChild(this Node tree, string name)
         {
             var withName = tree.Childs.WithName(name);
@@ -39,9 +50,12 @@ namespace Tests
         }
 
         public static DTE Dte => (DTE)Marshal.GetActiveObject("VisualStudio.DTE.14.0");
-        public static VisualStudio TestStudio { get; } = new VisualStudio(Dte);
-        public static DevArchSolution TestSolution { get; } = TestStudio.Solution;
-        public static string SlnDir { get; } = TestStudio.Solution.Directory;
+        public static readonly VisualStudio TestStudio = new VisualStudio(Dte);
+        // Should not be used to get a tree of the current solution
+        public static readonly DevArchSolution ThisDevArchSolution = DevArchSolution.FromPath(TestSolutions.DevArchSln);
+        public static readonly DiagramGenerator GeneratorForThisSolution = new DiagramGenerator(ThisDevArchSolution);
+        public static readonly SolutionNode CurrentSolutionTree = GeneratorForThisSolution.CachedTree;
+        public static readonly string SlnDir = TestSolutions.RepoDir;
 
 
         public static Node BuildTree(this string text)
@@ -111,7 +125,7 @@ namespace Tests
 
             public static void DoesNotContainDuplicates(IEnumerable<Node> tree)
             {
-                var allNodes = tree.SelectMany(x => x.DescendantNodes()).Where(x => !string.IsNullOrEmpty(x.Name));
+                var allNodes = tree.SelectMany(x => x.DescendantNodes()).Where(x => !String.IsNullOrEmpty(x.Name));
 
                 var dups = allNodes.GroupBy(x => x)
                             .Where(x => x.Count() > 1)
@@ -120,8 +134,31 @@ namespace Tests
 
                 if(dups.Any())
                     throw new AssertFailedException($"Got {dups.Count} duplicates:" +
-                                                    $"{string.Join(",",dups)}");
+                                                    $"{String.Join(",",dups)}");
             }
+        }
+
+        public static DisposableResult BuildProjectTreeFromDocuments(params string[] documentContents)
+        {
+            var fakeWorkspace = new AdhocWorkspace();
+            var project = fakeWorkspace.AddProject("ProjectA", LanguageNames.CSharp);
+            var i = 0;
+            foreach (var content in documentContents)
+            {
+                fakeWorkspace.AddDocument(project.Id, "doc" + i, SourceText.From(content));
+                i++;
+            }
+
+            var projectA = new ProjectNode
+            { Documents = fakeWorkspace.CurrentSolution
+            .GetProject(project.Id).Documents };
+
+            var tree = new SolutionNode();
+            tree.AddChild(projectA);
+            ClassTreeBuilder.AddClassesInProjectsToTree(tree);
+            return new DisposableResult
+            {Workspace = fakeWorkspace,
+                result = projectA};
         }
     }
 

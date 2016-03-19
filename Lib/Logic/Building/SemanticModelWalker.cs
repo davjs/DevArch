@@ -8,12 +8,11 @@ namespace Logic.Building
 {
     public static class SemanticModelWalker
     {
-        private static IEnumerable<ClassNode> GetClassesInModel(SemanticModel model)
+        public static IEnumerable<ClassNode> GetClassesInModel(SemanticModel model)
         {
             var syntaxRoot = model.SyntaxTree.GetRootAsync().Result;
             var classes = syntaxRoot.DescendantNodes().OfType<ClassDeclarationSyntax>();
-            var classAnalysis = classes.Select(c => CreateClassNode(model, c));
-            return classAnalysis;
+            return classes.Select(c => CreateClassNode(model, c));
         }
 
         private static ClassNode CreateClassNode(SemanticModel model, ClassDeclarationSyntax c)
@@ -24,7 +23,6 @@ namespace Logic.Building
             var symbols = subnodes.Select(node => model.GetSymbolInfo(node).Symbol).ToList();
 
             var dependencies = symbols.OfType<INamedTypeSymbol>();
-
             var nrOfMethods = subnodes.OfType<MethodDeclarationSyntax>().Count();
 
             IEnumerable<TypeSyntax> basetypes = new List<TypeSyntax>();

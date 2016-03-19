@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using Logic.Integration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Tests.TestExtesions;
 
 namespace Tests.Units.Logic.Building
 {
@@ -12,26 +12,24 @@ namespace Tests.Units.Logic.Building
         [TestMethod]
         public void ContainsTopLevelProjectItems()
         {
-            var testDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\TestSolutions\\";
-            var sol = testDir + "WithSolFolders\\WithSolFolders.sln";
-            var tree = DevArchSolution.GetProjectTree(sol);
+            var projectItems = DevArchSolution.FromPath(TestSolutions.WithSolFolders)
+                .SolutionTree.Childs;
 
             // Assert
-            Assert.AreEqual(3,tree.Childs.Count);
-            tree.Childs.Should().ContainSingle(x => x.Name == "FolderA");
-            tree.Childs.Should().ContainSingle(x => x.Name == "FolderB");
-            tree.Childs.Should().ContainSingle(x => x.Name == "ClassLibrary1");
+            projectItems.Count().Should().Be(3);
+            projectItems.Should().ContainSingle(x => x.Name == "FolderA");
+            projectItems.Should().ContainSingle(x => x.Name == "FolderB");
+            projectItems.Should().ContainSingle(x => x.Name == "ClassLibrary1");
         }
 
         [TestMethod]
         public void ContainsNestedProjectItems()
         {
-            var testDir = AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\TestSolutions\\";
-            var sol = testDir + "WithNestedFolders\\WithNestedFolders.sln";
-            var tree = DevArchSolution.GetProjectTree(sol);
+            var tree = DevArchSolution.FromPath(TestSolutions.WithNestedFolders)
+                .SolutionTree.Childs;
 
             // Assert
-            var folderA = tree.Childs.First();
+            var folderA = tree.First();
             var folderAb = folderA.Childs.First();
             var classLibrary1 = folderAb.Childs.First();
             folderA.Name.Should().Be("FolderA");

@@ -15,7 +15,7 @@ namespace Lib
     {
         public static async Task RenderAllArchDiagramsToFiles(VisualStudio visualStudio)
         {
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(visualStudio.Solution);
+            var modelGen = new DiagramGenerator(visualStudio.Solution);
             var parseResults = modelGen.GetDiagramDefinitions().ToList();
             var resultLogger = new ParseResultLogger(visualStudio.DevArchOutputWindow(), parseResults);
             resultLogger.PrintErrors();
@@ -34,14 +34,14 @@ namespace Lib
 
         public static void RenderDefaultDiagramDef(VisualStudio visualStudio)
         {
-            var diagramGen = new DiagramFromDiagramDefinitionGenerator(visualStudio.Solution);
+            var diagramGen = new DiagramGenerator(visualStudio.Solution);
             var diagramModel = diagramGen.GenerateDiagram(DiagramDefinition.RootDefault);
             BitmapRenderer.RenderTreeToBitmapAsync(diagramModel, true, new OutputSettings(visualStudio.Solution.Directory + "Complete.png")).Wait();
         }
 
         public static void RenderCompleteDiagramToView(VisualStudio visualStudio, ref ArchView view)
         {
-            var modelGen = new DiagramFromDiagramDefinitionGenerator(visualStudio.Solution);
+            var modelGen = new DiagramGenerator(visualStudio.Solution);
             var tree = modelGen.GenerateDiagram(DiagramDefinition.RootDefault);
             var viewModel = LayerMapper.TreeModelToArchViewModel(tree,true,true);
             view.Diagram.RenderModel(viewModel);

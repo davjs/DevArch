@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using FluentAssertions;
 using Logic;
 using Logic.Filtering.Filters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -47,11 +48,14 @@ namespace Tests.Units.Logic
             var maxDepth = result.First(x => x.Name == "MaxDepth") as IntegralFilter;
             var removeExceptions = result.First(x => x.Name == "RemoveExceptions");;
             var removeDn = result.First(x => x.Name == "RemoveDefaultNamespaces");
-            Assert.AreEqual(true, removeTests.ShouldBeApplied);
-            Assert.AreEqual(3, maxDepth.Parameter);
-            Assert.AreEqual(false,removeExceptions.ShouldBeApplied);
+
+            // Assert
+
+            removeTests.ShouldBeApplied.Should().BeTrue();
+            maxDepth.Parameter.Should().Be(3);
+            removeExceptions.ShouldBeApplied.Should().BeFalse();
             //On by default
-            Assert.AreEqual(true,removeDn.ShouldBeApplied);
+            removeDn.ShouldBeApplied.Should().BeTrue();
         }
     }
 }

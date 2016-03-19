@@ -107,8 +107,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Building\DependencyResolver.cs" />
     <Compile Include="Building\SemanticTreeBuilder.cs" />
+    <Compile Include="Common\ArrayExtensions.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
+    <Compile Include="Common\ObjectExtensions.cs" />
     <Compile Include="Filtering\Filters\BooleanClassPredicateFilter.cs" />
     <Compile Include="Filtering\Filters\RemoveExceptions.cs" />
     <Compile Include="Filtering\Filters\Filter.cs" />
@@ -124,12 +127,13 @@
     <Compile Include="Filtering\Filters\RemoveTests.cs" />
     <Compile Include="Filtering\IndirectSiblingBuilder.cs" />
     <Compile Include="Integration\ArchProject.cs" />
+    <Compile Include="Integration\ProjectWrapper.cs" />
     <Compile Include="Ordering\CircularReferenceFinder.cs" />
     <Compile Include="Integration\DevArchSolution.cs" />
     <Compile Include="DiagramDefinition.cs" />
     <Compile Include="Building\ProjectTreeBuilder.cs" />
     <Compile Include="Building\ClassTreeBuilder.cs" />
-    <Compile Include="DiagramFromDiagramDefinitionGenerator.cs" />
+    <Compile Include="DiagramGenerator.cs" />
     <Compile Include="DiagramDefinitionParser.cs" />
     <Compile Include="Filtering\PatternFinder.cs" />
     <Compile Include="Filtering\ModelFilterer.cs" />
