@@ -46,10 +46,9 @@ namespace Logic.Building
         private static Node GetSolutionFolderNode(Project folder)
         {
             var node = new Node(folder.Name);
-            node.AddChilds(
-                folder.ProjectItems.Cast<ProjectItem>()
-                .Select(x => GetProjectItemNode(x.SubProject))
-            );
+            var childs = folder.ProjectItems.Cast<ProjectItem>().Where(x => x.SubProject != null)
+                .Select(x => GetProjectItemNode(x.SubProject)).ToList();
+            node.AddChilds(childs);
             return node;
         }
 
