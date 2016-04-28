@@ -14,7 +14,7 @@ The **DevArch Project** contains **Diagram Definitions** which at the press of a
 
 Because **everyone** understands them.
 
-![DiagramDefinition](/Docs/Logic.png)
+![DiagramDefinition](/Samples/Patterns.png)
 
 ###Handmade quality diagrams
 
